@@ -24,5 +24,5 @@ const baseQueryWithReath = async (args: any, api: any, extraOptions: any) => {
 export const apiSlice = createApi({
   baseQuery: baseQueryWithReath,
   tagTypes: ['User'],
-  endpoints: builder => ({}),
+  endpoints: (builder) => ({}),
 });

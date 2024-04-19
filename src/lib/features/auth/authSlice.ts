@@ -23,8 +23,8 @@ export const authSlice = createSlice({
     },
   },
   selectors: {
-    selectUser: auth => auth.user,
-    selectToken: auth => auth.token,
+    selectUser: (auth) => auth.user,
+    selectToken: (auth) => auth.token,
   },
 });
 

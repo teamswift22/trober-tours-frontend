@@ -8,7 +8,7 @@ export type RootState = ReturnType<typeof rootReducer>;
 export const makeStore = () => {
   return configureStore({
     reducer: rootReducer,
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(),
   });
 };
 
