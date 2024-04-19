@@ -6,6 +6,6 @@ module.exports = {
   trailingComma: 'es5',
   semi: true,
   useTabs: false,
-  singleQuote: true,
+  singleQuote: false,
   bracketSpacing: true,
 };
