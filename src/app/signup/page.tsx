@@ -1,14 +1,19 @@
 "use client";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import * as Yup from "yup";
 import { FiUser, FiMail, FiPhone } from "react-icons/fi";
 import LeftRightLayout from "@/components/LeftRightComponent";
 import "react-phone-number-input/style.css";
-import PhoneInput from "react-phone-number-input";
+import PhoneInput, { PhoneNumber } from "react-phone-number-input";
 import "./page.css";
 import SuccessModal from "@/components/ui/SuccessModal";
 import OTPModal from "@/components/ui/OTPModal";
+import {
+  useRegisterMutation,
+  useSendOtpMutation,
+} from "@/lib/features/auth/authApiSlice";
+import { useToast } from "@/components/ui/use-toast";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object().shape({
@@ -21,9 +26,18 @@ const validationSchema = Yup.object().shape({
 
 const SignupForm = ({
   setModalIsOpen,
+  setUserData,
 }: {
   setModalIsOpen: (value: boolean) => void;
+  setUserData: (value: {
+    fullName: string;
+    phoneNumber: string;
+    email: string;
+  }) => void;
 }) => {
+  const [sendOtp] = useSendOtpMutation();
+  const { toast } = useToast();
+
   return (
     <div className="w-full max-w-md flex flex-col items-center justify-center h-full  p-4 gap-6">
       <div>
@@ -39,9 +53,20 @@ const SignupForm = ({
           phoneNumber: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log(values);
-          setModalIsOpen(true);
+        onSubmit={async (values) => {
+          await sendOtp({ phoneNumber: values.phoneNumber })
+            .unwrap()
+            .then(() => {
+              setUserData(values);
+              setModalIsOpen(true);
+            })
+            .catch(() =>
+              toast({
+                title: "Failed to signup",
+                description: "Signup failed please try again",
+                variant: "destructive",
+              })
+            );
           // Handle form submission, e.g., send data to an API or server
         }}
       >
@@ -146,11 +171,22 @@ const SignupForm = ({
 const SignUp = () => {
   const [successModalIsOpen, setSuccessModalIsOpen] = useState(false);
   const [OTPModalIsOpen, setOTPModalIsOpen] = useState(false);
+  const [userData, setUserData] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+  });
+
   return (
     <div>
       <LeftRightLayout
         leftImage={"images/WaitlistPageImage.png"}
-        rightContent={<SignupForm setModalIsOpen={setSuccessModalIsOpen} />}
+        rightContent={
+          <SignupForm
+            setModalIsOpen={setOTPModalIsOpen}
+            setUserData={setUserData}
+          />
+        }
       />
       <SuccessModal
         modalIsOpen={successModalIsOpen}
@@ -160,6 +196,7 @@ const SignUp = () => {
       <OTPModal
         modalIsOpen={OTPModalIsOpen}
         setModalIsOpen={setOTPModalIsOpen}
+        userData={userData}
       />
     </div>
   );
