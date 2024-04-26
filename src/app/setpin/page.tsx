@@ -42,7 +42,11 @@ const SetPinForm = ({
           .unwrap()
           .then(() => {
             setSubmitting(false);
-            setModalIsOpen(true);
+            toast({
+              title: "Success",
+              description: "Pin set successfully",
+              variant: "default",
+            });
             router.push("/agencydetails", { scroll: false });
           })
           .catch(() => {
