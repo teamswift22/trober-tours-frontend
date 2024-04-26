@@ -1,0 +1,6 @@
+.transparent-phone-input input {
+  background-color: transparent !important;
+  outline: none;
+  border-color: transparent;
+  box-shadow: none;
+}
