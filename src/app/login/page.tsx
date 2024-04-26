@@ -8,6 +8,10 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import "./page.css";
 import SuccessModal from "@/components/ui/SuccessModal";
+import { useLoginMutation } from "@/lib/features/auth/authApiSlice";
+import { useToast } from "@/components/ui/use-toast";
+import { useAppDispatch } from "@/lib/hooks";
+import { login } from "@/lib/features/auth/authSlice";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object().shape({
@@ -26,6 +30,9 @@ const LoginForm = ({
 }: {
   setModalIsOpen: (value: boolean) => void;
 }) => {
+  const [loginUser] = useLoginMutation();
+  const { toast } = useToast();
+  const dispatch = useAppDispatch();
   return (
     <div className="w-full max-w-md flex flex-col items-center justify-center h-full  p-4 gap-6">
       <div>
@@ -40,9 +47,32 @@ const LoginForm = ({
           pin: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, setErrors }) => {
-          console.log(values);
-          setModalIsOpen(true);
+        onSubmit={async (values, { setSubmitting, setErrors }) => {
+          await loginUser(values)
+            .unwrap()
+            .then((res) => {
+              const userDataToSet = {
+                token: res.accessToken,
+                user: res.user,
+              };
+              dispatch(login(userDataToSet));
+              localStorage.setItem(
+                "persistedData",
+                JSON.stringify(userDataToSet)
+              );
+              toast({
+                title: "Success",
+                description: "Login successful",
+                variant: "default",
+              });
+            })
+            .catch(() =>
+              toast({
+                title: "Error",
+                description: "Invalid phone number or PIN",
+                variant: "destructive",
+              })
+            );
           // Handle form submission, e.g., send data to an API or server
         }}
       >
