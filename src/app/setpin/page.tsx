@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import * as Yup from "yup";
 import { FiLock } from "react-icons/fi";
@@ -7,7 +8,8 @@ import LeftRightLayout from "@/components/LeftRightComponent";
 import "react-phone-number-input/style.css";
 import "./page.css";
 import SuccessModal from "@/components/ui/SuccessModal";
-import { useRouter } from "next/navigation";
+import { useSetPinMutation } from "@/lib/features/auth/authApiSlice";
+import { useToast } from "@/components/ui/use-toast";
 
 // Validation schema using Yup
 const PinSchema = Yup.object().shape({
@@ -27,17 +29,33 @@ const SetPinForm = ({
   setModalIsOpen: (value: boolean) => void;
 }) => {
   const router = useRouter();
+  const [setPin] = useSetPinMutation();
+  const { toast } = useToast();
 
   return (
     <Formik
       initialValues={{ pin: "", confirmPin: "" }}
       validationSchema={PinSchema}
-      onSubmit={(values, { setSubmitting }) => {
-        console.log("PIN:", values.pin);
-        setModalIsOpen(true);
+      onSubmit={async (values, { setSubmitting }) => {
         // You would handle the PIN submission here
-        setSubmitting(false);
-        router.push("/agencydetails", { scroll: false });
+        await setPin({ pin: values.pin })
+          .unwrap()
+          .then(() => {
+            setSubmitting(false);
+            toast({
+              title: "Success",
+              description: "Pin set successfully",
+              variant: "default",
+            });
+            router.push("/agencydetails", { scroll: false });
+          })
+          .catch(() => {
+            toast({
+              title: "Failed",
+              description: "Please check your pin and try again",
+              variant: "destructive",
+            });
+          });
       }}
     >
       {({ isSubmitting }) => (

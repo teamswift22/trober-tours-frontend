@@ -9,15 +9,17 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import "./page.css";
 import SuccessModal from "@/components/ui/SuccessModal";
+import { useRegisterAgencyMutation } from "@/lib/features/agency/agencyApiSlice";
+import { useToast } from "@/components/ui/use-toast";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object().shape({
-  agencyName: Yup.string().required("Agency Name is required"),
+  name: Yup.string().required("Agency Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   phoneNumber: Yup.string()
     .matches(/^\+?\d+$/, "Phone number is not valid")
     .required("Phone number is required"),
-  aboutAgency: Yup.string().required("Agency Details is required"),
+  about: Yup.string().required("Agency Details is required"),
   address: Yup.string().required("Address is required"),
   role: Yup.string().required("Selecting your role is required."),
 });
@@ -27,6 +29,8 @@ const AgencyDetailForm = ({
 }: {
   setModalIsOpen: (value: boolean) => void;
 }) => {
+  const [registerAgency] = useRegisterAgencyMutation();
+  const { toast } = useToast();
   return (
     <div className="w-full max-w-md flex flex-col items-center justify-center h-full  px-4">
       <div>
@@ -37,17 +41,31 @@ const AgencyDetailForm = ({
       </div>
       <Formik
         initialValues={{
-          agencyName: "",
+          name: "",
           email: "",
           phoneNumber: "",
-          aboutAgency: "",
+          about: "",
           address: "",
           role: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, setErrors }) => {
-          console.log(values);
-          setModalIsOpen(true);
+        onSubmit={async (values, { setSubmitting, setErrors }) => {
+          setSubmitting(true);
+          await registerAgency(values)
+            .unwrap()
+            .then(() => {
+              setSubmitting(false);
+              setModalIsOpen(true);
+            })
+            .catch(() =>
+              toast({
+                title: "Failed to create agency",
+                description:
+                  "Please fill all the required fields and try again",
+                variant: "destructive",
+              })
+            );
+
           // Handle form submission, e.g., send data to an API or server
         }}
       >
@@ -56,18 +74,18 @@ const AgencyDetailForm = ({
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="agencyName"
+                htmlFor="name"
               >
                 Agency Name
               </label>
               <div className="relative">
                 <FiUser className="absolute right-3 top-3 text-gray-400" />
                 <Field
-                  name="agencyName"
+                  name="name"
                   type="text"
                   placeholder="Kwame Fusu"
                   className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent ${
-                    errors.agencyName ? "border-red-500" : ""
+                    errors.name ? "border-red-500" : ""
                   }`}
                 />
               </div>
@@ -115,21 +133,19 @@ const AgencyDetailForm = ({
             </div>
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="aboutAgency"
+              htmlFor="about"
             >
               About Agency
             </label>
             <div className="mb-4 relative">
               <textarea
-                name="aboutAgency"
+                name="about"
                 placeholder="Details"
                 rows={2}
-                onChange={(value) =>
-                  setFieldValue("aboutAgency", value.target.value)
-                }
-                value={values.aboutAgency}
+                onChange={(value) => setFieldValue("about", value.target.value)}
+                value={values.about}
                 className={`shadow appearance-none border rounded w-full pt-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent ${
-                  errors.aboutAgency ? "border-red-500" : ""
+                  errors.about ? "border-red-500" : ""
                 }`}
               />
             </div>
