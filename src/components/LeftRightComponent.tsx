@@ -9,7 +9,7 @@ const LeftRightLayout = ({
     <div className="flex flex-wrap md:flex-nowrap w-full h-screen">
       <div className="w-full h-1/3 md:w-1/2 md:h-full relative">
         <img
-          src="images/logo.png"
+          src="/logo.png"
           alt="Trober Logo"
           className="z-10 absolute top-5 left-5"
         />

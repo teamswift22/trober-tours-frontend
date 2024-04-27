@@ -150,7 +150,7 @@ const Login = () => {
   return (
     <div>
       <LeftRightLayout
-        leftImage={"images/agencyDetail.png"}
+        leftImage={"/agencyDetail.png"}
         rightContent={<LoginForm setModalIsOpen={setModalIsOpen} />}
       />
       <SuccessModal

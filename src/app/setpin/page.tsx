@@ -137,7 +137,7 @@ const SetPinPage = () => {
   return (
     <div>
       <LeftRightLayout
-        leftImage={"images/LandingPageImage.png"}
+        leftImage={"/LandingPageImage.png"}
         rightContent={<SetPinForm setModalIsOpen={setSuccessModalIsOpen} />}
       />
       <SuccessModal

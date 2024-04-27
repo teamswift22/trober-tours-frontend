@@ -4,7 +4,7 @@ import Image from "next/image";
 
 // Assuming you have these images in your src/assets directory
 import logo from "./assets/logo.png";
-import backgroundImage from "../../public/images/LandingPageImage.png";
+import backgroundImage from "../../public/LandingPageImage.png";
 import LeftRightLayout from "@/components/LeftRightComponent";
 
 const rightContent = (
@@ -32,7 +32,7 @@ const rightContent = (
       </div>
       <div className="flex flex-row items-center mt-8">
         <img
-          src="images/logo.png"
+          src="/logo.png"
           alt="Trober Logo"
           className="mr-4 h-12 md:h-16 lg:h-20"
         />
@@ -47,7 +47,7 @@ const rightContent = (
 const LandingPage = () => {
   return (
     <LeftRightLayout
-      leftImage={"images/LandingPageImage.png"}
+      leftImage={"/LandingPageImage.png"}
       rightContent={rightContent}
     />
   );

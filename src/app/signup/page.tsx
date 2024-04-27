@@ -180,7 +180,7 @@ const SignUp = () => {
   return (
     <div>
       <LeftRightLayout
-        leftImage={"images/WaitlistPageImage.png"}
+        leftImage={"/WaitlistPageImage.png"}
         rightContent={
           <SignupForm
             setModalIsOpen={setOTPModalIsOpen}

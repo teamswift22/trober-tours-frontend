@@ -18,6 +18,10 @@ const config = {
       },
     },
     extend: {
+      spacing: {
+        112: "28rem",
+        128: "32rem",
+      },
       fontFamily: {
         sora: ["var(--font-sora)"],
       },
