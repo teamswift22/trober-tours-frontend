@@ -4,6 +4,13 @@ import { FiCheckCircle } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import OtpInput from "react-otp-input";
 import { useRouter } from "next/navigation";
+import {
+  useRegisterMutation,
+  useSendOtpMutation,
+} from "@/lib/features/auth/authApiSlice";
+import { useToast } from "@/components/ui/use-toast";
+import { useAppDispatch } from "@/lib/hooks";
+import { login } from "@/lib/features/auth/authSlice";
 
 const customStyles = {
   content: {
@@ -21,11 +28,17 @@ const customStyles = {
 const OTPModal = ({
   modalIsOpen,
   setModalIsOpen,
+  userData,
 }: {
   modalIsOpen: boolean;
   setModalIsOpen: (value: boolean) => void;
+  userData: { fullName: string; phoneNumber: string; email: string };
 }) => {
   const router = useRouter();
+  const [registerAgency] = useRegisterMutation();
+  const [sendOtp] = useSendOtpMutation();
+  const { toast } = useToast();
+  const dispatch = useAppDispatch();
 
   const [otp, setOtp] = useState("");
 
@@ -33,16 +46,52 @@ const OTPModal = ({
     setOtp(otp);
   };
 
-  const handleSubmit = (event: { preventDefault: () => void }) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    console.log(otp); // Here you would handle the OTP input, like sending it to a server
-    // Close the modal after submitting
-    setModalIsOpen(false);
-    router.push("/setpin", { scroll: false });
+    if (Object.values(userData).some((value) => value === "")) {
+      toast({
+        title: "Form not complete",
+        description: "Please fill all the required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      // Here you would handle the OTP input, like sending it to a server
+      // Close the modal after submitting
+      const userObject = await registerAgency({ ...userData, otp }).unwrap();
+      const userDataToSet = {
+        token: userObject.accessToken,
+        user: userObject.user,
+      };
+      dispatch(login(userDataToSet));
+      localStorage.setItem("persistedData", JSON.stringify(userDataToSet));
+      setModalIsOpen(false);
+      router.push("/setpin", { scroll: false });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Failed to verify otp",
+        description: "Please check your phone number and try again",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleResendOTP = () => {
-    console.log("Resend OTP");
+  const handleResendOTP = async () => {
+    try {
+      await sendOtp({ phoneNumber: userData.phoneNumber }).unwrap();
+      toast({
+        title: "OTP resent",
+        description: "Please check your device for your new otp",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to send OTP",
+        description: "Please check your phone number and try again",
+        variant: "destructive",
+      });
+    }
     // Logic to handle OTP resend
   };
 

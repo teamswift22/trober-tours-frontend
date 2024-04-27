@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
+import ToastLayout from "./ToastLayout";
 
 const sora = Sora({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -23,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <StoreProvider>
-        <body className={sora.className}>{children}</body>
+        <body className={sora.className}>
+          <ToastLayout>{children}</ToastLayout>
+        </body>
       </StoreProvider>
     </html>
   );

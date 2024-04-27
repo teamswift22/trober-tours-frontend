@@ -1,15 +1,49 @@
-import { apiSlice } from '@/lib/api/apiSlice';
+import { apiSlice } from "@/lib/api/apiSlice";
 
 const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    register: builder.mutation({
+      query: (credentials) => ({
+        url: "/agency-auth/create-agency-member",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    setPin: builder.mutation({
+      query: (credentials) => ({
+        url: "/agency-member/pin",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     login: builder.mutation({
       query: (credentials) => ({
-        url: '/auth/login',
-        method: 'POST',
+        url: "/agency-auth/login-agency-member",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    sendOtp: builder.mutation({
+      query: (credentials) => ({
+        url: "/common/send-otp",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    verifyOtp: builder.mutation({
+      query: (credentials) => ({
+        url: "/common/verify-otp",
+        method: "POST",
         body: credentials,
       }),
     }),
   }),
 });
 
-export const { useLoginMutation } = authApiSlice;
+export const {
+  useRegisterMutation,
+  useSetPinMutation,
+  useLoginMutation,
+  useSendOtpMutation,
+  useVerifyOtpMutation,
+} = authApiSlice;
