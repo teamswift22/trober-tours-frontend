@@ -217,7 +217,7 @@ const AgencyDetail = () => {
   return (
     <div>
       <LeftRightLayout
-        leftImage={"images/agencyDetail.png"}
+        leftImage={"/agencyDetail.png"}
         rightContent={<AgencyDetailForm setModalIsOpen={setModalIsOpen} />}
       />
       <SuccessModal

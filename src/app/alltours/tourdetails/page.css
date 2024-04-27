@@ -1,6 +1,6 @@
 .custom-background {
   background-image: radial-gradient(circle at top left, #0e4963, #0f6e98),
-    url("/images/wind.png");
+    url("/wind.png");
   background-size: cover;
   background-position: center;
 }

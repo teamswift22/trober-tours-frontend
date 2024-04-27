@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 import Head from "next/head";
 import { GoHome } from "react-icons/go";
 import { BsGlobe } from "react-icons/bs";
@@ -17,10 +18,32 @@ const Layout = ({
   title: string;
   rightContent: React.ReactNode;
 }) => {
+  const pathName = usePathname();
+  console.log(pathName);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const navbarItems = [
+    { logo: <GoHome size={20} />, name: "Home", path: "home" },
+    { logo: <BsGlobe size={20} />, name: "All Tours", path: "alltours" },
+    {
+      logo: <HiOutlineUser size={20} />,
+      name: "Subscribers",
+      path: "subscribers",
+    },
+    { logo: <HiOutlineUserCircle size={20} />, name: "Team", path: "team" },
+    {
+      logo: <IoSettingsOutline size={20} />,
+      name: "Settings",
+      path: "settings",
+    },
+  ];
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const isCurrentPath = (path: string) => {
+    return pathName.includes(path);
   };
 
   return (
@@ -31,6 +54,7 @@ const Layout = ({
 
       <div className="flex flex-col md:flex-row min-h-screen overflow-hidden">
         {/* Sidebar */}
+
         <aside
           className={`${
             isSidebarOpen ? "block" : "hidden"
@@ -39,32 +63,26 @@ const Layout = ({
           <div>
             <div className="flex flex-row items-center my-8 px-4">
               <img
-                src="images/logo.png"
+                src="/logo.png"
                 alt="Trober Logo"
                 className="mr-2 h-10 md:h-16 lg:h-20"
               />
               <p className="text-4xl text-white font-extrabold">Trober</p>
             </div>
-            <div className="bg-[#FA7454] py-4 pl-10 text-white flex items-center gap-2 hover:cursor-pointer">
-              <GoHome size={20} />
-              <p className="text-sm">Home</p>
-            </div>
-            <div className="bg-transparent py-4 pl-10 text-white flex items-center gap-2 hover:cursor-pointer">
-              <BsGlobe size={20} />
-              <p className="text-sm">All Tours</p>
-            </div>
-            <div className="bg-transparent py-4 pl-10 text-white flex items-center gap-2 hover:cursor-pointer">
-              <HiOutlineUser size={20} />
-              <p className="text-sm">Subscribers</p>
-            </div>
-            <div className="bg-transparent py-4 pl-10 text-white flex items-center gap-2 hover:cursor-pointer">
-              <HiOutlineUserCircle size={20} />
-              <p className="text-sm">Team</p>
-            </div>
-            <div className="bg-transparent py-4 pl-10 text-white flex items-center gap-2 hover:cursor-pointer">
-              <IoSettingsOutline size={20} />
-              <p className="text-sm">Settings</p>
-            </div>
+            {navbarItems.map((item, index) => {
+              return (
+                <a
+                  key={index}
+                  className={`bg-${
+                    isCurrentPath(item.path) ? "[#FA7454]" : "transparent"
+                  } py-4 pl-10 text-white flex items-center gap-2 hover:cursor-pointer`}
+                  href={"/" + item.path}
+                >
+                  {item.logo}
+                  <p className="text-sm">{item.name}</p>
+                </a>
+              );
+            })}
           </div>
           <div className="bg-white py-4 pl-10 text-[#0F6E98] flex items-center gap-2 hover:cursor-pointer">
             <CiLogout size={20} />
@@ -89,7 +107,7 @@ const Layout = ({
               <div>
                 {/* Replace with your image path */}
                 <Image
-                  src="/images/logo.png"
+                  src="/logo.png"
                   alt="Profile"
                   width={20}
                   height={20}

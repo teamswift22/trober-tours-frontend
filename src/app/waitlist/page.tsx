@@ -130,7 +130,7 @@ const WaitList = () => {
   return (
     <div>
       <LeftRightLayout
-        leftImage={"images/WaitlistPageImage.png"}
+        leftImage={"/WaitlistPageImage.png"}
         rightContent={<WaitlistForm setModalIsOpen={setModalIsOpen} />}
       />
       <SuccessModal

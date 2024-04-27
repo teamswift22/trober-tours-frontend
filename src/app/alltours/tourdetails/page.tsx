@@ -10,14 +10,14 @@ import { LuLoader } from "react-icons/lu";
 import ImageScrollContainer from "@/components/ImageScrollComponent";
 
 const tourImages = [
-  { alt: "Main Tour", index: 1, src: "/images/WaitlistPageImage.png" },
-  { alt: "Tour Gallery", index: 2, src: "/images/tour.png" },
-  { alt: "Tour Gallery", index: 3, src: "/images/tour2.png" },
-  { alt: "Tour Gallery", index: 4, src: "/images/tour3.png" },
-  { alt: "Main Tour", index: 1, src: "/images/WaitlistPageImage.png" },
-  { alt: "Tour Gallery", index: 2, src: "/images/tour.png" },
-  { alt: "Tour Gallery", index: 3, src: "/images/tour2.png" },
-  { alt: "Tour Gallery", index: 4, src: "/images/tour3.png" },
+  { alt: "Main Tour", index: 1, src: "/WaitlistPageImage.png" },
+  { alt: "Tour Gallery", index: 2, src: "/tour.png" },
+  { alt: "Tour Gallery", index: 3, src: "/tour2.png" },
+  { alt: "Tour Gallery", index: 4, src: "/tour3.png" },
+  { alt: "Main Tour", index: 1, src: "/WaitlistPageImage.png" },
+  { alt: "Tour Gallery", index: 2, src: "/tour.png" },
+  { alt: "Tour Gallery", index: 3, src: "/tour2.png" },
+  { alt: "Tour Gallery", index: 4, src: "/tour3.png" },
 ];
 
 const TourDetailsCard = () => {

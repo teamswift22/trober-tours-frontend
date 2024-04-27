@@ -10,7 +10,7 @@ const toursData = [
     description:
       "Guided tour in the heart of the city. Guided tour in the heart of the city.",
     price: "150.00",
-    image: "/images/tour.png",
+    image: "/tour.png",
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const toursData = [
     description:
       "Guided tour in the heart of the city. Guided tour in the heart of the city.",
     price: "200.00",
-    image: "/images/tour2.png",
+    image: "/tour2.png",
   },
   {
     id: 3,
@@ -26,7 +26,7 @@ const toursData = [
     description:
       "Guided tour in the heart of the city. Guided tour in the heart of the city.",
     price: "500.00",
-    image: "/images/tour3.png",
+    image: "/tour3.png",
   },
   {
     id: 4,
@@ -34,7 +34,7 @@ const toursData = [
     description:
       "Guided tour in the heart of the city. Guided tour in the heart of the city.",
     price: "150.00",
-    image: "/images/tour.png",
+    image: "/tour.png",
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ const toursData = [
     description:
       "Guided tour in the heart of the city. Guided tour in the heart of the city.",
     price: "200.00",
-    image: "/images/tour2.png",
+    image: "/tour2.png",
   },
   {
     id: 6,
@@ -50,7 +50,7 @@ const toursData = [
     description:
       "Guided tour in the heart of the city. Guided tour in the heart of the city.",
     price: "500.00",
-    image: "/images/tour3.png",
+    image: "/tour3.png",
   },
   {
     id: 7,
@@ -58,7 +58,7 @@ const toursData = [
     description:
       "Guided tour in the heart of the city. Guided tour in the heart of the city.",
     price: "150.00",
-    image: "/images/tour.png",
+    image: "/tour.png",
   },
   {
     id: 8,
@@ -66,7 +66,7 @@ const toursData = [
     description:
       "Guided tour in the heart of the city. Guided tour in the heart of the city.",
     price: "200.00",
-    image: "/images/tour2.png",
+    image: "/tour2.png",
   },
   {
     id: 9,
@@ -74,7 +74,7 @@ const toursData = [
     description:
       "Guided tour in the heart of the city. Guided tour in the heart of the city.",
     price: "500.00",
-    image: "/images/tour3.png",
+    image: "/tour3.png",
   },
   // ... more tours
 ];
