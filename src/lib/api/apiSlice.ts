@@ -53,6 +53,7 @@ const baseQueryWithReath = async (args: any, api: any, extraOptions: any) => {
           result = await baseQuery(args, api, extraOptions);
         } else {
           // Refresh token failed, perform logout
+          localStorage.removeItem("persistedData");
           dispatch(logout());
         }
       } else {
@@ -79,6 +80,7 @@ const baseQueryWithReath = async (args: any, api: any, extraOptions: any) => {
             result = await baseQuery(args, api, extraOptions);
           } else {
             // Refresh token failed, perform logout
+            localStorage.removeItem("persistedData");
             dispatch(logout());
           }
         }

@@ -53,7 +53,7 @@ const Layout = ({
         <title>{title}</title>
       </Head>
 
-      <body className="flex flex-col md:flex-row min-h-screen overflow-hidden">
+      <div className="flex flex-col md:flex-row min-h-screen overflow-hidden">
         {/* Sidebar */}
 
         <aside
@@ -128,7 +128,7 @@ const Layout = ({
         >
           {isSidebarOpen ? <IoClose size={30} /> : <IoMdMenu size={30} />}
         </button>
-      </body>
+      </div>
     </>
   );
 };
