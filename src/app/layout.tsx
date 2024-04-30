@@ -3,6 +3,7 @@ import { Sora } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import ToastLayout from "./ToastLayout";
+import RequireAuth from "@/components/RequireAuth";
 
 const sora = Sora({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
@@ -23,9 +24,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={sora.className}>
-      <StoreProvider>
-        <ToastLayout>{children}</ToastLayout>
-      </StoreProvider>
+      <body>
+        <StoreProvider>
+          <RequireAuth>
+            <ToastLayout>{children}</ToastLayout>
+          </RequireAuth>
+        </StoreProvider>
+      </body>
     </html>
   );
 }
