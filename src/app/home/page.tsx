@@ -1,15 +1,18 @@
+"use client";
+
 // pages/dashboard.tsx
-import React from "react";
+import "./page.css";
+import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
+import Layout from "@/components/layout";
 import { HiOutlineUser } from "react-icons/hi2";
 import { PiCalendarCheck } from "react-icons/pi";
 import { TfiLocationPin } from "react-icons/tfi";
 import { MdOutlineAttachMoney } from "react-icons/md";
 import { IoAdd } from "react-icons/io5";
 import { FiCheckSquare, FiSquare } from "react-icons/fi";
-import "./page.css";
-import Layout from "@/components/layout";
+import { useGetToursQuery } from "@/lib/features/tours/toursApiSlice";
 
 const todos = [
   {
@@ -65,6 +68,9 @@ const tours = [
 ];
 
 const Dashboard: React.FC = () => {
+  const { data: allTours } = useGetToursQuery("");
+
+  console.log(allTours);
   return (
     <>
       <Head>
@@ -115,25 +121,25 @@ const Dashboard: React.FC = () => {
                 <p className="text-[#828282] hover: cursor-pointer">See All</p>
               </div>
               <div className="flex flex-col gap-4 overflow-y-auto max-h-[300px]">
-                {tours.map((tour, index) => {
+                {allTours?.tours?.map((tour: any) => {
                   return (
                     <div
-                      key={index}
+                      key={tour.id}
                       className="flex justify-between p-4 bg-white rounded-xl hover: cursor-pointer"
                     >
                       <div className="flex md:gap-10">
                         <div className="h-12 w-12 rounded-xl bg-orange-200"></div>
                         <div className="flex flex-col">
-                          <p className="font-light">{tour.name}</p>
+                          <p className="font-light">{tour?.name}</p>
                           <p className="text-[#BDBDBD] font-light">Tour Name</p>
                         </div>
                       </div>
                       <div className="flex flex-col">
-                        <p className="font-light">${tour.price}</p>
+                        <p className="font-light">${tour?.price}</p>
                         <p className="text-[#BDBDBD] font-light">Price</p>
                       </div>
                       <div className="flex flex-col">
-                        <p className="font-light">{tour.date}</p>
+                        <p className="font-light">{tour?.date}</p>
                         <p className="text-[#BDBDBD] font-light">Date</p>
                       </div>
                     </div>
