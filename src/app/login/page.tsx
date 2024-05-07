@@ -12,6 +12,7 @@ import { useLoginMutation } from "@/lib/features/auth/authApiSlice";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppDispatch } from "@/lib/hooks";
 import { login } from "@/lib/features/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object().shape({
@@ -33,6 +34,7 @@ const LoginForm = ({
   const [loginUser] = useLoginMutation();
   const { toast } = useToast();
   const dispatch = useAppDispatch();
+  const router = useRouter();
   return (
     <div className="w-full max-w-md flex flex-col items-center justify-center h-full  p-4 gap-6">
       <div>
@@ -65,6 +67,7 @@ const LoginForm = ({
                 description: "Login successful",
                 variant: "default",
               });
+              router.replace("/home");
             })
             .catch(() =>
               toast({
