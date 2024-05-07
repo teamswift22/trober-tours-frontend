@@ -55,6 +55,7 @@ const baseQueryWithReath = async (args: any, api: any, extraOptions: any) => {
           // Refresh token failed, perform logout
           localStorage.removeItem("persistedData");
           dispatch(logout());
+          window.location.replace("/login");
         }
       } else {
         // Use persisted data to authenticate
@@ -82,6 +83,7 @@ const baseQueryWithReath = async (args: any, api: any, extraOptions: any) => {
             // Refresh token failed, perform logout
             localStorage.removeItem("persistedData");
             dispatch(logout());
+            window.location.replace("/login");
           }
         }
       }
