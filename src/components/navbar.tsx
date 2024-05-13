@@ -1,7 +1,13 @@
 "use client";
 import React, { useState } from "react";
 
-const NavBar = ({ navArray }: { navArray: Array<string> }) => {
+const NavBar = ({
+  navArray,
+  getActiveTab,
+}: {
+  navArray: Array<string>;
+  getActiveTab: (tab: any) => void;
+}) => {
   const [activeTab, setActiveTab] = useState(navArray[0]);
   const [showMenu, setShowMenu] = useState(false);
 
@@ -39,7 +45,10 @@ const NavBar = ({ navArray }: { navArray: Array<string> }) => {
                     ? "bg-button-blue-bg text-white"
                     : "text-[#BDBDBD]"
                 }`}
-                onClick={() => setActiveTab(navItem)}
+                onClick={() => {
+                  setActiveTab(navItem);
+                  getActiveTab && getActiveTab(navItem);
+                }}
               >
                 {navItem}
               </button>

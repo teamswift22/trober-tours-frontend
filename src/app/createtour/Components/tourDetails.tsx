@@ -1,0 +1,173 @@
+"use client";
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+// Dummy data for the tours
+
+const TourDetails = () => {
+  const validationSchema = Yup.object({
+    tourName: Yup.string().required("Tour name is required"),
+    tourDescription: Yup.string().required("Tour description is required"),
+    startDate: Yup.date().required("Start date is required"),
+    endDate: Yup.date()
+      .min(Yup.ref("startDate"), "End date can't be before start date")
+      .required("End date is required"),
+    price: Yup.number()
+      .min(1, "Price must be at least $1")
+      .required("Price is required"),
+    category: Yup.string().required("Category is required"),
+  });
+  return (
+    <div>
+      <Formik
+        initialValues={{
+          tourName: "",
+          tourDescription: "",
+          startDate: "",
+          endDate: "",
+          price: "",
+          category: "",
+        }}
+        validationSchema={validationSchema}
+        onSubmit={(values, { setSubmitting }) => {
+          setTimeout(() => {
+            alert(JSON.stringify(values, null, 2));
+            setSubmitting(false);
+          }, 400);
+        }}
+      >
+        {({ isSubmitting }) => (
+          <Form className="space-y-3 bg-white p-6 rounded-md shadow-sm grid grid-cols-2 gap-10 mt-10">
+            <div>
+              <label
+                htmlFor="tourName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Tour Name
+              </label>
+              <Field
+                name="tourName"
+                type="Text"
+                placeholder="Akosombo Invasion"
+                className="shadow appearance-none border rounded w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+              />
+              <ErrorMessage
+                name="tourName"
+                component="div"
+                className="text-red-500 text-xs pl-2 pt-2"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="tourDescription"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Tour Description
+              </label>
+              <Field
+                as="textarea"
+                name="tourDescription"
+                className="shadow appearance-none border rounded w-4/6 py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+              />
+              <ErrorMessage
+                name="tourDescription"
+                component="div"
+                className="text-red-500 text-xs"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="startDate"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Start Date
+              </label>
+              <Field
+                type="date"
+                name="startDate"
+                className="shadow appearance-none border rounded w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+              />
+              <ErrorMessage
+                name="startDate"
+                component="div"
+                className="text-red-500 text-xs"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="endDate"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                End Date
+              </label>
+              <Field
+                type="date"
+                name="endDate"
+                className="shadow appearance-none border rounded w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+              />
+              <ErrorMessage
+                name="endDate"
+                component="div"
+                className="text-red-500 text-xs"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Price
+              </label>
+              <Field
+                type="number"
+                name="price"
+                className="shadow appearance-none border rounded w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+              />
+              <ErrorMessage
+                name="price"
+                component="div"
+                className="text-red-500 text-xs"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="role"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Category
+              </label>
+              <Field
+                name="category"
+                as="select"
+                className="shadow border rounded w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+              >
+                <option value="">Select a category</option>
+                <option value="manager">Adventure</option>
+                <option value="tour_guide">Leisure</option>
+                <option value="marketing">Games</option>
+              </Field>
+              <ErrorMessage
+                name="category"
+                component="div"
+                className="text-red-500 text-xs"
+              />
+            </div>
+          </Form>
+        )}
+      </Formik>
+      <div className="flex justify-end mt-10">
+        <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-1/3">
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default TourDetails;

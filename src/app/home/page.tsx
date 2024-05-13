@@ -70,7 +70,7 @@ const tours = [
 const Dashboard: React.FC = () => {
   const { data: allTours } = useGetToursQuery("");
 
-  console.log(allTours);
+  const upcomingTour = false;
   return (
     <>
       <Head>
@@ -79,7 +79,7 @@ const Dashboard: React.FC = () => {
 
       <div className=" p-4 md:px-10 flex flex-col md:flex-row gap-10">
         <div className="w-full md:w-7/12 flex flex-col gap-12">
-          <div className="p-10 rounded-xl custom-background">
+          <div className="p-10 rounded-xl custom-background min-h-[300px]">
             <div>
               <div className="flex justify-between items-center mb-6">
                 <p className="text-sm text-[#FB9A83]">Upcoming Tour</p>
@@ -87,31 +87,37 @@ const Dashboard: React.FC = () => {
                   View Details
                 </button>
               </div>
-              <div>
-                <p className="text-3xl mb-2 text-white">Easter In Kwahu</p>
-                <p className="text-xs mb-4 font-thin text-white md:w-4/6">
-                  Discover the essence of the city with our immersive city tour
-                  experience. Uncover hidden gems and iconic landmarks...
-                </p>
-                <div className="flex flex-col items-center md:flex-row gap-4">
-                  <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
-                    <PiCalendarCheck color="FA7454" size={20} />
-                    <p className="text-sm font-light">20th April</p>
-                  </div>
-                  <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
-                    <MdOutlineAttachMoney color="FA7454" size={20} />
-                    <p className="text-sm font-light">Ghc. 200</p>
-                  </div>
-                  <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
-                    <HiOutlineUser color="FA7454" size={20} />
-                    <p className="text-sm font-light">10/20</p>
-                  </div>
-                  <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
-                    <TfiLocationPin color="FA7454" size={20} />
-                    <p className="text-sm font-light">Akosombo</p>
+              {upcomingTour ? (
+                <div>
+                  <p className="text-3xl mb-2 text-white">Easter In Kwahu</p>
+                  <p className="text-xs mb-4 font-thin text-white md:w-4/6">
+                    Discover the essence of the city with our immersive city
+                    tour experience. Uncover hidden gems and iconic landmarks...
+                  </p>
+                  <div className="flex flex-col items-center md:flex-row gap-4">
+                    <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
+                      <PiCalendarCheck color="FA7454" size={20} />
+                      <p className="text-sm font-light">20th April</p>
+                    </div>
+                    <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
+                      <MdOutlineAttachMoney color="FA7454" size={20} />
+                      <p className="text-sm font-light">Ghc. 200</p>
+                    </div>
+                    <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
+                      <HiOutlineUser color="FA7454" size={20} />
+                      <p className="text-sm font-light">10/20</p>
+                    </div>
+                    <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
+                      <TfiLocationPin color="FA7454" size={20} />
+                      <p className="text-sm font-light">Akosombo</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="text-3xl mb-2 text-white">
+                  Your Upcoming Tour will show up here
+                </div>
+              )}
             </div>
           </div>
           <div>
@@ -121,30 +127,44 @@ const Dashboard: React.FC = () => {
                 <p className="text-[#828282] hover: cursor-pointer">See All</p>
               </div>
               <div className="flex flex-col gap-4 overflow-y-auto max-h-[300px]">
-                {allTours?.tours?.map((tour: any) => {
-                  return (
-                    <div
-                      key={tour.id}
-                      className="flex justify-between p-4 bg-white rounded-xl hover: cursor-pointer"
-                    >
-                      <div className="flex md:gap-10">
-                        <div className="h-12 w-12 rounded-xl bg-orange-200"></div>
+                {allTours?.tours.length == 0 ? (
+                  <div className="flex justify-around items-center flex-col h-[200px]">
+                    <p className="text-[#828282]">
+                      Your created Tours will show up here
+                    </p>
+                    <button className="flex text-sm text-white bg-[#FA7454] px-14 py-4 rounded-md items-center gap-5">
+                      <IoAdd size={24} />
+                      <p>Create Tour</p>
+                    </button>
+                  </div>
+                ) : (
+                  allTours?.tours?.map((tour: any) => {
+                    return (
+                      <div
+                        key={tour.id}
+                        className="flex justify-between p-4 bg-white rounded-xl hover: cursor-pointer"
+                      >
+                        <div className="flex md:gap-10">
+                          <div className="h-12 w-12 rounded-xl bg-orange-200"></div>
+                          <div className="flex flex-col">
+                            <p className="font-light">{tour?.name}</p>
+                            <p className="text-[#BDBDBD] font-light">
+                              Tour Name
+                            </p>
+                          </div>
+                        </div>
                         <div className="flex flex-col">
-                          <p className="font-light">{tour?.name}</p>
-                          <p className="text-[#BDBDBD] font-light">Tour Name</p>
+                          <p className="font-light">${tour?.price}</p>
+                          <p className="text-[#BDBDBD] font-light">Price</p>
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="font-light">{tour?.date}</p>
+                          <p className="text-[#BDBDBD] font-light">Date</p>
                         </div>
                       </div>
-                      <div className="flex flex-col">
-                        <p className="font-light">${tour?.price}</p>
-                        <p className="text-[#BDBDBD] font-light">Price</p>
-                      </div>
-                      <div className="flex flex-col">
-                        <p className="font-light">{tour?.date}</p>
-                        <p className="text-[#BDBDBD] font-light">Date</p>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                )}
               </div>
             </div>
           </div>
