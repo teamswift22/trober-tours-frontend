@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import Head from "next/head";
+import Image from "next/image";
 import { GoHome } from "react-icons/go";
 import { BsGlobe } from "react-icons/bs";
 import { HiOutlineUser, HiOutlineUserCircle } from "react-icons/hi";
@@ -9,7 +10,9 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 import { IoMdMenu } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
-import Image from "next/image";
+import { useGetAgencyMemberQuery } from "@/lib/features/agency-member/agencyMemeberSlice";
+import { logout } from "@/lib/features/auth/authSlice";
+import { useAppDispatch } from "@/lib/hooks";
 
 const Layout = ({
   title,
@@ -21,6 +24,8 @@ const Layout = ({
   const pathName = usePathname();
   console.log(pathName);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { data: userData } = useGetAgencyMemberQuery("");
+  const dispatch = useAppDispatch();
 
   const navbarItems = [
     { logo: <GoHome size={20} />, name: "Home", path: "home" },
@@ -44,6 +49,12 @@ const Layout = ({
 
   const isCurrentPath = (path: string) => {
     return pathName.includes(path);
+  };
+
+  const logoutuser = async () => {
+    localStorage.removeItem("persistedData");
+    dispatch(logout());
+    window.location.href = "/";
   };
 
   return (
@@ -85,7 +96,11 @@ const Layout = ({
               );
             })}
           </div>
-          <div className="bg-white py-4 pl-10 text-[#0F6E98] flex items-center gap-2 hover:cursor-pointer">
+          <div
+            className="bg-white py-4 pl-10 text-[#0F6E98] flex items-center gap-2 hover:cursor-pointer"
+            role="button"
+            onClick={() => logoutuser()}
+          >
             <CiLogout size={20} />
             <p>Logout</p>
           </div>
@@ -98,7 +113,7 @@ const Layout = ({
             <div className="flex flex-col md:flex-row md:justify-between md:items-center">
               <div className="mb-6 md:mb-0">
                 <h1 className="text-2xl font-semibold text-gray-900">
-                  Hello Kwame!
+                  Hello {userData?.fullName?.split(" ")[0] || "Anon"}!
                 </h1>
                 <p className="text-[#828282] font-extralight">
                   Welcome back and create new tours

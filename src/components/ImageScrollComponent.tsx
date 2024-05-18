@@ -20,7 +20,7 @@ const ImageScrollContainer = ({
   return (
     <div
       ref={scrollContainerRef}
-      className="flex overflow-auto w-full gap-4 relative"
+      className="flex overflow-hidden w-full gap-4 relative"
     >
       <button
         className="sticky left-0 p-2 text-gray-600 bg-[#53BFEE] rounded-full shadow hover:bg-gray-100 self-center"

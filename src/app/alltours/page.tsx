@@ -1,6 +1,10 @@
+"use client";
+
+import React from "react";
 import Layout from "@/components/layout";
 import NavBar from "@/components/navbar";
-import React from "react";
+import { useGetToursQuery } from "@/lib/features/tours/toursApiSlice";
+import { useSearchParams, useRouter } from "next/navigation";
 
 // Dummy data for the tours
 const toursData = [
@@ -80,23 +84,32 @@ const toursData = [
 ];
 
 const ManageTours = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("tab") || "alltours";
+
+  const { data: allTours, isLoading, isError, error } = useGetToursQuery("");
+
   const handleTourClick = (tourName: string) => {
-    console.log("Tour clicked:", tourName);
+    router.push(`?tab=${tourName.replace(/\s+/g, "").toLowerCase()}`);
     // Implement further logic on click
   };
 
   return (
     <div className="px-10">
       <h2 className="text-2xl font-medium mb-4">Manage Tours</h2>
-      <NavBar navArray={["All Tours", "Upcoming", "Completed", "Cancelled"]} />
+      <NavBar
+        navArray={["All Tours", "Upcoming", "Completed", "Cancelled"]}
+        getActiveTab={handleTourClick}
+      />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {toursData.map((tour) => (
+        {allTours?.tours?.map((tour: any) => (
           <div
             key={tour.id}
             className="p-4 w-66 bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 "
           >
             <img
-              src={tour.image}
+              src={tour?.image || "/no-img.jpg"}
               alt={tour.name}
               className="w-full h-48 object-cover rounded-2xl mb-2"
             />
