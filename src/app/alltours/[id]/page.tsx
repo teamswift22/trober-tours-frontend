@@ -8,6 +8,8 @@ import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import { MdOutlineAttachMoney } from "react-icons/md";
 import { LuLoader } from "react-icons/lu";
 import ImageScrollContainer from "@/components/ImageScrollComponent";
+import { useGetTourQuery } from "@/lib/features/tours/toursApiSlice";
+import { formatDateToCustomFormat } from "@/lib/utils";
 
 const tourImages = [
   { alt: "Main Tour", index: 1, src: "/WaitlistPageImage.png" },
@@ -20,8 +22,9 @@ const tourImages = [
   { alt: "Tour Gallery", index: 4, src: "/tour3.png" },
 ];
 
-const TourDetailsCard = () => {
+const TourDetailsCard = ({ id }: { id: string }) => {
   const [activeImage, setActiveImage] = useState(tourImages[0]);
+  const { data, isLoading, isError } = useGetTourQuery(id);
 
   const scrollContainerRef = useRef(null);
   const scroll = (direction: string) => {
@@ -68,22 +71,20 @@ const TourDetailsCard = () => {
         {/* Right - Tour Details */}
         <div className="py-4 px-4 md:px-8 justify-between flex flex-col md:w-6/12 md:ml-[-16rem]">
           <div className="mb-5 md:mb-0 ">
-            <h2 className="text-3xl font-bold mb-4">Akosombo Tour</h2>
+            <h2 className="text-3xl font-bold mb-4">{data?.name}</h2>
             <p className="mb-6 text-[#5D5D5B] font-light text-sm md:w-5/6">
-              Discover the essence of the city with our immersive city tour
-              experience. Uncover hidden gems and iconic landmarks while
-              enjoying insightful commentary from local experts. Immerse
-              yourself in the culture and history of the city as you explore its
-              vibrant streets and neighborhoods.
+              {data?.description}
             </p>
             <div className="flex flex-wrap gap-4 md:w-5/6">
               <div className="flex flex-col md:flex-row items-center gap-2 text-white py-2 px-4 rounded-md bg-[#0F6E98]">
                 <PiCalendarCheck color="FA7454" size={18} />
-                <p className="text-sm font-thin">20th April</p>
+                <p className="text-sm font-thin">
+                  {formatDateToCustomFormat(data?.startDate)}
+                </p>
               </div>
               <div className="flex flex-col md:flex-row items-center gap-2 text-white py-2 px-4 rounded-md bg-[#0F6E98]">
                 <MdOutlineAttachMoney color="FA7454" size={18} />
-                <p className="text-sm font-thin">Ghc. 200</p>
+                <p className="text-sm font-thin">Ghc. {data?.price}</p>
               </div>
               <div className="flex flex-col md:flex-row items-center gap-2 text-white py-2 px-4 rounded-md bg-[#0F6E98]">
                 <HiOutlineUser color="FA7454" size={18} />
@@ -91,7 +92,7 @@ const TourDetailsCard = () => {
               </div>
               <div className="flex flex-col md:flex-row items-center gap-2 text-white py-2 px-4 rounded-md bg-[#0F6E98]">
                 <TfiLocationPin color="FA7454" size={18} />
-                <p className="text-sm font-thin">Akosombo</p>
+                <p className="text-sm font-thin">{data?.destination}</p>
               </div>
               <div className="flex flex-col md:flex-row items-center gap-2 text-white py-2 px-4 rounded-md bg-[#FA7454]">
                 <LuLoader color="0F6E98" size={18} />
@@ -109,8 +110,13 @@ const TourDetailsCard = () => {
   );
 };
 
-const TourDetailsPage = () => {
-  return <Layout title="Manage Tours" rightContent={<TourDetailsCard />} />;
+const TourDetailsPage = ({ params }: { params: { id: string } }) => {
+  return (
+    <Layout
+      title="Manage Tours"
+      rightContent={<TourDetailsCard id={params.id} />}
+    />
+  );
 };
 
 export default TourDetailsPage;

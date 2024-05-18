@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
@@ -133,7 +134,7 @@ const LoginForm = ({
               </button>
             </div>
             <div className="text-center mt-4">
-              Don`&apos;`t have an account?{" "}
+              Don't have an account?{" "}
               <a
                 href="/signup"
                 className="text-[#FA7454] hover:text-blue-700 hover:cursor-pointer"
