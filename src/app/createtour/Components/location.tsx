@@ -108,6 +108,7 @@ const Location = () => {
         </div>
       </div>
       <div className="flex flex-col justify-between items-end">
+        <div className="bg-black h-5/6 w-5/6 rounded-lg"></div>
         <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6">
           Next
         </button>
