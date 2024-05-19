@@ -80,12 +80,14 @@ const Dashboard: React.FC = () => {
             <div>
               <div className="flex justify-between items-center mb-6">
                 <p className="text-sm text-[#FB9A83]">Upcoming Tour</p>
-                <button
-                  className="text-sm text-white bg-[#FB9A83] px-8 py-4 rounded-md"
-                  onClick={() => router.push(`/alltours/${upcomingTour._id}`)}
-                >
-                  View Details
-                </button>
+                {upcomingTour && (
+                  <button
+                    className="text-sm text-white bg-[#FB9A83] px-8 py-4 rounded-md"
+                    onClick={() => router.push(`/alltours/${upcomingTour._id}`)}
+                  >
+                    View Details
+                  </button>
+                )}
               </div>
               {upcomingTour ? (
                 <div>
@@ -131,7 +133,11 @@ const Dashboard: React.FC = () => {
             <div>
               <div className="flex flex-row justify-between mb-6">
                 <p className="text-xl font-medium">All tours</p>
-                <p className="text-[#828282] hover: cursor-pointer">See All</p>
+                {allTours?.length > 0 && (
+                  <p className="text-[#828282] hover: cursor-pointer">
+                    See All
+                  </p>
+                )}
               </div>
               <div className="flex flex-col gap-4 overflow-y-auto max-h-[300px]">
                 {allTours?.tours.length == 0 ? (
@@ -139,7 +145,10 @@ const Dashboard: React.FC = () => {
                     <p className="text-[#828282]">
                       Your created Tours will show up here
                     </p>
-                    <button className="flex text-sm text-white bg-[#FA7454] px-14 py-4 rounded-md items-center gap-5">
+                    <button
+                      className="flex text-sm text-white bg-[#FA7454] px-14 py-4 rounded-md items-center gap-5"
+                      onClick={() => router.push("/createtour")}
+                    >
                       <IoAdd size={24} />
                       <p>Create Tour</p>
                     </button>
@@ -181,7 +190,10 @@ const Dashboard: React.FC = () => {
         <div className="w-full md:w-5/12 flex flex-col gap-20">
           <div className="flex justify-end">
             {/* New Tour button */}
-            <button className="flex text-sm text-white bg-[#FA7454] px-14 py-4 rounded-md items-center gap-5">
+            <button
+              className="flex text-sm text-white bg-[#FA7454] px-14 py-4 rounded-md items-center gap-5"
+              onClick={() => router.push("/createtour")}
+            >
               <IoAdd size={24} />
               <p>New Tour</p>
             </button>

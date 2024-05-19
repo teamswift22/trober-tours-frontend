@@ -94,7 +94,6 @@ const ManageTours = () => {
     router.push(`?tab=${tourName.replace(/\s+/g, "").toLowerCase()}`);
     // Implement further logic on click
   };
-
   return (
     <div className="px-10">
       <h2 className="text-2xl font-medium mb-4">Manage Tours</h2>

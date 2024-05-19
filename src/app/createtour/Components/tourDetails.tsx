@@ -3,21 +3,20 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-// Dummy data for the tours
+const validationSchema = Yup.object({
+  tourName: Yup.string().required("Tour name is required"),
+  tourDescription: Yup.string().required("Tour description is required"),
+  startDate: Yup.date().required("Start date is required"),
+  endDate: Yup.date()
+    .min(Yup.ref("startDate"), "End date can't be before start date")
+    .required("End date is required"),
+  price: Yup.number()
+    .min(1, "Price must be at least $1")
+    .required("Price is required"),
+  category: Yup.string().required("Category is required"),
+});
 
 const TourDetails = () => {
-  const validationSchema = Yup.object({
-    tourName: Yup.string().required("Tour name is required"),
-    tourDescription: Yup.string().required("Tour description is required"),
-    startDate: Yup.date().required("Start date is required"),
-    endDate: Yup.date()
-      .min(Yup.ref("startDate"), "End date can't be before start date")
-      .required("End date is required"),
-    price: Yup.number()
-      .min(1, "Price must be at least $1")
-      .required("Price is required"),
-    category: Yup.string().required("Category is required"),
-  });
   return (
     <div>
       <Formik
@@ -38,7 +37,7 @@ const TourDetails = () => {
         }}
       >
         {({ isSubmitting }) => (
-          <Form className="space-y-3 bg-white p-6 rounded-md shadow-sm grid grid-cols-2 gap-10 mt-10">
+          <Form className="space-y-3 bg-white p-4 sm:p-6 rounded-md shadow-sm grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-10 mt-4 sm:mt-10">
             <div>
               <label
                 htmlFor="tourName"
@@ -48,9 +47,9 @@ const TourDetails = () => {
               </label>
               <Field
                 name="tourName"
-                type="Text"
+                type="text"
                 placeholder="Akosombo Invasion"
-                className="shadow appearance-none border rounded w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
               <ErrorMessage
                 name="tourName"
@@ -69,7 +68,7 @@ const TourDetails = () => {
               <Field
                 as="textarea"
                 name="tourDescription"
-                className="shadow appearance-none border rounded w-4/6 py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
               <ErrorMessage
                 name="tourDescription"
@@ -88,7 +87,7 @@ const TourDetails = () => {
               <Field
                 type="date"
                 name="startDate"
-                className="shadow appearance-none border rounded w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
               <ErrorMessage
                 name="startDate"
@@ -107,7 +106,7 @@ const TourDetails = () => {
               <Field
                 type="date"
                 name="endDate"
-                className="shadow appearance-none border rounded w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
               <ErrorMessage
                 name="endDate"
@@ -126,7 +125,7 @@ const TourDetails = () => {
               <Field
                 type="number"
                 name="price"
-                className="shadow appearance-none border rounded w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
               <ErrorMessage
                 name="price"
@@ -137,7 +136,7 @@ const TourDetails = () => {
 
             <div>
               <label
-                htmlFor="role"
+                htmlFor="category"
                 className="block text-gray-700 text-sm font-bold mb-2"
               >
                 Category
@@ -145,7 +144,7 @@ const TourDetails = () => {
               <Field
                 name="category"
                 as="select"
-                className="shadow border rounded w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                className="shadow border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               >
                 <option value="">Select a category</option>
                 <option value="manager">Adventure</option>
@@ -162,7 +161,7 @@ const TourDetails = () => {
         )}
       </Formik>
       <div className="flex justify-end mt-10">
-        <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-1/3">
+        <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full sm:w-1/3">
           Next
         </button>
       </div>

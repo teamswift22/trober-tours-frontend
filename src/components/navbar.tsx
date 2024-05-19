@@ -69,6 +69,7 @@ const NavBar = ({
                 }`}
                 onClick={() => {
                   setActiveTab(navItem);
+                  getActiveTab && getActiveTab(navItem);
                   setShowMenu(false);
                 }}
               >

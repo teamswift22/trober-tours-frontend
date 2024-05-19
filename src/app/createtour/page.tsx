@@ -7,6 +7,10 @@ import * as Yup from "yup";
 import TourDetails from "./Components/tourDetails";
 import Location from "./Components/location";
 import Itinerary from "./Components/itinerary";
+import Transport from "./Components/transport";
+import Accommodation from "./Components/accommodation";
+import Media from "./Components/media";
+import ParticipantForm from "./Components/participants";
 
 interface IList {
   "Tour Details": ReactElement;
@@ -22,10 +26,10 @@ const list: IList = {
   "Tour Details": <TourDetails />,
   Location: <Location />,
   Itinerary: <Itinerary />,
-  Transport: <div></div>,
-  Accommodation: <div></div>,
-  Media: <div></div>,
-  Participants: <div></div>,
+  Transport: <Transport />,
+  Accommodation: <Accommodation />,
+  Media: <Media />,
+  Participants: <ParticipantForm />,
 };
 
 const CreateTour = () => {

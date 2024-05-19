@@ -1,0 +1,262 @@
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
+import { FiCheckSquare, FiMail, FiPhone, FiSquare } from "react-icons/fi";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+const participants = [
+  { name: "Participant 1", number: "+233 234 567 8910" },
+  { name: "Participant 2", number: "+233 234 567 8910" },
+  { name: "Participant 3", number: "+233 234 567 8910" },
+  { name: "Participant 4", number: "+233 234 567 8910" },
+  { name: "Participant 5", number: "+233 234 567 8910" },
+  { name: "Participant 6", number: "+233 234 567 8910" },
+  { name: "Participant 7", number: "+233 234 567 8910" },
+  { name: "Participant 8", number: "+233 234 567 8910" },
+];
+
+const previousParticipants = [
+  {
+    id: 1,
+    text: "Previous Participant 1",
+    number: "+233 245 678 9019",
+    selected: true,
+  },
+  {
+    id: 2,
+    text: "Previous Participant 2",
+    number: "+233 245 678 9019",
+    selected: false,
+  },
+  {
+    id: 3,
+    text: "Previous Participant 3",
+    number: "+233 245 678 9019",
+    selected: false,
+  },
+  {
+    id: 4,
+    text: "Previous Participant 5",
+    number: "+233 245 678 9019",
+    selected: false,
+  },
+  {
+    id: 5,
+    text: "Previous Participant 6",
+    number: "+233 245 678 9019",
+    selected: false,
+  },
+  {
+    id: 6,
+    text: "Previous Participant 7",
+    number: "+233 245 678 9019",
+    selected: false,
+  },
+];
+
+// Validation schema using Yup
+const participantSchema = Yup.object().shape({
+  participantName: Yup.string().required("Participant name is required"),
+  participantNumber: Yup.string()
+    .required("Participant number is required")
+    .matches(
+      /^\(\+\d{3}\)\s\d{3}\s\d{3}\s\d{3}$/,
+      "Invalid phone number format"
+    ),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  note: Yup.string(),
+});
+
+const ParticipantForm = () => {
+  return (
+    <div>
+      <div className="bg-white">
+        <Formik
+          initialValues={{
+            participantName: "",
+            participantNumber: "",
+            email: "",
+            note: "",
+          }}
+          validationSchema={participantSchema}
+          onSubmit={(values, { setSubmitting }) => {
+            setTimeout(() => {
+              alert(JSON.stringify(values, null, 2));
+              setSubmitting(false);
+            }, 400);
+          }}
+        >
+          {({ isSubmitting, setFieldValue, values }) => (
+            <Form className="space-y-6 p-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label
+                    htmlFor="participantName"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Participant Name
+                  </label>
+                  <Field
+                    name="participantName"
+                    type="text"
+                    placeholder="Akosombo Invasion"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  <ErrorMessage
+                    name="participantName"
+                    component="div"
+                    className="text-red-500 text-xs pl-2 pt-2"
+                  />
+                </div>
+                <div className="w-full">
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="participantNumber"
+                  >
+                    Phone Number
+                  </label>
+                  <div className="mb-4">
+                    <div className="relative shadow border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent">
+                      <FiPhone className="absolute right-3 top-3 text-gray-400" />
+                      <PhoneInput
+                        international
+                        defaultCountry="GH"
+                        value={values.participantNumber}
+                        onChange={(value) =>
+                          setFieldValue("phoneNumber", value)
+                        }
+                        className="transparent-phone-input appearance-none w-full py-1 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="email"
+                  >
+                    Email
+                  </label>
+                  <div className="mb-8 relative">
+                    <FiMail className="absolute right-3 top-3 text-gray-400" />
+
+                    <Field
+                      name="email"
+                      type="email"
+                      placeholder="kwame@gmail.com"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label
+                    htmlFor="note"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Note
+                  </label>
+                  <Field
+                    as="textarea"
+                    name="note"
+                    placeholder="Any note for this participant"
+                    className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  <ErrorMessage
+                    name="note"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col justify-between items-end">
+                <div className="bg-black h-5/6 w-5/6 rounded-lg"></div>
+                <button
+                  type="submit"
+                  className="w-full md:w-auto bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-4 rounded-lg"
+                >
+                  Add Participant
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="mt-10 bg-white rounded-lg p-4 h-fit max-h-[400px] overflow-auto w-full sm:w-5/6 sm:mb-14">
+          <h1 className="font-semibold">Added Participants</h1>
+          <div className="mt-6 px-4">
+            {participants.map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-row justify-between items-center mb-4"
+              >
+                <div>
+                  <p>{item.name}</p>
+                  <p className="text-[#BDBDBD] text-sm">{item.number}</p>
+                </div>
+                <button className="bg-[#82D0F3] px-4 py-1 rounded-full text-sm text-white">
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col items-end">
+          <div className="mt-10 bg-white rounded-lg p-4 h-fit max-h-[350px] overflow-auto w-full sm:w-5/6 mb-4">
+            <h3 className="text-xl font-semibold mb-6">
+              Previous Participants
+            </h3>
+            <ScrollArea className="h-[210px] overflow-auto px-4">
+              {/* Todo items */}
+              {previousParticipants.map((participant) => (
+                <div
+                  key={participant.id}
+                  className="flex items-center justify-between mb-6"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex">
+                      {participant.selected ? (
+                        <FiCheckSquare
+                          size={20}
+                          className="text-green-500 mr-4 hover: cursor-pointer"
+                        />
+                      ) : (
+                        <FiSquare
+                          size={20}
+                          className="mr-4 hover: cursor-pointer"
+                        />
+                      )}
+                      <div>
+                        <p className="">{participant.text}</p>
+                        <p className="text-gray-500 text-sm font-light">
+                          {participant.number}
+                        </p>
+                      </div>
+                    </div>
+                    <button className="bg-[#82D0F3] px-4 py-1 rounded-full text-sm text-white">
+                      Add
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </ScrollArea>
+            <div className="flex flex-col justify-between items-end mt-2">
+              <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-2/6">
+                Add Selected
+              </button>
+            </div>
+          </div>
+          <button className="mt-4 w-full sm:w-5/6 bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg">
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ParticipantForm;

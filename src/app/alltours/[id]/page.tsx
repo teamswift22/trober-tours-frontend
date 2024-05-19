@@ -4,7 +4,6 @@ import React, { SetStateAction, useState, useRef } from "react";
 import { HiOutlineUser } from "react-icons/hi2";
 import { PiCalendarCheck } from "react-icons/pi";
 import { TfiLocationPin } from "react-icons/tfi";
-import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import { MdOutlineAttachMoney } from "react-icons/md";
 import { LuLoader } from "react-icons/lu";
 import ImageScrollContainer from "@/components/ImageScrollComponent";
