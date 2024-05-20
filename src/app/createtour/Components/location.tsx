@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import React, { useReducer } from "react";
+import PlaceSearch from "@/components/google-maps/PlaceSearch";
+import MapComponent from "@/components/google-maps/MapComponent";
 
 const stops = [
   { name: "Stop 1", distance: "200km" },
@@ -10,76 +10,63 @@ const stops = [
   { name: "Stop 4", distance: "200km" },
 ];
 
+const locationReducer = (state: any, action: any) => {
+  switch (action.type) {
+    case "destination":
+      return { ...state, destination: action.payload };
+    case "stop":
+      return { ...state, stop: action.payload };
+    default:
+      return state;
+  }
+};
 const Location = () => {
-  const validationSchema = Yup.object({
-    destination: Yup.string().required("Tour name is required"),
-    stop: Yup.string().required("Tour description is required"),
+  const [state, dispatch] = useReducer(locationReducer, {
+    destination: {},
+    stop: {},
   });
+  const handleDestinationChange = (place: any) => {
+    console.log(place, "destination being called");
+    dispatch({ type: "destination", payload: place });
+  };
+
+  const handleStopChange = (place: any) => {
+    console.log(place, "stop being called");
+    dispatch({ type: "stop", payload: place });
+  };
+
+  console.log(state);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
       <div>
-        <Formik
-          initialValues={{
-            destination: "",
-            stop: "",
-          }}
-          validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
-          }}
-        >
-          {({ isSubmitting }) => (
-            <Form className="space-y-6 mt-10 w-full sm:w-5/6">
-              <div>
-                <label
-                  htmlFor="destination"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Set Destination
-                </label>
-                <Field
-                  name="destination"
-                  type="Text"
-                  placeholder="Akosombo Invasion"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
-                />
-                <ErrorMessage
-                  name="destination"
-                  component="div"
-                  className="text-red-500 text-xs pl-2 pt-2"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="tourName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Add Stops
-                </label>
-                <Field
-                  name="tourName"
-                  type="Text"
-                  placeholder="Akosombo Invasion"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
-                />
-                <ErrorMessage
-                  name="tourName"
-                  component="div"
-                  className="text-red-500 text-xs pl-2 pt-2"
-                />
-              </div>
+        <div className="space-y-6 mt-10 w-full sm:w-5/6">
+          <div>
+            <label
+              htmlFor="destination"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Set Destination
+            </label>
+            <PlaceSearch onPlaceSelect={handleDestinationChange} />
+          </div>
+          <div>
+            <label
+              htmlFor="tourName"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Add Stops
+            </label>
+            <PlaceSearch onPlaceSelect={handleStopChange} />
+          </div>
 
-              <div className="flex justify-end mt-10">
-                <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-3 rounded-lg sm:w-1/3">
-                  Set Destination
-                </button>
-              </div>
-            </Form>
-          )}
-        </Formik>
+          <div className="flex justify-end mt-10">
+            <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-3 rounded-lg sm:w-1/3">
+              Set Destination
+            </button>
+          </div>
+        </div>
+
         <div className="mt-10 bg-white rounded-lg w-full sm:w-5/6 p-4">
           <h1>Added Stops</h1>
           <div className="mt-6 px-4">
@@ -108,7 +95,9 @@ const Location = () => {
         </div>
       </div>
       <div className="flex flex-col justify-between items-end">
-        <div className="bg-black h-5/6 w-5/6 rounded-lg"></div>
+        <div className="bg-black h-5/6 w-5/6 rounded-lg">
+          <MapComponent />
+        </div>
         <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6">
           Next
         </button>
