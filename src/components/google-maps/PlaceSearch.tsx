@@ -3,28 +3,23 @@
 import { useEffect, useRef, useState } from "react";
 import { useLoadScript } from "@react-google-maps/api";
 import { useField, useFormikContext } from "formik";
+import { useGoogleMaps } from "@/lib/google-maps/script";
 
 const options = {
   componentRestrictions: { country: "gh" },
 };
-
-const placeLibraries: any = ["places", "geometry"];
 
 const PlaceSearch = ({ onPlaceSelect }: { onPlaceSelect?: any }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const [searchValue, setSearchValue] = useState<string | undefined>("");
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_PLACES_KEY as string,
-    libraries: placeLibraries,
-  });
+  const { isLoaded } = useGoogleMaps();
 
-  console.log(loadError, "places api error");
+  // console.log(loadError, "places api error");
   console.log(isLoaded, "places api is loaded");
 
   const handlePlaceChange = (place: google.maps.places.PlaceResult | null) => {
-    console.log(place?.name, "place");
     const placeInfo = {
       lat: place?.geometry?.location?.lat(),
       lng: place?.geometry?.location?.lng(),

@@ -26,16 +26,12 @@ const Location = () => {
     stop: {},
   });
   const handleDestinationChange = (place: any) => {
-    console.log(place, "destination being called");
     dispatch({ type: "destination", payload: place });
   };
 
   const handleStopChange = (place: any) => {
-    console.log(place, "stop being called");
     dispatch({ type: "stop", payload: place });
   };
-
-  console.log(state);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
@@ -95,8 +91,8 @@ const Location = () => {
         </div>
       </div>
       <div className="flex flex-col justify-between items-end">
-        <div className="bg-black h-5/6 w-5/6 rounded-lg">
-          <MapComponent />
+        <div className="h-5/6 w-5/6 rounded-lg">
+          <MapComponent locations={state} />
         </div>
         <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6">
           Next
