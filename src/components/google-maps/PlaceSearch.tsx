@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useLoadScript } from "@react-google-maps/api";
-import { useField, useFormikContext } from "formik";
 import { useGoogleMaps } from "@/lib/google-maps/script";
 
 const options = {
@@ -15,9 +13,6 @@ const PlaceSearch = ({ onPlaceSelect }: { onPlaceSelect?: any }) => {
   const [searchValue, setSearchValue] = useState<string | undefined>("");
 
   const { isLoaded } = useGoogleMaps();
-
-  // console.log(loadError, "places api error");
-  console.log(isLoaded, "places api is loaded");
 
   const handlePlaceChange = (place: google.maps.places.PlaceResult | null) => {
     const placeInfo = {

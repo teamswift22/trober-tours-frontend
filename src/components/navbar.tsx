@@ -1,4 +1,5 @@
 "use client";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 const NavBar = ({
@@ -8,7 +9,9 @@ const NavBar = ({
   navArray: Array<string>;
   getActiveTab: (tab: any) => void;
 }) => {
-  const [activeTab, setActiveTab] = useState(navArray[0]);
+  const router = useRouter();
+  const query = useSearchParams();
+  const activeTab = query.get("step");
   const [showMenu, setShowMenu] = useState(false);
 
   return (
@@ -46,7 +49,7 @@ const NavBar = ({
                     : "text-[#BDBDBD]"
                 }`}
                 onClick={() => {
-                  setActiveTab(navItem);
+                  router.push(`?step=${navItem}`);
                   getActiveTab && getActiveTab(navItem);
                 }}
               >
@@ -68,7 +71,7 @@ const NavBar = ({
                     : "text-[#BDBDBD]"
                 }`}
                 onClick={() => {
-                  setActiveTab(navItem);
+                  router.push(`?step=${navItem}`);
                   getActiveTab && getActiveTab(navItem);
                   setShowMenu(false);
                 }}

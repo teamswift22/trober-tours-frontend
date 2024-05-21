@@ -10,7 +10,7 @@ import "react-phone-number-input/style.css";
 
 // Dummy data for the tours
 
-const Transport = () => {
+const Transport = ({ handleSubmit }: { handleSubmit: any }) => {
   const validationSchema = Yup.object().shape({
     modeOfTransport: Yup.string().required("Mode of transport is required"),
     departureTime: Yup.string()

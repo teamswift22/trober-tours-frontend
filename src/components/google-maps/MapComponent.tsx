@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState, useEffect } from "react";
 import { GoogleMap, Marker, DirectionsRenderer } from "@react-google-maps/api";
-import { useGoogleMaps, reveseGeocoding } from "@/lib/google-maps/script";
+import { useGoogleMaps } from "@/lib/google-maps/script";
 
 const containerStyle = {
   width: "100%",
@@ -14,7 +14,13 @@ const center = {
   lng: -0.205874,
 };
 
-const MapComponent = ({ locations }: { locations?: any }) => {
+const MapComponent = ({
+  locations,
+  handleEtaChange,
+}: {
+  locations?: any;
+  handleEtaChange: (place: any) => void;
+}) => {
   const [map, setMap] = useState<any>(null);
   const [directions, setDirections] = useState<any>(null);
   const { isLoaded } = useGoogleMaps();
@@ -41,6 +47,7 @@ const MapComponent = ({ locations }: { locations?: any }) => {
         (response, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
             setDirections(response);
+            handleEtaChange(response?.routes[0].legs[0]);
           } else {
             console.error("Directions request failed:", status);
           }
@@ -92,7 +99,6 @@ const MapComponent = ({ locations }: { locations?: any }) => {
     }
   }, [map, locations, fitBounds]);
 
-  console.log(directions.routes[0].legs);
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
@@ -116,7 +122,6 @@ const MapComponent = ({ locations }: { locations?: any }) => {
             //   reveseGeocoding(newLat, newLng).then((res) => console.log(res));
             //   // console.log(e.latLng.lat(), e.latLng.lng());
             // }}
-            label="Start"
           />
         )}
         {locations.stop.lat && (
@@ -126,7 +131,6 @@ const MapComponent = ({ locations }: { locations?: any }) => {
               lng: locations.stop.lng,
             }}
             // draggable
-            label="End"
           />
         )}
         {directions && (
@@ -138,7 +142,7 @@ const MapComponent = ({ locations }: { locations?: any }) => {
       </>
     </GoogleMap>
   ) : (
-    <div>loading...</div>
+    <div className="bg-blue-600 h-full w-full" />
   );
 };
 

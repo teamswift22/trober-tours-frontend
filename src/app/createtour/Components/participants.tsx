@@ -71,7 +71,7 @@ const participantSchema = Yup.object().shape({
   note: Yup.string(),
 });
 
-const ParticipantForm = () => {
+const ParticipantForm = ({ handleSubmit }: { handleSubmit: any }) => {
   return (
     <div>
       <div className="bg-white">

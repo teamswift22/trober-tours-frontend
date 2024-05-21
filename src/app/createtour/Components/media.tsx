@@ -13,7 +13,7 @@ const tourImages = [
   { alt: "Tour Gallery", index: 4, src: "/tour3.png" },
 ];
 
-const Media = () => {
+const Media = ({ handleSubmit }: { handleSubmit: any }) => {
   const [activeImage, setActiveImage] = useState(tourImages[0]);
 
   const setActiveImageFxn = (

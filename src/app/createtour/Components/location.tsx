@@ -1,5 +1,5 @@
 "use client";
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import PlaceSearch from "@/components/google-maps/PlaceSearch";
 import MapComponent from "@/components/google-maps/MapComponent";
 
@@ -16,14 +16,17 @@ const locationReducer = (state: any, action: any) => {
       return { ...state, destination: action.payload };
     case "stop":
       return { ...state, stop: action.payload };
+    case "eta":
+      return { ...state, eta: action.payload };
     default:
       return state;
   }
 };
-const Location = () => {
+const Location = ({ handleSubmit }: { handleSubmit: any }) => {
   const [state, dispatch] = useReducer(locationReducer, {
     destination: {},
     stop: {},
+    eta: {},
   });
   const handleDestinationChange = (place: any) => {
     dispatch({ type: "destination", payload: place });
@@ -31,6 +34,10 @@ const Location = () => {
 
   const handleStopChange = (place: any) => {
     dispatch({ type: "stop", payload: place });
+  };
+
+  const handleEtaChange = (data: any) => {
+    dispatch({ type: "eta", payload: data });
   };
 
   return (
@@ -42,7 +49,7 @@ const Location = () => {
               htmlFor="destination"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Set Destination
+              Start Destination
             </label>
             <PlaceSearch onPlaceSelect={handleDestinationChange} />
           </div>
@@ -51,14 +58,14 @@ const Location = () => {
               htmlFor="tourName"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Add Stops
+              End Destination
             </label>
             <PlaceSearch onPlaceSelect={handleStopChange} />
           </div>
 
           <div className="flex justify-end mt-10">
             <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-3 rounded-lg sm:w-1/3">
-              Set Destination
+              Add Stop
             </button>
           </div>
         </div>
@@ -92,7 +99,7 @@ const Location = () => {
       </div>
       <div className="flex flex-col justify-between items-end">
         <div className="h-5/6 w-5/6 rounded-lg">
-          <MapComponent locations={state} />
+          <MapComponent locations={state} handleEtaChange={handleEtaChange} />
         </div>
         <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6">
           Next

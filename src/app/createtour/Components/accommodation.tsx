@@ -96,7 +96,7 @@ const validationSchema = Yup.object({
 
 type Amenity = "Pool" | "WiFi" | "Breakfast";
 
-const Accommodation = () => {
+const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
   const [activeTab, setActiveTab] = useState("Accommodation"); // State to manage which tab is active
   const [selectedAmenities, setSelectedAmenities] = useState<Amenity[]>([]);
 

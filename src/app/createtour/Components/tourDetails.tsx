@@ -16,7 +16,7 @@ const validationSchema = Yup.object({
   category: Yup.string().required("Category is required"),
 });
 
-const TourDetails = () => {
+const TourDetails = ({ handleSubmit }: { handleSubmit: any }) => {
   return (
     <div>
       <Formik
@@ -31,13 +31,16 @@ const TourDetails = () => {
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
+            handleSubmit(values);
             setSubmitting(false);
           }, 400);
         }}
       >
         {({ isSubmitting }) => (
-          <Form className="space-y-3 bg-white p-4 sm:p-6 rounded-md shadow-sm grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-10 mt-4 sm:mt-10">
+          <Form
+            id="tourDetails"
+            className="space-y-3 bg-white p-4 sm:p-6 rounded-md shadow-sm grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-10 mt-4 sm:mt-10"
+          >
             <div>
               <label
                 htmlFor="tourName"
@@ -161,7 +164,11 @@ const TourDetails = () => {
         )}
       </Formik>
       <div className="flex justify-end mt-10">
-        <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full sm:w-1/3">
+        <button
+          form="tourDetails"
+          type="submit"
+          className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full sm:w-1/3"
+        >
           Next
         </button>
       </div>
