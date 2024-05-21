@@ -1,7 +1,7 @@
 "use client";
 import Layout from "@/components/layout";
 import NavBar from "@/components/navbar";
-import React, { ReactElement, useCallback, useMemo } from "react";
+import React, { ReactElement, Suspense, useCallback, useMemo } from "react";
 import TourDetails from "./Components/tourDetails";
 import Location from "./Components/location";
 import Itinerary from "./Components/itinerary";
@@ -94,7 +94,11 @@ const CreateTour = () => {
 };
 
 const CreateTourPage = () => {
-  return <Layout title="Manage Tours" rightContent={<CreateTour />} />;
+  return (
+    <Suspense>
+      <Layout title="Manage Tours" rightContent={<CreateTour />} />
+    </Suspense>
+  );
 };
 
 export default CreateTourPage;
