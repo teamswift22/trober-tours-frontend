@@ -1,7 +1,13 @@
 "use client";
 import Layout from "@/components/layout";
 import NavBar from "@/components/navbar";
-import React, { ReactElement, Suspense, useCallback, useMemo } from "react";
+import React, {
+  ReactElement,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import TourDetails from "./Components/tourDetails";
 import Location from "./Components/location";
 import Itinerary from "./Components/itinerary";
@@ -86,7 +92,11 @@ const CreateTour = () => {
   return (
     <div className="px-10">
       <h2 className="text-2xl font-medium mb-4">Create Tour</h2>
-      <NavBar navArray={navlinks} getActiveTab={getActiveTab} />
+      <NavBar
+        navArray={navlinks}
+        getActiveTab={getActiveTab}
+        activeTab={pageStep}
+      />
 
       {list[pageStep as keyof IList]}
     </div>

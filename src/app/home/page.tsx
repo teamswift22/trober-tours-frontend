@@ -2,9 +2,8 @@
 
 // pages/dashboard.tsx
 import "./page.css";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Head from "next/head";
-import Image from "next/image";
 import Layout from "@/components/layout";
 import { useRouter } from "next/navigation";
 import { HiOutlineUser } from "react-icons/hi2";
@@ -83,7 +82,7 @@ const Dashboard: React.FC = () => {
                 {upcomingTour && (
                   <button
                     className="text-sm text-white bg-[#FB9A83] px-8 py-4 rounded-md"
-                    onClick={() => router.push(`/alltours/${upcomingTour._id}`)}
+                    onClick={() => router.push(`/tours/${upcomingTour._id}`)}
                   >
                     View Details
                   </button>
@@ -133,21 +132,19 @@ const Dashboard: React.FC = () => {
             <div>
               <div className="flex flex-row justify-between mb-6">
                 <p className="text-xl font-medium">All tours</p>
-                {allTours?.length > 0 && (
-                  <p className="text-[#828282] hover: cursor-pointer">
-                    See All
-                  </p>
-                )}
+                <p className="text-[#828282] hover: cursor-pointer">See All</p>
               </div>
               <div className="flex flex-col gap-4 overflow-y-auto max-h-[300px]">
-                {allTours?.tours.length == 0 ? (
+                {allTours?.tours.length < 1 ? (
                   <div className="flex justify-around items-center flex-col h-[200px]">
                     <p className="text-[#828282]">
                       Your created Tours will show up here
                     </p>
                     <button
                       className="flex text-sm text-white bg-[#FA7454] px-14 py-4 rounded-md items-center gap-5"
-                      onClick={() => router.push("/createtour")}
+                      onClick={() =>
+                        router.push("/tours/createtour?step=Tour Details")
+                      }
                     >
                       <IoAdd size={24} />
                       <p>Create Tour</p>
@@ -192,7 +189,7 @@ const Dashboard: React.FC = () => {
             {/* New Tour button */}
             <button
               className="flex text-sm text-white bg-[#FA7454] px-14 py-4 rounded-md items-center gap-5"
-              onClick={() => router.push("/createtour")}
+              onClick={() => router.push("/tours/createtour?step=Tour Details")}
             >
               <IoAdd size={24} />
               <p>New Tour</p>
@@ -200,7 +197,7 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="bg-white rounded-lg shadow-lg p-6 w-full">
             <h3 className="text-xl font-semibold mb-10">Todo list</h3>
-            <ScrollArea className="h-[300px] overflow-auto">
+            <ScrollArea className="h-[500px] overflow-auto">
               {/* Todo items */}
               {todos.map((todo) => (
                 <div

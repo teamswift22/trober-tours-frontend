@@ -86,12 +86,12 @@ const toursData = [
 const ManageTours = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const activeTab = searchParams.get("tab") || "alltours";
+  const activeTab = searchParams.get("tab") || "All Tours";
 
   const { data: allTours, isLoading, isError, error } = useGetToursQuery("");
 
   const handleTourClick = (tourName: string) => {
-    router.push(`?tab=${tourName.replace(/\s+/g, "").toLowerCase()}`);
+    router.push(`?tab=${tourName}`);
     // Implement further logic on click
   };
   return (
@@ -100,6 +100,7 @@ const ManageTours = () => {
       <NavBar
         navArray={["All Tours", "Upcoming", "Completed", "Cancelled"]}
         getActiveTab={handleTourClick}
+        activeTab={activeTab}
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {allTours?.tours?.map((tour: any) => (

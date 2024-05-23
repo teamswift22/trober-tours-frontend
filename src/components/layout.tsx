@@ -13,6 +13,7 @@ import { IoClose } from "react-icons/io5";
 import { useGetAgencyMemberQuery } from "@/lib/features/agency-member/agencyMemeberSlice";
 import { logout } from "@/lib/features/auth/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
+import { ScrollArea } from "./ui/scroll-area";
 
 const Layout = ({
   title,
@@ -29,7 +30,7 @@ const Layout = ({
 
   const navbarItems = [
     { logo: <GoHome size={20} />, name: "Home", path: "home" },
-    { logo: <BsGlobe size={20} />, name: "All Tours", path: "alltours" },
+    { logo: <BsGlobe size={20} />, name: "All Tours", path: "tours" },
     {
       logo: <HiOutlineUser size={20} />,
       name: "Subscribers",
@@ -48,7 +49,9 @@ const Layout = ({
   };
 
   const isCurrentPath = (path: string) => {
-    return pathName.includes(path);
+    const pathSegments = pathName.split("/");
+    const routeName = pathSegments[1];
+    return routeName === path;
   };
 
   const logoutuser = async () => {
@@ -133,12 +136,14 @@ const Layout = ({
               </div>
             </div>
           </div>
-          <div className="mt-32 md:mt-16 md:pt-20">{rightContent}</div>
+          <ScrollArea className="mt-32 md:mt-16 md:pt-20 h-[calc(100vh-128px)]  md:h-[calc(100vh-104px)]">
+            {rightContent}
+          </ScrollArea>
         </main>
 
         {/* Button for toggling sidebar on mobile */}
         <button
-          className="md:hidden absolute top-5 right-5  "
+          className="md:hidden absolute top-5 right-5 "
           onClick={toggleSidebar}
         >
           {isSidebarOpen ? <IoClose size={30} /> : <IoMdMenu size={30} />}
