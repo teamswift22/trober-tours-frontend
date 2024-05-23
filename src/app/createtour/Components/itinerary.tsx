@@ -23,7 +23,7 @@ const validationSchema = Yup.object({
   location: Yup.string().required("Location is required"),
 });
 
-const Itinerary = () => {
+const Itinerary = ({ handleSubmit }: { handleSubmit: any }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
