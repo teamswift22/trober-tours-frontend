@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { TfiLocationPin } from "react-icons/tfi";
 import { FiPhone, FiUser } from "react-icons/fi";
 import PhoneInput from "react-phone-number-input";
-import "../../agencydetails/page.css";
+import "../../../agencydetails/page.css";
 import "react-phone-number-input/style.css";
 
 // Dummy data for the tours

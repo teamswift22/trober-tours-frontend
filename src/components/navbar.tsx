@@ -5,13 +5,14 @@ import React, { useState } from "react";
 const NavBar = ({
   navArray,
   getActiveTab,
+  activeTab,
 }: {
   navArray: Array<string>;
   getActiveTab: (tab: any) => void;
+  activeTab: string;
 }) => {
   const router = useRouter();
   const query = useSearchParams();
-  const activeTab = query.get("step");
   const [showMenu, setShowMenu] = useState(false);
 
   return (
