@@ -49,25 +49,24 @@ const CreateTour = () => {
   const getActiveTab = (tab: React.SetStateAction<keyof IList>) => {
     router.push(`?step=${tab}`);
   };
+  const id = query.get("id");
 
   const [createTour] = useCreateTourMutation();
   const [editTour] = useEditTourMutation();
 
   const handleTourSubmission = useCallback(
     async (data: any) => {
-      const id = query.get("id");
       try {
+        const step = query.get("step") || navlinks[0];
+        const nextStep = navlinks.indexOf(step) + 1;
         if (!id) {
           const response = await createTour(data).unwrap();
           console.log(response);
           const formId: string = response.tourId;
-          return router.push(`?id=${formId}`);
+          return router.push(`?id=${formId}&step=${navlinks[nextStep]}`);
         } else {
           const response = await editTour({ id, data }).unwrap();
-          const step = query.get("step") || navlinks[0];
-          const nextStep = navlinks.indexOf(step) + 1;
-          return router.push(`?step=${navlinks[nextStep]}`);
-          console.log(response);
+          return router.push(`?id=${id}&step=${navlinks[nextStep]}`);
         }
       } catch (error) {
         console.log(error);
@@ -80,7 +79,7 @@ const CreateTour = () => {
   const list: IList = useMemo(() => {
     return {
       "Tour Details": <TourDetails handleSubmit={handleTourSubmission} />,
-      Location: <Location handleSubmit={handleTourSubmission} />,
+      Location: <Location tourId={id} />,
       Itinerary: <Itinerary handleSubmit={handleTourSubmission} />,
       Transport: <Transport handleSubmit={handleTourSubmission} />,
       Accommodation: <Accommodation handleSubmit={handleTourSubmission} />,

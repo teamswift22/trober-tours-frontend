@@ -29,6 +29,29 @@ const tourApiSlice = apiSlice.injectEndpoints({
         body,
       }),
     }),
+    addStop: builder.mutation({
+      query: ({ tourId, body }) => ({
+        url: `/tour/stops/${tourId}`,
+        method: "POST",
+        body,
+      }),
+    }),
+    editStop: builder.mutation({
+      query: ({ stopId, body }) => ({
+        url: `/tour/stops/${stopId}`,
+        method: "PATCH",
+        body,
+      }),
+    }),
+    deleteStop: builder.mutation({
+      query: (id) => ({
+        url: `/tour/stops/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    getAllStops: builder.query({
+      query: (id) => `/tour/stops/${id}`,
+    }),
   }),
 });
 
@@ -37,4 +60,8 @@ export const {
   useGetTourQuery,
   useGetToursQuery,
   useEditTourMutation,
+  useAddStopMutation,
+  useEditStopMutation,
+  useDeleteStopMutation,
+  useGetAllStopsQuery,
 } = tourApiSlice;
