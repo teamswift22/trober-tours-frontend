@@ -22,13 +22,6 @@ const tourApiSlice = apiSlice.injectEndpoints({
         body,
       }),
     }),
-    createActivity: builder.mutation({
-      query: ({ tourId, body }) => ({
-        url: `/tour/activities/${tourId}`,
-        method: "POST",
-        body,
-      }),
-    }),
     addStop: builder.mutation({
       query: ({ tourId, body }) => ({
         url: `/tour/stops/${tourId}`,
@@ -52,6 +45,23 @@ const tourApiSlice = apiSlice.injectEndpoints({
     getAllStops: builder.query({
       query: (id) => `/tour/stops/${id}`,
     }),
+    addActivity: builder.mutation({
+      query: ({ tourId, body }) => ({
+        url: `/tour/activities/${tourId}`,
+        method: "POST",
+        body,
+      }),
+    }),
+    editActivity: builder.mutation({
+      query: ({ activityId, body }) => ({
+        url: `/tour/activities/edit/${activityId}`,
+        method: "PATCH",
+        body,
+      }),
+    }),
+    getActivities: builder.query({
+      query: (id) => `/tour/activities/${id}`,
+    }),
   }),
 });
 
@@ -64,4 +74,7 @@ export const {
   useEditStopMutation,
   useDeleteStopMutation,
   useGetAllStopsQuery,
+  useAddActivityMutation,
+  useEditActivityMutation,
+  useGetActivitiesQuery,
 } = tourApiSlice;

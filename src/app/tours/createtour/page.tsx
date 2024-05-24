@@ -80,7 +80,7 @@ const CreateTour = () => {
     return {
       "Tour Details": <TourDetails handleSubmit={handleTourSubmission} />,
       Location: <Location />,
-      Itinerary: <Itinerary handleSubmit={handleTourSubmission} />,
+      Itinerary: <Itinerary />,
       Transport: <Transport handleSubmit={handleTourSubmission} />,
       Accommodation: <Accommodation handleSubmit={handleTourSubmission} />,
       Media: <Media handleSubmit={handleTourSubmission} />,
