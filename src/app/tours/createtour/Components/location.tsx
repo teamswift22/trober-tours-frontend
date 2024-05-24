@@ -1,14 +1,14 @@
 "use client";
-import React, { useEffect, useReducer } from "react";
+import React, { useMemo, useReducer, useState } from "react";
 import PlaceSearch from "@/components/google-maps/PlaceSearch";
 import MapComponent from "@/components/google-maps/MapComponent";
-
-const stops = [
-  { name: "Stop 1", distance: "200km" },
-  { name: "Stop 2", distance: "200km" },
-  { name: "Stop 3", distance: "200km" },
-  { name: "Stop 4", distance: "200km" },
-];
+import {
+  useAddStopMutation,
+  useEditStopMutation,
+  useGetAllStopsQuery,
+} from "@/lib/features/tours/toursApiSlice";
+import { useSearchParams } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const locationReducer = (state: any, action: any) => {
   switch (action.type) {
@@ -16,30 +16,114 @@ const locationReducer = (state: any, action: any) => {
       return { ...state, destination: action.payload };
     case "stop":
       return { ...state, stop: action.payload };
-    case "eta":
-      return { ...state, eta: action.payload };
+    case "reset":
+      return action.payload;
     default:
       return state;
   }
 };
-const Location = ({ handleSubmit }: { handleSubmit: any }) => {
+const Location = () => {
+  const [addStop] = useAddStopMutation();
+
+  const [editStop] = useEditStopMutation();
+
+  const query = useSearchParams();
+
+  const tourId = useMemo(() => query.get("id"), []);
+
+  const { data } = useGetAllStopsQuery(tourId);
+
   const [state, dispatch] = useReducer(locationReducer, {
     destination: {},
     stop: {},
-    eta: {},
   });
+
+  const [eta, setEta] = useState({});
+
+  const [editStopId, setEditStopId] = useState("");
+
+  const { toast } = useToast();
+
+  const disableButton = useMemo(() => {
+    if (
+      Object.keys(state.destination).length > 0 &&
+      Object.keys(state.stop).length > 0
+    ) {
+      return false;
+    }
+    return true;
+  }, [state]);
+
   const handleDestinationChange = (place: any) => {
-    dispatch({ type: "destination", payload: place });
+    dispatch({
+      type: "destination",
+      payload: {
+        formatted_address: place.formatted_address,
+        lat: place.lat,
+        lng: place.lng,
+        name: place.name,
+      },
+    });
   };
 
   const handleStopChange = (place: any) => {
-    dispatch({ type: "stop", payload: place });
+    dispatch({
+      type: "stop",
+      payload: {
+        formatted_address: place.formatted_address,
+        lat: place.lat,
+        lng: place.lng,
+        name: place.name,
+      },
+    });
   };
 
   const handleEtaChange = (data: any) => {
-    dispatch({ type: "eta", payload: data });
+    setEta({ distance: data.distance });
   };
 
+  const handleAddStop = async (data: any) => {
+    try {
+      if (editStopId) {
+        const response = await editStop({
+          stopId: editStopId,
+          body: { ...data, eta },
+        }).unwrap();
+        toast({
+          title: "Stop Edited",
+          description: "Stop edited successfully",
+        });
+      } else {
+        const response = await addStop({
+          tourId,
+          body: { ...data, eta },
+        }).unwrap();
+        toast({
+          title: "Stop Added",
+          description: "Stop added successfully",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+      });
+    }
+  };
+
+  const handleSetEdit = (stop: any) => {
+    const payload = {
+      destination: stop.destination,
+      stop: stop.stop,
+    };
+    dispatch({
+      type: "reset",
+      payload,
+    });
+    setEditStopId(stop._id);
+  };
+
+  console.log(state);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
       <div>
@@ -51,7 +135,10 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
             >
               Start Destination
             </label>
-            <PlaceSearch onPlaceSelect={handleDestinationChange} />
+            <PlaceSearch
+              onPlaceSelect={handleDestinationChange}
+              location={state.destination}
+            />
           </div>
           <div>
             <label
@@ -60,12 +147,19 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
             >
               End Destination
             </label>
-            <PlaceSearch onPlaceSelect={handleStopChange} />
+            <PlaceSearch
+              onPlaceSelect={handleStopChange}
+              location={state.stop}
+            />
           </div>
 
           <div className="flex justify-end mt-10">
-            <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-3 rounded-lg sm:w-1/3">
-              Add Stop
+            <button
+              className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-3 rounded-lg sm:w-1/3"
+              onClick={() => handleAddStop(state)}
+              disabled={disableButton}
+            >
+              {editStopId ? "Edit Stop" : "Add Stop"}
             </button>
           </div>
         </div>
@@ -73,18 +167,23 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
         <div className="mt-10 bg-white rounded-lg w-full sm:w-5/6 p-4">
           <h1>Added Stops</h1>
           <div className="mt-6 px-4">
-            {stops.map((item) => {
+            {data?.map((item: any) => {
               return (
                 <div
-                  key={item.name}
+                  key={item._id}
                   className="flex flex-row w-full justify-between"
                 >
                   <div>
-                    <p>{item.name}</p>
-                    <p className="text-[#BDBDBD] text-sm">{item.distance}</p>
+                    <p>{item.stop.formatted_address}</p>
+                    <p className="text-[#BDBDBD] text-sm">
+                      {item.eta.distance.text}
+                    </p>
                   </div>
                   <div className="flex gap-2">
-                    <button className="bg-[#82D0F3] px-2 sm:px-4 py-1 rounded-full text-sm text-white h-fit">
+                    <button
+                      className="bg-[#82D0F3] px-2 sm:px-4 py-1 rounded-full text-sm text-white h-fit"
+                      onClick={() => handleSetEdit(item)}
+                    >
                       Edit
                     </button>
                     <button className="bg-[#FDC3B5] px-2 sm:px-4 py-1 rounded-full text-sm text-white h-fit">

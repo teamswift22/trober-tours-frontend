@@ -71,7 +71,7 @@ const MapComponent = ({
       map.fitBounds(bounds);
     }
     calculateDirections();
-  }, [map, locations]);
+  }, [locations]);
 
   const onLoad = useCallback(
     function callback(map: any) {
@@ -97,7 +97,7 @@ const MapComponent = ({
     if (map && locations) {
       fitBounds();
     }
-  }, [map, locations, fitBounds]);
+  }, [locations]);
 
   return isLoaded ? (
     <GoogleMap
