@@ -33,8 +33,8 @@ const Layout = ({
     { logo: <BsGlobe size={20} />, name: "All Tours", path: "tours" },
     {
       logo: <HiOutlineUser size={20} />,
-      name: "Subscribers",
-      path: "subscribers",
+      name: "Participants",
+      path: "participants",
     },
     { logo: <HiOutlineUserCircle size={20} />, name: "Team", path: "team" },
     {
