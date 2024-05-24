@@ -43,8 +43,16 @@ const MapComponent = ({
           origin,
           destination,
           travelMode,
+          waypoints: [
+            {
+              location: { lat: 6.2550236, lng: -0.1167512 },
+              stopover: true,
+            },
+          ],
+          optimizeWaypoints: true,
         },
         (response, status) => {
+          console.log({ response });
           if (status === window.google.maps.DirectionsStatus.OK) {
             setDirections(response);
             handleEtaChange(response?.routes[0].legs[0]);
@@ -124,6 +132,13 @@ const MapComponent = ({
             // }}
           />
         )}
+        <Marker
+          position={{
+            lat: 6.016497,
+            lng: 0.0230409,
+          }}
+          // draggable
+        />
         {locations.stop.lat && (
           <Marker
             position={{
