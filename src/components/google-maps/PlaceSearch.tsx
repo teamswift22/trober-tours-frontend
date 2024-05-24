@@ -7,7 +7,13 @@ const options = {
   componentRestrictions: { country: "gh" },
 };
 
-const PlaceSearch = ({ onPlaceSelect }: { onPlaceSelect?: any }) => {
+const PlaceSearch = ({
+  onPlaceSelect,
+  location,
+}: {
+  onPlaceSelect?: any;
+  location?: any;
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const [searchValue, setSearchValue] = useState<string | undefined>("");
@@ -27,6 +33,12 @@ const PlaceSearch = ({ onPlaceSelect }: { onPlaceSelect?: any }) => {
     onPlaceSelect(placeInfo);
     setSearchValue(place?.name);
   };
+
+  useEffect(() => {
+    if (location) {
+      setSearchValue(location?.formatted_address);
+    }
+  }, [location]);
 
   useEffect(() => {
     if (window.google) {
