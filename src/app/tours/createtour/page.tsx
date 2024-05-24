@@ -79,7 +79,7 @@ const CreateTour = () => {
   const list: IList = useMemo(() => {
     return {
       "Tour Details": <TourDetails handleSubmit={handleTourSubmission} />,
-      Location: <Location tourId={id} />,
+      Location: <Location />,
       Itinerary: <Itinerary handleSubmit={handleTourSubmission} />,
       Transport: <Transport handleSubmit={handleTourSubmission} />,
       Accommodation: <Accommodation handleSubmit={handleTourSubmission} />,
