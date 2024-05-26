@@ -1,64 +1,84 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import {
+  useAddActivityMutation,
+  useEditActivityMutation,
+  useGetActivitiesQuery,
+  useGetAllStopsQuery,
+} from "@/lib/features/tours/toursApiSlice";
+import { useSearchParams } from "next/navigation";
 
-const stops = [
-  { name: "Activity 1", distance: "Destination" },
-  { name: "Activity 2", distance: "Stop 1" },
-  { name: "Activity 3", distance: "Stop 2" },
-  { name: "Activity 4", distance: "Stop 3" },
-  { name: "Activity 5", distance: "Stop 4" },
-  { name: "Activity 6", distance: "Stop 5" },
-  { name: "Activity 7", distance: "Stop 6" },
-  { name: "Activity 8", distance: "Stop 7" },
-];
+// const stops = [
+//   { name: "Activity 1", distance: "Destination" },
+//   { name: "Activity 2", distance: "Stop 1" },
+//   { name: "Activity 3", distance: "Stop 2" },
+//   { name: "Activity 4", distance: "Stop 3" },
+//   { name: "Activity 5", distance: "Stop 4" },
+//   { name: "Activity 6", distance: "Stop 5" },
+//   { name: "Activity 7", distance: "Stop 6" },
+//   { name: "Activity 8", distance: "Stop 7" },
+// ];
 
 const validationSchema = Yup.object({
-  itineraryName: Yup.string().required("Itinerary name is required"),
-  activityDescription: Yup.string().required(
-    "Activity description is required"
-  ),
-  startDate: Yup.date().required("Start date is required"),
+  name: Yup.string().required("Itinerary name is required"),
+  notes: Yup.string().required("Activity description is required"),
+  date: Yup.date().required("Start date is required"),
   location: Yup.string().required("Location is required"),
 });
 
-const Itinerary = ({ handleSubmit }: { handleSubmit: any }) => {
+const Itinerary = () => {
+  const query = useSearchParams();
+  const tourId = useMemo(() => query.get("id"), []);
+  const [addActivity] = useAddActivityMutation();
+  const [editActivity] = useEditActivityMutation();
+  const { data: itineray } = useGetActivitiesQuery(tourId);
+  const { data: stops } = useGetAllStopsQuery(tourId);
+
+  console.log(itineray);
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <Formik
           initialValues={{
-            itineraryName: "",
-            activityDescription: "",
-            startDate: "",
+            name: "",
+            notes: "",
+            date: "",
             location: "",
           }}
           validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
+          onSubmit={async (values, { setSubmitting }) => {
+            try {
+              console.log(values);
+              const response = await addActivity({
+                tourId,
+                body: values,
+              }).unwrap();
+              console.log(response);
               setSubmitting(false);
-            }, 400);
+            } catch (error) {
+              setSubmitting(false);
+            }
           }}
         >
           {({ isSubmitting }) => (
             <Form className=" mt-0 sm:mt-10 space-y-3 bg-white p-6 rounded-md shadow-sm w-full sm:w-5/6">
               <div>
                 <label
-                  htmlFor="itineraryName"
+                  htmlFor="name"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
                   Itinerary Name
                 </label>
                 <Field
-                  name="itineraryName"
+                  name="name"
                   type="text"
                   placeholder="Akosombo Invasion"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />
                 <ErrorMessage
-                  name="itineraryName"
+                  name="name"
                   component="div"
                   className="text-red-500 text-xs pl-2 pt-2"
                 />
@@ -66,18 +86,18 @@ const Itinerary = ({ handleSubmit }: { handleSubmit: any }) => {
 
               <div>
                 <label
-                  htmlFor="activityDescription"
+                  htmlFor="notes"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
                   Activity Description
                 </label>
                 <Field
                   as="textarea"
-                  name="activityDescription"
+                  name="notes"
                   className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />
                 <ErrorMessage
-                  name="activityDescription"
+                  name="notes"
                   component="div"
                   className="text-red-500 text-xs"
                 />
@@ -96,8 +116,11 @@ const Itinerary = ({ handleSubmit }: { handleSubmit: any }) => {
                   className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
                   <option value="">Select a location</option>
-                  <option value="location1">Location 1</option>
-                  <option value="location2">Location 2</option>
+                  {stops?.map((item: any) => (
+                    <option key={item._id} value={item._id}>
+                      {item.stop.name}
+                    </option>
+                  ))}
                 </Field>
                 <ErrorMessage
                   name="location"
@@ -108,18 +131,18 @@ const Itinerary = ({ handleSubmit }: { handleSubmit: any }) => {
 
               <div>
                 <label
-                  htmlFor="startDate"
+                  htmlFor="date"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
                   Select Date
                 </label>
                 <Field
                   type="date"
-                  name="startDate"
+                  name="date"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />
                 <ErrorMessage
-                  name="startDate"
+                  name="date"
                   component="div"
                   className="text-red-500 text-xs"
                 />
@@ -140,14 +163,14 @@ const Itinerary = ({ handleSubmit }: { handleSubmit: any }) => {
         <div className="mt-10 bg-white rounded-lg p-4 h-fit max-h-[350px] overflow-auto w-full sm:w-5/6 sm:mb-14">
           <h1 className="font-semibold">Added Itinerary</h1>
           <div className="mt-6 px-4">
-            {stops.map((item, index) => (
+            {itineray?.map((item: any) => (
               <div
-                key={index}
+                key={item._id}
                 className="flex flex-row justify-between items-center mb-4"
               >
                 <div>
                   <p>{item.name}</p>
-                  <p className="text-[#BDBDBD] text-sm">{item.distance}</p>
+                  <p className="text-[#BDBDBD] text-sm">{item?.distance}</p>
                 </div>
                 <div className="flex gap-2">
                   <button className="bg-[#82D0F3] px-4 py-1 rounded-full text-sm text-white">

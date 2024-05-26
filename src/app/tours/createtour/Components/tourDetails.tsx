@@ -4,8 +4,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 const validationSchema = Yup.object({
-  tourName: Yup.string().required("Tour name is required"),
-  tourDescription: Yup.string().required("Tour description is required"),
+  name: Yup.string().required("Tour name is required"),
+  description: Yup.string().required("Tour description is required"),
   startDate: Yup.date().required("Start date is required"),
   endDate: Yup.date()
     .min(Yup.ref("startDate"), "End date can't be before start date")
@@ -21,8 +21,8 @@ const TourDetails = ({ handleSubmit }: { handleSubmit: any }) => {
     <div>
       <Formik
         initialValues={{
-          tourName: "",
-          tourDescription: "",
+          name: "",
+          description: "",
           startDate: "",
           endDate: "",
           price: "",
@@ -43,19 +43,19 @@ const TourDetails = ({ handleSubmit }: { handleSubmit: any }) => {
           >
             <div>
               <label
-                htmlFor="tourName"
+                htmlFor="name"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Tour Name
               </label>
               <Field
-                name="tourName"
+                name="name"
                 type="text"
                 placeholder="Akosombo Invasion"
                 className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
               <ErrorMessage
-                name="tourName"
+                name="name"
                 component="div"
                 className="text-red-500 text-xs pl-2 pt-2"
               />
@@ -63,18 +63,18 @@ const TourDetails = ({ handleSubmit }: { handleSubmit: any }) => {
 
             <div>
               <label
-                htmlFor="tourDescription"
+                htmlFor="description"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Tour Description
               </label>
               <Field
                 as="textarea"
-                name="tourDescription"
+                name="description"
                 className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
               <ErrorMessage
-                name="tourDescription"
+                name="description"
                 component="div"
                 className="text-red-500 text-xs"
               />

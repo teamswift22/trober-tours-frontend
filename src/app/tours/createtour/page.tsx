@@ -1,13 +1,7 @@
 "use client";
 import Layout from "@/components/layout";
 import NavBar from "@/components/navbar";
-import React, {
-  ReactElement,
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { ReactElement, Suspense, useCallback, useMemo } from "react";
 import TourDetails from "./Components/tourDetails";
 import Location from "./Components/location";
 import Itinerary from "./Components/itinerary";
@@ -46,10 +40,12 @@ const CreateTour = () => {
   const router = useRouter();
   const query = useSearchParams();
   const pageStep: keyof IList | string = query.get("step") || "Tour Details";
-  const getActiveTab = (tab: React.SetStateAction<keyof IList>) => {
-    router.push(`?step=${tab}`);
-  };
   const id = query.get("id");
+  const getActiveTab = (tab: React.SetStateAction<keyof IList>) => {
+    if (id) {
+      router.push(`?step=${tab}&id=${id}`);
+    }
+  };
 
   const [createTour] = useCreateTourMutation();
   const [editTour] = useEditTourMutation();
@@ -63,10 +59,11 @@ const CreateTour = () => {
           const response = await createTour(data).unwrap();
           console.log(response);
           const formId: string = response.tourId;
-          return router.push(`?id=${formId}&step=${navlinks[nextStep]}`);
+          return router.push(`?step=${navlinks[nextStep]}&id=${formId}`);
         } else {
-          const response = await editTour({ id, data }).unwrap();
-          return router.push(`?id=${id}&step=${navlinks[nextStep]}`);
+          console.log(data, "edit tour");
+          const response = await editTour({ id, body: data }).unwrap();
+          return router.push(`?step=${navlinks[nextStep]}&id=${id}`);
         }
       } catch (error) {
         console.log(error);
@@ -79,8 +76,8 @@ const CreateTour = () => {
   const list: IList = useMemo(() => {
     return {
       "Tour Details": <TourDetails handleSubmit={handleTourSubmission} />,
-      Location: <Location />,
-      Itinerary: <Itinerary handleSubmit={handleTourSubmission} />,
+      Location: <Location handleSubmit={handleTourSubmission} />,
+      Itinerary: <Itinerary />,
       Transport: <Transport handleSubmit={handleTourSubmission} />,
       Accommodation: <Accommodation handleSubmit={handleTourSubmission} />,
       Media: <Media handleSubmit={handleTourSubmission} />,

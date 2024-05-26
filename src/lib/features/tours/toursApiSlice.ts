@@ -22,19 +22,13 @@ const tourApiSlice = apiSlice.injectEndpoints({
         body,
       }),
     }),
-    createActivity: builder.mutation({
-      query: ({ tourId, body }) => ({
-        url: `/tour/activities/${tourId}`,
-        method: "POST",
-        body,
-      }),
-    }),
     addStop: builder.mutation({
       query: ({ tourId, body }) => ({
         url: `/tour/stops/${tourId}`,
         method: "POST",
         body,
       }),
+      invalidatesTags: ["Stops"],
     }),
     editStop: builder.mutation({
       query: ({ stopId, body }) => ({
@@ -42,15 +36,51 @@ const tourApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Stops"],
     }),
     deleteStop: builder.mutation({
       query: (id) => ({
         url: `/tour/stops/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Stops"],
     }),
     getAllStops: builder.query({
       query: (id) => `/tour/stops/${id}`,
+      providesTags: ["Stops"],
+    }),
+    addActivity: builder.mutation({
+      query: ({ tourId, body }) => ({
+        url: `/tour/activities/${tourId}`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Activities"],
+    }),
+    editActivity: builder.mutation({
+      query: ({ activityId, body }) => ({
+        url: `/tour/activities/edit/${activityId}`,
+        method: "PATCH",
+        body,
+      }),
+    }),
+    getActivities: builder.query({
+      query: (id) => `/tour/activities/${id}`,
+      providesTags: ["Activities"],
+    }),
+    fetchAccommodation: builder.query({
+      query: ({ location, radius, type }) => {
+        const params = new URLSearchParams({
+          lat: location.lat,
+          lng: location.lng,
+          radius: radius.toString(),
+          type,
+        });
+
+        return {
+          url: `/tour/accommodationSuggestions?${params.toString()}`,
+        };
+      },
     }),
   }),
 });
@@ -64,4 +94,8 @@ export const {
   useEditStopMutation,
   useDeleteStopMutation,
   useGetAllStopsQuery,
+  useAddActivityMutation,
+  useEditActivityMutation,
+  useGetActivitiesQuery,
+  useFetchAccommodationQuery,
 } = tourApiSlice;

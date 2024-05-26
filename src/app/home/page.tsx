@@ -41,21 +41,21 @@ const todos = [
   {
     id: 4,
     text: "Send notification",
-    description: "Send a message to your subscribers",
+    description: "Send a message to your participants",
     completed: false,
     priority: "Low",
   },
   {
     id: 5,
     text: "Send notification",
-    description: "Send a message to your subscribers",
+    description: "Send a message to your participants",
     completed: false,
     priority: "Low",
   },
   {
     id: 6,
     text: "Send notification",
-    description: "Send a message to your subscribers",
+    description: "Send a message to your participants",
     completed: false,
     priority: "Low",
   },
@@ -66,6 +66,7 @@ const Dashboard: React.FC = () => {
   const { data: allTours } = useGetToursQuery("");
 
   const upcomingTour = useMemo(() => allTours?.tours[0], [allTours]);
+  console.log(upcomingTour);
 
   return (
     <>
