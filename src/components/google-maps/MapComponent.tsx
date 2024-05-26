@@ -54,8 +54,10 @@ const MapComponent = ({
           destination,
           travelMode,
           waypoints: waypointsStops,
+
         },
         (response, status) => {
+          console.log({ response });
           if (status === window.google.maps.DirectionsStatus.OK) {
             setDirections(response);
             handleEtaChange(response?.routes[0].legs[0]);
@@ -139,6 +141,7 @@ const MapComponent = ({
           />
         )}
         {locations.destination.lat && (
+
           <Marker
             position={{
               lat: locations.destination.lat,
