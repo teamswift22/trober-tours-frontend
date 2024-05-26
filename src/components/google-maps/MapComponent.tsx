@@ -17,32 +17,43 @@ const center = {
 const MapComponent = ({
   locations,
   handleEtaChange,
+  stops,
 }: {
   locations?: any;
   handleEtaChange: (place: any) => void;
+  stops?: any;
 }) => {
   const [map, setMap] = useState<any>(null);
   const [directions, setDirections] = useState<any>(null);
   const { isLoaded } = useGoogleMaps();
 
   const calculateDirections = () => {
-    if (isLoaded && map && locations?.destination.lat && locations?.stop.lat) {
+    if (
+      isLoaded &&
+      map &&
+      locations?.startingPoint.lat &&
+      locations?.destination.lat
+    ) {
       const directionsService = new window.google.maps.DirectionsService();
       const origin = new window.google.maps.LatLng(
+        locations.startingPoint.lat,
+        locations.startingPoint.lng
+      );
+      const destination = new window.google.maps.LatLng(
         locations.destination.lat,
         locations.destination.lng
       );
-      const destination = new window.google.maps.LatLng(
-        locations.stop.lat,
-        locations.stop.lng
-      );
       const travelMode = window.google.maps.TravelMode.DRIVING; // Change travel mode if needed
-
+      const waypointsStops = stops.map(
+        (waypoint: any) =>
+          new window.google.maps.LatLng(waypoint.stop.lat, waypoint.stop.lng)
+      );
       directionsService.route(
         {
           origin,
           destination,
           travelMode,
+          waypoints: waypointsStops,
         },
         (response, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
@@ -57,16 +68,19 @@ const MapComponent = ({
   };
 
   const fitBounds = useCallback(() => {
-    if (map && locations?.destination.lat && locations?.stop.lat) {
+    if (map && locations?.startingPoint.lat && locations?.destination.lat) {
       const bounds = new window.google.maps.LatLngBounds();
+      bounds.extend(
+        new window.google.maps.LatLng(
+          locations.startingPoint.lat,
+          locations.startingPoint.lng
+        )
+      );
       bounds.extend(
         new window.google.maps.LatLng(
           locations.destination.lat,
           locations.destination.lng
         )
-      );
-      bounds.extend(
-        new window.google.maps.LatLng(locations.stop.lat, locations.stop.lng)
       );
       map.fitBounds(bounds);
     }
@@ -109,11 +123,11 @@ const MapComponent = ({
     >
       {/* Child components, such as markers, info windows, etc. */}
       <>
-        {locations.destination.lat && (
+        {locations.startingPoint.lat && (
           <Marker
             position={{
-              lat: locations.destination.lat,
-              lng: locations.destination.lng,
+              lat: locations.startingPoint.lat,
+              lng: locations.startingPoint.lng,
             }}
             // draggable
             // onDragEnd={(e) => {
@@ -124,11 +138,11 @@ const MapComponent = ({
             // }}
           />
         )}
-        {locations.stop.lat && (
+        {locations.destination.lat && (
           <Marker
             position={{
-              lat: locations.stop.lat,
-              lng: locations.stop.lng,
+              lat: locations.destination.lat,
+              lng: locations.destination.lng,
             }}
             // draggable
           />

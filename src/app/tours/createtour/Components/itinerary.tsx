@@ -6,19 +6,20 @@ import {
   useAddActivityMutation,
   useEditActivityMutation,
   useGetActivitiesQuery,
+  useGetAllStopsQuery,
 } from "@/lib/features/tours/toursApiSlice";
 import { useSearchParams } from "next/navigation";
 
-const stops = [
-  { name: "Activity 1", distance: "Destination" },
-  { name: "Activity 2", distance: "Stop 1" },
-  { name: "Activity 3", distance: "Stop 2" },
-  { name: "Activity 4", distance: "Stop 3" },
-  { name: "Activity 5", distance: "Stop 4" },
-  { name: "Activity 6", distance: "Stop 5" },
-  { name: "Activity 7", distance: "Stop 6" },
-  { name: "Activity 8", distance: "Stop 7" },
-];
+// const stops = [
+//   { name: "Activity 1", distance: "Destination" },
+//   { name: "Activity 2", distance: "Stop 1" },
+//   { name: "Activity 3", distance: "Stop 2" },
+//   { name: "Activity 4", distance: "Stop 3" },
+//   { name: "Activity 5", distance: "Stop 4" },
+//   { name: "Activity 6", distance: "Stop 5" },
+//   { name: "Activity 7", distance: "Stop 6" },
+//   { name: "Activity 8", distance: "Stop 7" },
+// ];
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Itinerary name is required"),
@@ -32,9 +33,10 @@ const Itinerary = () => {
   const tourId = useMemo(() => query.get("id"), []);
   const [addActivity] = useAddActivityMutation();
   const [editActivity] = useEditActivityMutation();
-  const { data } = useGetActivitiesQuery(tourId);
+  const { data: itineray } = useGetActivitiesQuery(tourId);
+  const { data: stops } = useGetAllStopsQuery(tourId);
 
-  console.log(data);
+  console.log(itineray);
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
@@ -114,8 +116,11 @@ const Itinerary = () => {
                   className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
                   <option value="">Select a location</option>
-                  <option value="location1">Location 1</option>
-                  <option value="location2">Location 2</option>
+                  {stops?.map((item) => (
+                    <option key={item._id} value={item._id}>
+                      {item.stop.name}
+                    </option>
+                  ))}
                 </Field>
                 <ErrorMessage
                   name="location"
@@ -158,14 +163,14 @@ const Itinerary = () => {
         <div className="mt-10 bg-white rounded-lg p-4 h-fit max-h-[350px] overflow-auto w-full sm:w-5/6 sm:mb-14">
           <h1 className="font-semibold">Added Itinerary</h1>
           <div className="mt-6 px-4">
-            {stops.map((item, index) => (
+            {itineray?.map((item) => (
               <div
-                key={index}
+                key={item._id}
                 className="flex flex-row justify-between items-center mb-4"
               >
                 <div>
                   <p>{item.name}</p>
-                  <p className="text-[#BDBDBD] text-sm">{item.distance}</p>
+                  <p className="text-[#BDBDBD] text-sm">{item?.distance}</p>
                 </div>
                 <div className="flex gap-2">
                   <button className="bg-[#82D0F3] px-4 py-1 rounded-full text-sm text-white">
