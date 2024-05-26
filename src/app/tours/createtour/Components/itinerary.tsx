@@ -116,7 +116,7 @@ const Itinerary = () => {
                   className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
                   <option value="">Select a location</option>
-                  {stops?.map((item) => (
+                  {stops?.map((item: any) => (
                     <option key={item._id} value={item._id}>
                       {item.stop.name}
                     </option>
@@ -163,7 +163,7 @@ const Itinerary = () => {
         <div className="mt-10 bg-white rounded-lg p-4 h-fit max-h-[350px] overflow-auto w-full sm:w-5/6 sm:mb-14">
           <h1 className="font-semibold">Added Itinerary</h1>
           <div className="mt-6 px-4">
-            {itineray?.map((item) => (
+            {itineray?.map((item: any) => (
               <div
                 key={item._id}
                 className="flex flex-row justify-between items-center mb-4"
