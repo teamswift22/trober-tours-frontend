@@ -15,73 +15,6 @@ type HotelData = {
   image: string;
 };
 
-const hotelsData: HotelData[] = [
-  {
-    id: 1,
-    name: "Perriman Hotel",
-    description: "Guided tours in the heart of the city.",
-    price: "420",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 2,
-    name: "Kempinski Hotel",
-    description: "Guided tours in the heart of the city.",
-    price: "200.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 3,
-    name: "Movenpick A. Hotel",
-    description: "Guided tours in the heart of the city.",
-    price: "500.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 4,
-    name: "Labadi Beach Hotel",
-    description: "An exciting tour for thrill-seekers.",
-    price: "50.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 5,
-    name: "Alisa Hotels",
-    description: "Explore the rich history of the region.",
-    price: "150.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 6,
-    name: "Accra City Hotel",
-    description: "Guided tour in the heart of the city.",
-    price: "200.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 7,
-    name: "Grand Star Hotel",
-    description: "Guided tour in the heart of the city.",
-    price: "500.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 8,
-    name: "The Mayflower Inn",
-    description: "Culinary delights from around the city.",
-    price: "50.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-];
-
 const validationSchema = Yup.object({
   accommodationName: Yup.string().required("Accommodation name is required"),
   typeOfAccommodation: Yup.string().required(
@@ -97,8 +30,18 @@ const validationSchema = Yup.object({
 });
 
 type Amenity = "Pool" | "WiFi" | "Breakfast";
-const location = { lat: 51.8762425, lng: -0.4207039 };
-const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
+
+const Accommodation = ({
+  handleSubmit,
+  tourDetails,
+}: {
+  handleSubmit: any;
+  tourDetails: any;
+}) => {
+  const location = {
+    lat: tourDetails?.destination.lat,
+    lng: tourDetails?.destination.lng,
+  };
   const [activeTab, setActiveTab] = useState("Accommodation"); // State to manage which tab is active
   const [selectedAmenities, setSelectedAmenities] = useState<Amenity[]>([]);
 
@@ -142,18 +85,21 @@ const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
       {activeTab === "Accommodation" && (
         <Formik
           initialValues={{
-            accommodationName: "",
-            typeOfAccommodation: "",
-            checkInDate: "",
-            checkOutDate: "",
-            location: "",
-            numberOfRooms: "",
+            accommodationName:
+              tourDetails?.accommodation?.accommodationName || "",
+            typeOfAccommodation:
+              tourDetails?.accommodation?.typeOfAccommodation || "",
+            checkInDate: tourDetails?.accommodation?.checkInDate || "",
+            checkOutDate: tourDetails?.accommodation?.checkOutDate || "",
+            location: tourDetails?.accommodation?.location || "",
+            numberOfRooms: tourDetails?.accommodation?.numberOfRooms || "",
             amenities: {
-              pool: false,
-              wifi: false,
-              breakfast: false,
+              pool: tourDetails?.accommodation?.pool || false,
+              wifi: tourDetails?.accommodation?.wifi || false,
+              breakfast: tourDetails?.accommodation?.breakfast || false,
             },
           }}
+          enableReinitialize
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
             try {
@@ -314,21 +260,25 @@ const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
 
       {activeTab === "Available Accommodation" && (
         <div className="bg-white p-4 sm:p-6 rounded-md shadow-sm">
-          <AccommodationFetch
-            apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
-            location={location}
-          >
-            {({ accommodations, isLoading, error }) => {
-              if (isLoading) return <p>Loading...</p>;
-              if (error) return <p>Error fetching data: {error.message}</p>;
-              return (
-                <AccommodationList
-                  accommodations={accommodations}
-                  apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
-                />
-              );
-            }}
-          </AccommodationFetch>
+          {!Object.values(location).includes("undefined") ? (
+            <AccommodationFetch
+              apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
+              location={location}
+            >
+              {({ accommodations, isLoading, error }) => {
+                if (isLoading) return <p>Loading...</p>;
+                if (error) return <p>Error fetching data: {error.message}</p>;
+                return (
+                  <AccommodationList
+                    accommodations={accommodations}
+                    apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
+                  />
+                );
+              }}
+            </AccommodationFetch>
+          ) : (
+            <p>Select a destination</p>
+          )}
         </div>
       )}
       <div className="flex flex-col sm:flex-row sm:justify-between mt-10">

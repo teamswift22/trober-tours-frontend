@@ -11,7 +11,6 @@ import {
   useGetAgencySubscribersQuery,
   useGetTourSubscribersQuery,
 } from "@/lib/features/subscriber/subscriberApiSlice";
-import { useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
 // Validation schema using Yup
@@ -29,12 +28,10 @@ const participantSchema = Yup.object().shape({
   note: Yup.string(),
 });
 
-const ParticipantForm = ({ handleSubmit }: { handleSubmit: any }) => {
-  const query = useSearchParams();
-  const tourId = query.get("id");
+const ParticipantForm = ({ formId }: { formId: string | null }) => {
   const [createSubscriber] = useCreateSubscriberMutation();
   const [addSubscribers] = useAddSubscriberMutation();
-  const { data: tourParticipants } = useGetTourSubscribersQuery(tourId || "");
+  const { data: tourParticipants } = useGetTourSubscribersQuery(formId || "");
   const { data } = useGetAgencySubscribersQuery("");
   const [selectedSubscribers, setSelectedSubscribers] = useState<any>([]);
   const { toast } = useToast();
@@ -43,7 +40,7 @@ const ParticipantForm = ({ handleSubmit }: { handleSubmit: any }) => {
     try {
       if (selectedSubscribers.length > 0) {
         await addSubscribers({
-          tourId,
+          formId,
           body: { subscribers: selectedSubscribers },
         }).unwrap();
         toast({
@@ -71,8 +68,7 @@ const ParticipantForm = ({ handleSubmit }: { handleSubmit: any }) => {
           onSubmit={async (values, { setSubmitting }) => {
             try {
               setSubmitting(true);
-              console.log(values);
-              await createSubscriber({ tourId, body: values }).unwrap();
+              await createSubscriber({ formId, body: values }).unwrap();
               setSubmitting(false);
               toast({
                 title: "Participant added successfully",

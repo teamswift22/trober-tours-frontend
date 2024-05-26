@@ -16,18 +16,25 @@ const validationSchema = Yup.object({
   category: Yup.string().required("Category is required"),
 });
 
-const TourDetails = ({ handleSubmit }: { handleSubmit: any }) => {
+const TourDetails = ({
+  handleSubmit,
+  tourDetails,
+}: {
+  handleSubmit: (data: any) => void;
+  tourDetails: any;
+}) => {
   return (
     <div>
       <Formik
         initialValues={{
-          name: "",
-          description: "",
-          startDate: "",
-          endDate: "",
-          price: "",
-          category: "",
+          name: tourDetails?.name || "",
+          description: tourDetails?.description || "",
+          startDate: tourDetails?.startDate || "",
+          endDate: tourDetails?.endDate || "",
+          price: tourDetails?.price || "",
+          category: tourDetails?.category || "",
         }}
+        enableReinitialize
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
