@@ -28,6 +28,7 @@ const tourApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["Stops"],
     }),
     editStop: builder.mutation({
       query: ({ stopId, body }) => ({
@@ -35,15 +36,18 @@ const tourApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Stops"],
     }),
     deleteStop: builder.mutation({
       query: (id) => ({
         url: `/tour/stops/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Stops"],
     }),
     getAllStops: builder.query({
       query: (id) => `/tour/stops/${id}`,
+      providesTags: ["Stops"],
     }),
     addActivity: builder.mutation({
       query: ({ tourId, body }) => ({
@@ -51,6 +55,7 @@ const tourApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["Activities"],
     }),
     editActivity: builder.mutation({
       query: ({ activityId, body }) => ({
@@ -61,6 +66,7 @@ const tourApiSlice = apiSlice.injectEndpoints({
     }),
     getActivities: builder.query({
       query: (id) => `/tour/activities/${id}`,
+      providesTags: ["Activities"],
     }),
     fetchAccommodation: builder.query({
       query: ({ location, radius, type }) => {
