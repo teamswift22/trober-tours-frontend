@@ -66,6 +66,7 @@ const Dashboard: React.FC = () => {
   const { data: allTours } = useGetToursQuery("");
 
   const upcomingTour = useMemo(() => allTours?.tours[0], [allTours]);
+  console.log(upcomingTour);
 
   return (
     <>

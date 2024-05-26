@@ -167,49 +167,96 @@ const Team: React.FC = () => {
         </div>
         <div className="w-full mx-auto bg-white rounded-lg shadow p-4 mt-10">
           <h2 className="text-xl font-bold mb-4">Team Members</h2>
-          <table className="min-w-full">
-            <thead className="">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Number
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Role
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {teamMembers.map((member, index) => (
-                <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap">{member.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {member.number}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {member.email}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">{member.role}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-white bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-full">
-                      Edit
-                    </button>
-                    <button className="text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded-full ml-2">
-                      Delete
-                    </button>
-                  </td>
+          <div className="hidden md:block">
+            <table className="min-w-full">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Number
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white">
+                {teamMembers.map((member, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {member.name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {member.number}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {member.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {member.role}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button className="text-white bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-full">
+                        Edit
+                      </button>
+                      <button className="text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded-full ml-2">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="block md:hidden">
+            {teamMembers.map((member, index) => (
+              <div
+                key={index}
+                className="bg-white shadow-md rounded-lg p-4 mb-4"
+              >
+                <div className="mb-2">
+                  <p className="text-sm font-medium text-gray-500 uppercase">
+                    Name
+                  </p>
+                  <p className="text-gray-900">{member.name}</p>
+                </div>
+                <div className="mb-2">
+                  <p className="text-sm font-medium text-gray-500 uppercase">
+                    Number
+                  </p>
+                  <p className="text-gray-900">{member.number}</p>
+                </div>
+                <div className="mb-2">
+                  <p className="text-sm font-medium text-gray-500 uppercase">
+                    Email
+                  </p>
+                  <p className="text-gray-900">{member.email}</p>
+                </div>
+                <div className="mb-2">
+                  <p className="text-sm font-medium text-gray-500 uppercase">
+                    Role
+                  </p>
+                  <p className="text-gray-900">{member.role}</p>
+                </div>
+                <div className="flex justify-end">
+                  <button className="text-white bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-full">
+                    Edit
+                  </button>
+                  <button className="text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded-full ml-2">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

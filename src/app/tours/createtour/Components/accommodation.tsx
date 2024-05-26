@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { TfiLocationPin } from "react-icons/tfi";
+import AccommodationFetch from "./accomodationComponents/accommodationFetch";
+import AccommodationList from "./accomodationComponents/accommodationList";
 
 type HotelData = {
   id: number;
@@ -95,7 +97,7 @@ const validationSchema = Yup.object({
 });
 
 type Amenity = "Pool" | "WiFi" | "Breakfast";
-
+const location = { lat: 51.8762425, lng: -0.4207039 };
 const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
   const [activeTab, setActiveTab] = useState("Accommodation"); // State to manage which tab is active
   const [selectedAmenities, setSelectedAmenities] = useState<Amenity[]>([]);
@@ -310,33 +312,21 @@ const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
 
       {activeTab === "Available Accommodation" && (
         <div className="bg-white p-4 sm:p-6 rounded-md shadow-sm">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {hotelsData.map((tour: any) => (
-              <div
-                key={tour.id}
-                className="p-4 w-66 bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 "
-              >
-                <img
-                  src={tour?.image || "/no-img.jpg"}
-                  alt={tour.name}
-                  className="w-full h-48 object-cover rounded-2xl mb-2"
+          <AccommodationFetch
+            apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
+            location={location}
+          >
+            {({ accommodations, isLoading, error }) => {
+              if (isLoading) return <p>Loading...</p>;
+              if (error) return <p>Error fetching data: {error.message}</p>;
+              return (
+                <AccommodationList
+                  accommodations={accommodations}
+                  apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
                 />
-                <div className="flex flex-col">
-                  <h3 className="text-lg font-semibold">{tour.name}</h3>
-                  <p className="text-xs font-light">{tour.description}</p>
-                  <div className="flex justify-between items-center mt-4">
-                    <span className="text-gray-500">{`₵${tour.price}`}</span>
-                    <button
-                      // onClick={() => handleTourClick(tour.name)}
-                      className="flex text-sm text-white bg-[#FA7454] px-6 py-2 rounded-md transition-colors duration-300"
-                    >
-                      View
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+              );
+            }}
+          </AccommodationFetch>
         </div>
       )}
       <div className="flex flex-col sm:flex-row sm:justify-between mt-10">

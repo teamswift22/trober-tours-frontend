@@ -23,7 +23,6 @@ const Layout = ({
   rightContent: React.ReactNode;
 }) => {
   const pathName = usePathname();
-  console.log(pathName);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { data: userData } = useGetAgencyMemberQuery("");
   const dispatch = useAppDispatch();
@@ -69,7 +68,6 @@ const Layout = ({
 
       <div className="flex flex-col md:flex-row min-h-screen overflow-hidden">
         {/* Sidebar */}
-
         <aside
           className={`${
             isSidebarOpen ? "block" : "hidden"
@@ -84,25 +82,23 @@ const Layout = ({
               />
               <p className="text-4xl text-white font-extrabold">Trober</p>
             </div>
-            {navbarItems.map((item, index) => {
-              return (
-                <a
-                  key={index}
-                  className={`bg-${
-                    isCurrentPath(item.path) ? "[#FA7454]" : "transparent"
-                  } py-4 pl-10 text-white flex items-center gap-2 hover:cursor-pointer`}
-                  href={"/" + item.path}
-                >
-                  {item.logo}
-                  <p className="text-sm">{item.name}</p>
-                </a>
-              );
-            })}
+            {navbarItems.map((item, index) => (
+              <a
+                key={index}
+                className={`${
+                  isCurrentPath(item.path) ? "bg-[#FA7454]" : "transparent"
+                } py-4 pl-10 text-white flex items-center gap-2 hover:cursor-pointer`}
+                href={"/" + item.path}
+              >
+                {item.logo}
+                <p className="text-sm">{item.name}</p>
+              </a>
+            ))}
           </div>
           <div
             className="bg-white py-4 pl-10 text-[#0F6E98] flex items-center gap-2 hover:cursor-pointer"
             role="button"
-            onClick={() => logoutuser()}
+            onClick={logoutuser}
           >
             <CiLogout size={20} />
             <p>Logout</p>
@@ -110,7 +106,6 @@ const Layout = ({
         </aside>
 
         {/* Main Content */}
-
         <main className="flex-1 bg-[#E8F6FD] md:pl-64">
           <div className="p-6 md:px-10 bg-white fixed w-full z-10">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center">
@@ -124,26 +119,25 @@ const Layout = ({
               </div>
               {/* Profile image */}
               <div>
-                {/* Replace with your image path */}
                 <Image
                   src="/logo.png"
                   alt="Profile"
-                  width={20}
-                  height={20}
+                  width={40}
+                  height={40}
                   objectFit="cover"
                   className="rounded-full hidden md:block"
                 />
               </div>
             </div>
           </div>
-          <ScrollArea className="mt-32 md:mt-16 md:pt-20 h-[calc(100vh-128px)]  md:h-[calc(100vh-104px)]">
+          <div className="mt-32 md:mt-16 md:pt-20 h-[calc(100vh-128px)] md:h-[calc(100vh-104px)] overflow-auto">
             {rightContent}
-          </ScrollArea>
+          </div>
         </main>
 
         {/* Button for toggling sidebar on mobile */}
         <button
-          className="md:hidden absolute top-5 right-5 "
+          className="md:hidden fixed top-5 right-5 z-20"
           onClick={toggleSidebar}
         >
           {isSidebarOpen ? <IoClose size={30} /> : <IoMdMenu size={30} />}

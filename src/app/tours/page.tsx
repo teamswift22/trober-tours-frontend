@@ -29,6 +29,7 @@ const ManageTours = () => {
         {allTours?.tours?.map((tour: any) => (
           <div
             key={tour.id}
+            onClick={() => router.push(`/tours/${tour._id}`)}
             className="p-4 w-66 bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 "
           >
             <img

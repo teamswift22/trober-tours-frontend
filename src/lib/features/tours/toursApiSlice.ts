@@ -62,6 +62,20 @@ const tourApiSlice = apiSlice.injectEndpoints({
     getActivities: builder.query({
       query: (id) => `/tour/activities/${id}`,
     }),
+    fetchAccommodation: builder.query({
+      query: ({ location, radius, type }) => {
+        const params = new URLSearchParams({
+          lat: location.lat,
+          lng: location.lng,
+          radius: radius.toString(),
+          type,
+        });
+
+        return {
+          url: `/tour/accommodationSuggestions?${params.toString()}`,
+        };
+      },
+    }),
   }),
 });
 
@@ -77,4 +91,5 @@ export const {
   useAddActivityMutation,
   useEditActivityMutation,
   useGetActivitiesQuery,
+  useFetchAccommodationQuery,
 } = tourApiSlice;
