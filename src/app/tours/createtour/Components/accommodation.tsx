@@ -154,10 +154,12 @@ const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
           }}
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
+            try {
+              handleSubmit({ accomodation: values });
               setSubmitting(false);
-            }, 400);
+            } catch (error) {
+              console.log(error);
+            }
           }}
         >
           {({ setFieldValue, values }) => (

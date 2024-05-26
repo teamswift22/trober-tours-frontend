@@ -73,10 +73,12 @@ const Transport = ({ handleSubmit }: { handleSubmit: any }) => {
         }}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
+          try {
+            handleSubmit({ transportation: values });
             setSubmitting(false);
-          }, 400);
+          } catch (error) {
+            setSubmitting(false);
+          }
         }}
       >
         {({ setFieldValue, values, errors }) => (
@@ -253,6 +255,12 @@ const Transport = ({ handleSubmit }: { handleSubmit: any }) => {
                 </div>
               </div>
             </div>
+            <button
+              type="submit"
+              className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6"
+            >
+              Next
+            </button>
           </Form>
         )}
       </Formik>

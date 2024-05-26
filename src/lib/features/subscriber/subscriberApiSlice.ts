@@ -8,8 +8,30 @@ const subscriberApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["Subscriber"],
+    }),
+    addSubscriber: builder.mutation({
+      query: ({ tourId, body }) => ({
+        url: `/subscriber/tour/add/${tourId}`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Subscriber"],
+    }),
+    getAgencySubscribers: builder.query({
+      query: (agencyId?: string) => `/subscription?agency=${agencyId}`,
+      providesTags: ["Subscriber"],
+    }),
+    getTourSubscribers: builder.query({
+      query: (tourId) => `/subscription/${tourId}`,
+      providesTags: ["Subscriber"],
     }),
   }),
 });
 
-const { useCreateSubscriberMutation } = subscriberApiSlice;
+export const {
+  useCreateSubscriberMutation,
+  useGetAgencySubscribersQuery,
+  useGetTourSubscribersQuery,
+  useAddSubscriberMutation,
+} = subscriberApiSlice;
