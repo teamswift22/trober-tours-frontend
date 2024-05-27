@@ -30,8 +30,8 @@ const TourDetails = ({
         initialValues={{
           name: tourDetails?.name || "",
           description: tourDetails?.description || "",
-          startDate: tourDetails?.startDate.split("T")[0] || "",
-          endDate: tourDetails?.endDate.split("T")[0] || "",
+          startDate: tourDetails?.startDate?.split("T")[0] || "",
+          endDate: tourDetails?.endDate?.split("T")[0] || "",
           price: tourDetails?.price || "",
           category: tourDetails?.category || "",
         }}
