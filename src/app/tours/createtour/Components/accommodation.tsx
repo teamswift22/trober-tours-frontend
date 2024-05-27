@@ -15,80 +15,13 @@ type HotelData = {
   image: string;
 };
 
-const hotelsData: HotelData[] = [
-  {
-    id: 1,
-    name: "Perriman Hotel",
-    description: "Guided tours in the heart of the city.",
-    price: "420",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 2,
-    name: "Kempinski Hotel",
-    description: "Guided tours in the heart of the city.",
-    price: "200.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 3,
-    name: "Movenpick A. Hotel",
-    description: "Guided tours in the heart of the city.",
-    price: "500.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 4,
-    name: "Labadi Beach Hotel",
-    description: "An exciting tour for thrill-seekers.",
-    price: "50.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 5,
-    name: "Alisa Hotels",
-    description: "Explore the rich history of the region.",
-    price: "150.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 6,
-    name: "Accra City Hotel",
-    description: "Guided tour in the heart of the city.",
-    price: "200.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 7,
-    name: "Grand Star Hotel",
-    description: "Guided tour in the heart of the city.",
-    price: "500.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-  {
-    id: 8,
-    name: "The Mayflower Inn",
-    description: "Culinary delights from around the city.",
-    price: "50.00",
-    phone: "020 594 3802",
-    image: "/tour.png",
-  },
-];
-
 const validationSchema = Yup.object({
   accommodationName: Yup.string().required("Accommodation name is required"),
   typeOfAccommodation: Yup.string().required(
     "Type of accommodation is required"
   ),
-  checkInDate: Yup.date().required("Check-in date is required"),
-  checkOutDate: Yup.date().required("Check-out date is required"),
+  checkInDate: Yup.string().required("Check-in date is required"),
+  checkOutDate: Yup.string().required("Check-out date is required"),
   location: Yup.string().required("Location is required"),
   numberOfRooms: Yup.number()
     .required("Number of rooms is required")
@@ -97,11 +30,22 @@ const validationSchema = Yup.object({
 });
 
 type Amenity = "Pool" | "WiFi" | "Breakfast";
-const location = { lat: 51.8762425, lng: -0.4207039 };
-const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
+
+const Accommodation = ({
+  handleSubmit,
+  tourDetails,
+}: {
+  handleSubmit: any;
+  tourDetails: any;
+}) => {
+  const location = {
+    lat: tourDetails?.destination.lat,
+    lng: tourDetails?.destination.lng,
+  };
   const [activeTab, setActiveTab] = useState("Accommodation"); // State to manage which tab is active
   const [selectedAmenities, setSelectedAmenities] = useState<Amenity[]>([]);
 
+  console.log(tourDetails);
   const toggleAmenity = (amenity: Amenity) => {
     setSelectedAmenities((prev) => {
       if (prev.includes(amenity)) {
@@ -142,18 +86,21 @@ const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
       {activeTab === "Accommodation" && (
         <Formik
           initialValues={{
-            accommodationName: "",
-            typeOfAccommodation: "",
-            checkInDate: "",
-            checkOutDate: "",
-            location: "",
-            numberOfRooms: "",
+            accommodationName:
+              tourDetails?.accomodation?.accommodationName || "",
+            typeOfAccommodation:
+              tourDetails?.accomodation?.typeOfAccommodation || "",
+            checkInDate: tourDetails?.accomodation?.checkInDate || "",
+            checkOutDate: tourDetails?.accomodation?.checkOutDate || "",
+            location: tourDetails?.accomodation?.location || "",
+            numberOfRooms: tourDetails?.accomodation?.numberOfRooms || "",
             amenities: {
-              pool: false,
-              wifi: false,
-              breakfast: false,
+              pool: tourDetails?.accomodation?.pool || false,
+              wifi: tourDetails?.accomodation?.wifi || false,
+              breakfast: tourDetails?.accomodation?.breakfast || false,
             },
           }}
+          enableReinitialize
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
             try {
@@ -165,7 +112,10 @@ const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
           }}
         >
           {({ setFieldValue, values }) => (
-            <Form className="bg-white p-4 sm:p-6 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Form
+              id="accomodationForm"
+              className="bg-white p-4 sm:p-6 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
               <div className="w-full sm:w-5/6">
                 <div className="mb-4 space-y-2">
                   <label
@@ -314,26 +264,34 @@ const Accommodation = ({ handleSubmit }: { handleSubmit: any }) => {
 
       {activeTab === "Available Accommodation" && (
         <div className="bg-white p-4 sm:p-6 rounded-md shadow-sm">
-          <AccommodationFetch
-            apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
-            location={location}
-          >
-            {({ accommodations, isLoading, error }) => {
-              if (isLoading) return <p>Loading...</p>;
-              if (error) return <p>Error fetching data: {error.message}</p>;
-              return (
-                <AccommodationList
-                  accommodations={accommodations}
-                  apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
-                />
-              );
-            }}
-          </AccommodationFetch>
+          {!Object.values(location).includes("undefined") ? (
+            <AccommodationFetch
+              apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
+              location={location}
+            >
+              {({ accommodations, isLoading, error }) => {
+                if (isLoading) return <p>Loading...</p>;
+                if (error) return <p>Error fetching data: {error.message}</p>;
+                return (
+                  <AccommodationList
+                    accommodations={accommodations}
+                    apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
+                  />
+                );
+              }}
+            </AccommodationFetch>
+          ) : (
+            <p>Select a destination</p>
+          )}
         </div>
       )}
       <div className="flex flex-col sm:flex-row sm:justify-between mt-10">
         <p>Showing available accommodations based on your set destination</p>
-        <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full sm:w-1/3">
+        <button
+          form="accomodationForm"
+          type="submit"
+          className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full sm:w-1/3"
+        >
           Next
         </button>
       </div>

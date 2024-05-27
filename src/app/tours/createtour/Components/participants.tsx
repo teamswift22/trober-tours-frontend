@@ -11,30 +11,24 @@ import {
   useGetAgencySubscribersQuery,
   useGetTourSubscribersQuery,
 } from "@/lib/features/subscriber/subscriberApiSlice";
-import { useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
 // Validation schema using Yup
 const participantSchema = Yup.object().shape({
   name: Yup.string().required("Participant name is required"),
   phoneNumber: Yup.string()
-    .required("Participant number is required")
-    .matches(
-      /^\(\+\d{3}\)\s\d{3}\s\d{3}\s\d{3}$/,
-      "Invalid phone number format"
-    ),
+    .matches(/^\+?\d+$/, "Phone number is not valid")
+    .required("Phone number is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
   note: Yup.string(),
 });
 
-const ParticipantForm = ({ handleSubmit }: { handleSubmit: any }) => {
-  const query = useSearchParams();
-  const tourId = query.get("id");
+const ParticipantForm = ({ formId }: { formId: string | null }) => {
   const [createSubscriber] = useCreateSubscriberMutation();
   const [addSubscribers] = useAddSubscriberMutation();
-  const { data: tourParticipants } = useGetTourSubscribersQuery(tourId || "");
+  const { data: tourParticipants } = useGetTourSubscribersQuery(formId || "");
   const { data } = useGetAgencySubscribersQuery("");
   const [selectedSubscribers, setSelectedSubscribers] = useState<any>([]);
   const { toast } = useToast();
@@ -43,7 +37,7 @@ const ParticipantForm = ({ handleSubmit }: { handleSubmit: any }) => {
     try {
       if (selectedSubscribers.length > 0) {
         await addSubscribers({
-          tourId,
+          formId,
           body: { subscribers: selectedSubscribers },
         }).unwrap();
         toast({
@@ -71,8 +65,7 @@ const ParticipantForm = ({ handleSubmit }: { handleSubmit: any }) => {
           onSubmit={async (values, { setSubmitting }) => {
             try {
               setSubmitting(true);
-              console.log(values);
-              await createSubscriber({ tourId, body: values }).unwrap();
+              await createSubscriber({ tourId: formId, body: values }).unwrap();
               setSubmitting(false);
               toast({
                 title: "Participant added successfully",
@@ -85,99 +78,104 @@ const ParticipantForm = ({ handleSubmit }: { handleSubmit: any }) => {
             }
           }}
         >
-          {({ isSubmitting, setFieldValue, values }) => (
-            <Form className="space-y-6 p-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Participant Name
-                  </label>
-                  <Field
-                    name="name"
-                    type="text"
-                    placeholder="Akosombo Invasion"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                  <ErrorMessage
-                    name="name"
-                    component="div"
-                    className="text-red-500 text-xs pl-2 pt-2"
-                  />
-                </div>
-                <div className="w-full">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="phoneNumber"
-                  >
-                    Phone Number
-                  </label>
-                  <div className="mb-4">
-                    <div className="relative shadow border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent">
-                      <FiPhone className="absolute right-3 top-3 text-gray-400" />
-                      <PhoneInput
-                        international
-                        defaultCountry="GH"
-                        value={values.phoneNumber}
-                        onChange={(value) =>
-                          setFieldValue("phoneNumber", value)
-                        }
-                        className="transparent-phone-input appearance-none w-full py-1 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+          {({ isSubmitting, setFieldValue, values, errors }) => {
+            console.log(errors);
+
+            return (
+              <Form id="participantForm" className="space-y-6 p-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      Participant Name
+                    </label>
+                    <Field
+                      name="name"
+                      type="text"
+                      placeholder="Akosombo Invasion"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    />
+                    <ErrorMessage
+                      name="name"
+                      component="div"
+                      className="text-red-500 text-xs pl-2 pt-2"
+                    />
+                  </div>
+                  <div className="w-full">
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="phoneNumber"
+                    >
+                      Phone Number
+                    </label>
+                    <div className="mb-4">
+                      <div className="relative shadow border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent">
+                        <FiPhone className="absolute right-3 top-3 text-gray-400" />
+                        <PhoneInput
+                          international
+                          defaultCountry="GH"
+                          value={values.phoneNumber}
+                          onChange={(value) =>
+                            setFieldValue("phoneNumber", value)
+                          }
+                          className="transparent-phone-input appearance-none w-full py-1 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="email"
+                    >
+                      Email
+                    </label>
+                    <div className="mb-8 relative">
+                      <FiMail className="absolute right-3 top-3 text-gray-400" />
+
+                      <Field
+                        name="email"
+                        type="email"
+                        placeholder="kwame@gmail.com"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
                       />
                     </div>
                   </div>
-                </div>
-                <div>
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="email"
-                  >
-                    Email
-                  </label>
-                  <div className="mb-8 relative">
-                    <FiMail className="absolute right-3 top-3 text-gray-400" />
-
+                  <div>
+                    <label
+                      htmlFor="note"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      Note
+                    </label>
                     <Field
-                      name="email"
-                      type="email"
-                      placeholder="kwame@gmail.com"
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                      as="textarea"
+                      name="note"
+                      placeholder="Any note for this participant"
+                      className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    />
+                    <ErrorMessage
+                      name="note"
+                      component="div"
+                      className="text-red-500 text-xs"
                     />
                   </div>
                 </div>
-                <div>
-                  <label
-                    htmlFor="note"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                <div className="flex flex-col justify-between items-end">
+                  <div className="bg-black h-5/6 w-5/6 rounded-lg"></div>
+                  <button
+                    form="participantForm"
+                    type="submit"
+                    className="w-full md:w-auto bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-4 rounded-lg"
                   >
-                    Note
-                  </label>
-                  <Field
-                    as="textarea"
-                    name="note"
-                    placeholder="Any note for this participant"
-                    className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                  <ErrorMessage
-                    name="note"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
+                    Add Participant
+                  </button>
                 </div>
-              </div>
-              <div className="flex flex-col justify-between items-end">
-                <div className="bg-black h-5/6 w-5/6 rounded-lg"></div>
-                <button
-                  type="submit"
-                  className="w-full md:w-auto bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-4 rounded-lg"
-                >
-                  Add Participant
-                </button>
-              </div>
-            </Form>
-          )}
+              </Form>
+            );
+          }}
         </Formik>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

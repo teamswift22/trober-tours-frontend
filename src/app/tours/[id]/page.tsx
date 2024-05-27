@@ -9,6 +9,7 @@ import { LuLoader } from "react-icons/lu";
 import ImageScrollContainer from "@/components/ImageScrollComponent";
 import { useGetTourQuery } from "@/lib/features/tours/toursApiSlice";
 import { formatDateToCustomFormat } from "@/lib/utils";
+import Link from "next/link";
 
 const tourImages = [
   { alt: "Main Tour", index: 1, src: "/WaitlistPageImage.png" },
@@ -91,7 +92,7 @@ const TourDetailsCard = ({ id }: { id: string }) => {
               </div>
               <div className="flex flex-col md:flex-row items-center gap-2 text-white py-2 px-4 rounded-md bg-[#0F6E98]">
                 <TfiLocationPin color="FA7454" size={18} />
-                <p className="text-sm font-thin">{data?.destination}</p>
+                <p className="text-sm font-thin">{data?.destination?.name}</p>
               </div>
               <div className="flex flex-col md:flex-row items-center gap-2 text-white py-2 px-4 rounded-md bg-[#FA7454]">
                 <LuLoader color="0F6E98" size={18} />
@@ -99,10 +100,11 @@ const TourDetailsCard = ({ id }: { id: string }) => {
               </div>
             </div>
           </div>
-
-          <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full md:w-5/6">
-            Edit
-          </button>
+          <Link href={`/tours/createtour?id=${id}`}>
+            <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full md:w-5/6">
+              Edit
+            </button>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
@@ -8,18 +8,7 @@ import {
   useGetActivitiesQuery,
   useGetAllStopsQuery,
 } from "@/lib/features/tours/toursApiSlice";
-import { useSearchParams } from "next/navigation";
-
-// const stops = [
-//   { name: "Activity 1", distance: "Destination" },
-//   { name: "Activity 2", distance: "Stop 1" },
-//   { name: "Activity 3", distance: "Stop 2" },
-//   { name: "Activity 4", distance: "Stop 3" },
-//   { name: "Activity 5", distance: "Stop 4" },
-//   { name: "Activity 6", distance: "Stop 5" },
-//   { name: "Activity 7", distance: "Stop 6" },
-//   { name: "Activity 8", distance: "Stop 7" },
-// ];
+import { useToast } from "@/components/ui/use-toast";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Itinerary name is required"),
@@ -28,36 +17,56 @@ const validationSchema = Yup.object({
   location: Yup.string().required("Location is required"),
 });
 
-const Itinerary = () => {
-  const query = useSearchParams();
-  const tourId = useMemo(() => query.get("id"), []);
+const Itinerary = ({
+  formId,
+  moveToNextPage,
+}: {
+  formId: string | null;
+  moveToNextPage: () => void;
+}) => {
   const [addActivity] = useAddActivityMutation();
   const [editActivity] = useEditActivityMutation();
-  const { data: itineray } = useGetActivitiesQuery(tourId);
-  const { data: stops } = useGetAllStopsQuery(tourId);
+  const { data: itineray } = useGetActivitiesQuery(formId);
+  const { data: stops } = useGetAllStopsQuery(formId);
+  const [selectedItineray, setSelectedItineray] = useState<any>(null);
+  const { toast } = useToast();
 
-  console.log(itineray);
+  const handleItinerayReset = (itinerayData: any) => {
+    setSelectedItineray(itinerayData);
+  };
+
+  console.log(selectedItineray);
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <Formik
           initialValues={{
-            name: "",
-            notes: "",
-            date: "",
-            location: "",
+            name: selectedItineray?.name || "",
+            notes: selectedItineray?.notes || "",
+            date: selectedItineray?.date.split("T")[0] || "",
+            location: selectedItineray?.location || "",
           }}
+          enableReinitialize
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting }) => {
             try {
-              console.log(values);
-              const response = await addActivity({
-                tourId,
-                body: values,
-              }).unwrap();
-              console.log(response);
+              if (selectedItineray) {
+                await editActivity({
+                  activityId: selectedItineray?._id,
+                  body: values,
+                }).unwrap();
+                toast({ title: "Itinerary edited" });
+              } else {
+                await addActivity({
+                  formId,
+                  body: values,
+                }).unwrap();
+                toast({ title: "Itinerary added" });
+              }
               setSubmitting(false);
             } catch (error) {
+              toast({ title: "Failed to added itinerary" });
               setSubmitting(false);
             }
           }}
@@ -173,7 +182,10 @@ const Itinerary = () => {
                   <p className="text-[#BDBDBD] text-sm">{item?.distance}</p>
                 </div>
                 <div className="flex gap-2">
-                  <button className="bg-[#82D0F3] px-4 py-1 rounded-full text-sm text-white">
+                  <button
+                    className="bg-[#82D0F3] px-4 py-1 rounded-full text-sm text-white"
+                    onClick={() => handleItinerayReset(item)}
+                  >
                     Edit
                   </button>
                   <button className="bg-[#FDC3B5] px-4 py-1 rounded-full text-sm text-white">
@@ -184,7 +196,10 @@ const Itinerary = () => {
             ))}
           </div>
         </div>
-        <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6 mt-6 sm:mt-0">
+        <button
+          onClick={() => moveToNextPage()}
+          className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6 mt-6 sm:mt-0"
+        >
           Next
         </button>
       </div>

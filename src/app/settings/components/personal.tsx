@@ -24,7 +24,6 @@ const validationSchema = Yup.object({
 const PersonalForm = () => {
   const { data: userData } = useGetAgencyMemberQuery("");
 
-  console.log({ userData });
   return (
     <div className="p-4">
       <Formik

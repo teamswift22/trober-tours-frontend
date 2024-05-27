@@ -44,20 +44,22 @@ const MapComponent = ({
         locations.destination.lng
       );
       const travelMode = window.google.maps.TravelMode.DRIVING; // Change travel mode if needed
-      const waypointsStops = stops.map(
-        (waypoint: any) =>
-          new window.google.maps.LatLng(waypoint.stop.lat, waypoint.stop.lng)
-      );
+      const waypointsStops = stops.map((waypoint: any) => {
+        return {
+          location: { lat: waypoint.stop.lat, lng: waypoint.stop.lng },
+          stepover: true,
+        };
+      });
+
+      console.log(waypointsStops);
       directionsService.route(
         {
           origin,
           destination,
           travelMode,
           waypoints: waypointsStops,
-
         },
         (response, status) => {
-          console.log({ response });
           if (status === window.google.maps.DirectionsStatus.OK) {
             setDirections(response);
             handleEtaChange(response?.routes[0].legs[0]);
@@ -141,7 +143,6 @@ const MapComponent = ({
           />
         )}
         {locations.destination.lat && (
-
           <Marker
             position={{
               lat: locations.destination.lat,
@@ -150,6 +151,12 @@ const MapComponent = ({
             // draggable
           />
         )}
+        {stops?.map((stop: any) => (
+          <Marker
+            key={stop._id}
+            position={{ lat: stop.stop.lat, lng: stop.stop.lng }}
+          />
+        ))}
         {directions && (
           <DirectionsRenderer
             directions={directions}

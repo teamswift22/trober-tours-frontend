@@ -1,15 +1,13 @@
 "use client";
-import React, { useMemo, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import PlaceSearch from "@/components/google-maps/PlaceSearch";
 import MapComponent from "@/components/google-maps/MapComponent";
 import {
   useAddStopMutation,
   useDeleteStopMutation,
   useEditStopMutation,
-  useEditTourMutation,
   useGetAllStopsQuery,
 } from "@/lib/features/tours/toursApiSlice";
-import { useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
 const locationReducer = (state: any, action: any) => {
@@ -24,9 +22,17 @@ const locationReducer = (state: any, action: any) => {
       return state;
   }
 };
-const Location = ({ handleSubmit }: { handleSubmit: any }) => {
-  const query = useSearchParams();
-  const tourId = useMemo(() => query.get("id"), []);
+const Location = ({
+  handleSubmit,
+  tourDetails,
+  formId,
+  moveToNextPage,
+}: {
+  handleSubmit: any;
+  tourDetails: any;
+  formId: string | null;
+  moveToNextPage: () => void;
+}) => {
   const [addStop] = useAddStopMutation();
   const [editStop] = useEditStopMutation();
   const [deleteStop] = useDeleteStopMutation();
@@ -38,13 +44,13 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
     startingPoint: {},
   });
 
-  const { data } = useGetAllStopsQuery(tourId);
+  const { data } = useGetAllStopsQuery(formId);
   const { toast } = useToast();
 
   const disableButton = useMemo(() => {
     if (
-      Object.keys(state.destination).length > 0 &&
-      Object.keys(state.startingPoint).length > 0
+      Object.keys(state?.destination).length > 0 &&
+      Object.keys(state?.startingPoint).length > 0
     ) {
       return false;
     }
@@ -93,7 +99,7 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
   const handleSetStop = async (data: any) => {
     try {
       if (editStopId) {
-        const response = await editStop({
+        await editStop({
           stopId: editStopId,
           body: { ...data },
         }).unwrap();
@@ -102,8 +108,8 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
           description: "Stop edited successfully",
         });
       } else {
-        const response = await addStop({
-          tourId,
+        await addStop({
+          formId,
           body: { ...data },
         }).unwrap();
         toast({
@@ -121,10 +127,13 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
 
   const handleAddRoute = async () => {
     try {
-      handleSubmit({
-        startingPoint: state.startingPoint,
-        destination: state.destination,
-      });
+      handleSubmit(
+        {
+          startingPoint: state.startingPoint,
+          destination: state.destination,
+        },
+        false
+      );
       toast({ title: "Added route" });
     } catch (error) {
       toast({ title: "Failed to set route", variant: "destructive" });
@@ -136,12 +145,26 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
     setEditStopId(stop._id);
   };
 
-  console.log(stops);
   const handleDeleteStop = async (stopId: string) => {
     try {
       await deleteStop(stopId).unwrap();
     } catch (error) {}
   };
+
+  useEffect(() => {
+    const startingPoint = tourDetails?.startingPoint;
+    const destination = tourDetails?.destination;
+    if (tourDetails && startingPoint && destination) {
+      dispatch({
+        type: "reset",
+        payload: {
+          startingPoint,
+          destination,
+        },
+      });
+    }
+  }, [tourDetails]);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
       <div>
@@ -190,6 +213,7 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
               />
             </div>
             <button
+              disabled={Object.keys(stops).length == 0}
               onClick={() => handleSetStop(stops)}
               className="bg-[#FA7454] min-w-28 hover:bg-orange-600 text-white font-normal py-2 px-3 rounded-lg"
             >
@@ -209,9 +233,6 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
                 >
                   <div>
                     <p>{item.stop.formatted_address}</p>
-                    {/* <p className="text-[#BDBDBD] text-sm">
-                      {item?.eta?.distance.text}
-                    </p> */}
                   </div>
                   <div className="flex gap-2">
                     <button
@@ -241,7 +262,10 @@ const Location = ({ handleSubmit }: { handleSubmit: any }) => {
             stops={data}
           />
         </div>
-        <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6">
+        <button
+          onClick={() => moveToNextPage()}
+          className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6"
+        >
           Next
         </button>
       </div>
