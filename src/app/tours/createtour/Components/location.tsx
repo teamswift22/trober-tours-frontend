@@ -154,11 +154,7 @@ const Location = ({
   useEffect(() => {
     const startingPoint = tourDetails?.startingPoint;
     const destination = tourDetails?.destination;
-    if (
-      tourDetails &&
-      Object?.keys(startingPoint).length > 0 &&
-      Object?.keys(destination).length > 0
-    ) {
+    if (tourDetails && startingPoint && destination) {
       dispatch({
         type: "reset",
         payload: {

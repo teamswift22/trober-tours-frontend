@@ -20,8 +20,8 @@ const validationSchema = Yup.object({
   typeOfAccommodation: Yup.string().required(
     "Type of accommodation is required"
   ),
-  checkInDate: Yup.date().required("Check-in date is required"),
-  checkOutDate: Yup.date().required("Check-out date is required"),
+  checkInDate: Yup.string().required("Check-in date is required"),
+  checkOutDate: Yup.string().required("Check-out date is required"),
   location: Yup.string().required("Location is required"),
   numberOfRooms: Yup.number()
     .required("Number of rooms is required")
@@ -45,6 +45,7 @@ const Accommodation = ({
   const [activeTab, setActiveTab] = useState("Accommodation"); // State to manage which tab is active
   const [selectedAmenities, setSelectedAmenities] = useState<Amenity[]>([]);
 
+  console.log(tourDetails);
   const toggleAmenity = (amenity: Amenity) => {
     setSelectedAmenities((prev) => {
       if (prev.includes(amenity)) {
@@ -86,17 +87,17 @@ const Accommodation = ({
         <Formik
           initialValues={{
             accommodationName:
-              tourDetails?.accommodation?.accommodationName || "",
+              tourDetails?.accomodation?.accommodationName || "",
             typeOfAccommodation:
-              tourDetails?.accommodation?.typeOfAccommodation || "",
-            checkInDate: tourDetails?.accommodation?.checkInDate || "",
-            checkOutDate: tourDetails?.accommodation?.checkOutDate || "",
-            location: tourDetails?.accommodation?.location || "",
-            numberOfRooms: tourDetails?.accommodation?.numberOfRooms || "",
+              tourDetails?.accomodation?.typeOfAccommodation || "",
+            checkInDate: tourDetails?.accomodation?.checkInDate || "",
+            checkOutDate: tourDetails?.accomodation?.checkOutDate || "",
+            location: tourDetails?.accomodation?.location || "",
+            numberOfRooms: tourDetails?.accomodation?.numberOfRooms || "",
             amenities: {
-              pool: tourDetails?.accommodation?.pool || false,
-              wifi: tourDetails?.accommodation?.wifi || false,
-              breakfast: tourDetails?.accommodation?.breakfast || false,
+              pool: tourDetails?.accomodation?.pool || false,
+              wifi: tourDetails?.accomodation?.wifi || false,
+              breakfast: tourDetails?.accomodation?.breakfast || false,
             },
           }}
           enableReinitialize
@@ -111,7 +112,10 @@ const Accommodation = ({
           }}
         >
           {({ setFieldValue, values }) => (
-            <Form className="bg-white p-4 sm:p-6 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Form
+              id="accomodationForm"
+              className="bg-white p-4 sm:p-6 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
               <div className="w-full sm:w-5/6">
                 <div className="mb-4 space-y-2">
                   <label
@@ -283,7 +287,11 @@ const Accommodation = ({
       )}
       <div className="flex flex-col sm:flex-row sm:justify-between mt-10">
         <p>Showing available accommodations based on your set destination</p>
-        <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full sm:w-1/3">
+        <button
+          form="accomodationForm"
+          type="submit"
+          className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full sm:w-1/3"
+        >
           Next
         </button>
       </div>

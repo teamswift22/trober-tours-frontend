@@ -44,7 +44,7 @@ const Itinerary = ({
           initialValues={{
             name: selectedItineray?.name || "",
             notes: selectedItineray?.notes || "",
-            date: selectedItineray?.date || "",
+            date: selectedItineray?.date.split("T")[0] || "",
             location: selectedItineray?.location || "",
           }}
           enableReinitialize
