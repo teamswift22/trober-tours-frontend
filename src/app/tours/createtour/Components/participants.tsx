@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "react-phone-number-input/style.css";
@@ -32,20 +32,24 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
   const [addSubscribers] = useAddSubscriberMutation();
   const { data: tourParticipants } = useGetTourSubscribersQuery(formId || "");
   const { data } = useGetAgencySubscribersQuery("");
+  const [addedSubscribers, setAddedSubscribers] = useState<any>([]);
   const [selectedSubscribers, setSelectedSubscribers] = useState<any>([]);
+  const [subscribersToAdd, setSubscribersToAdd] = useState<any>([]);
+  const [subscribersToRemove, setSubscribersToRemove] = useState<any>([]);
   const { toast } = useToast();
 
-  const handleAddSelectedSubscribers = async () => {
+  const handleSubmit = async () => {
     try {
-      if (selectedSubscribers.length > 0) {
+      if (subscribersToAdd.length) {
         await addSubscribers({
           tourId: formId,
-          body: { subscribers: selectedSubscribers },
+          body: { subscribers: subscribersToAdd },
         }).unwrap();
         toast({
           title: "Subscribers added successfully",
         });
       }
+      router.push("/tours");
     } catch (error) {
       toast({
         title: "Error adding subscribers",
@@ -53,6 +57,50 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (tourParticipants?.tourSubscriptions?.length) {
+      const subscribers = tourParticipants?.tourSubscriptions?.map(
+        (subscription: any) => subscription?.subscriberId
+      );
+      setAddedSubscribers((prev: any) => [...prev, ...subscribers]);
+    }
+  }, [tourParticipants]);
+
+  const tourParticipantsArray = useMemo(() => {
+    if (data?.agencySubscriptions?.length) {
+      const afterFilter = data?.agencySubscriptions?.filter(
+        (subscription: any) =>
+          addedSubscribers?.includes(subscription?.subscriberId)
+      );
+
+      return afterFilter;
+    }
+    return [];
+  }, [data, addedSubscribers]);
+
+  const agencyParticipantsArray = useMemo(() => {
+    if (data?.agencySubscriptions?.length) {
+      return data?.agencySubscriptions?.filter(
+        (subscription: any) =>
+          !addedSubscribers.includes(subscription?.subscriberId)
+      );
+    }
+  }, [data, addedSubscribers]);
+
+  const handleAddselectedSubscribersToParticipants = () => {
+    setSubscribersToAdd((prev: any) => [...selectedSubscribers, ...prev]);
+    setAddedSubscribers((prev: any) => [...selectedSubscribers, ...prev]);
+    setSelectedSubscribers([]);
+  };
+
+  const handleRemoveSelectedSubscriber = (subscriber: string) => {
+    setSubscribersToRemove((prev: any) => [subscriber, ...prev]);
+    setAddedSubscribers((prev: any) =>
+      prev.filter((id: any) => id !== subscriber)
+    );
+  };
+
   return (
     <div>
       <div className="bg-white">
@@ -183,7 +231,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
         <div className="mt-10 bg-white rounded-lg p-4 h-fit max-h-[400px] overflow-auto w-full sm:w-5/6 sm:mb-14">
           <h1 className="font-semibold">Added Participants</h1>
           <div className="mt-6 px-4">
-            {tourParticipants?.tourSubscriptions?.map((item: any) => (
+            {tourParticipantsArray?.map((item: any) => (
               <div
                 key={item._id}
                 className="flex flex-row justify-between items-center mb-4"
@@ -194,7 +242,12 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
                     {item.subscriber.phoneNumber}
                   </p>
                 </div>
-                <button className="bg-[#82D0F3] px-4 py-1 rounded-full text-sm text-white">
+                <button
+                  onClick={() =>
+                    handleRemoveSelectedSubscriber(item?.subscriberId)
+                  }
+                  className="bg-[#82D0F3] px-4 py-1 rounded-full text-sm text-white"
+                >
                   Delete
                 </button>
               </div>
@@ -208,7 +261,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
             </h3>
             <ScrollArea className="h-[210px] overflow-auto px-4">
               {/* Todo items */}
-              {data?.agencySubscriptions.map((participant: any) => (
+              {agencyParticipantsArray?.map((participant: any) => (
                 <div
                   key={participant._id}
                   className="flex items-center justify-between mb-6"
@@ -216,7 +269,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
                   <div className="flex items-center justify-between w-full">
                     <div className="flex">
                       {selectedSubscribers.includes(
-                        participant?.subscriber?._id
+                        participant?.subscriberId
                       ) ? (
                         <FiCheckSquare
                           size={20}
@@ -224,7 +277,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
                           onClick={() =>
                             setSelectedSubscribers((prev: any) =>
                               prev.filter(
-                                (id: any) => id !== participant.subscriber?._id
+                                (id: any) => id !== participant.subscriberId
                               )
                             )
                           }
@@ -236,7 +289,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
                           onClick={() =>
                             setSelectedSubscribers((prev: any) => [
                               ...prev,
-                              participant?.subscriber._id,
+                              participant?.subscriberId,
                             ])
                           }
                         />
@@ -248,7 +301,15 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
                         </p>
                       </div>
                     </div>
-                    <button className="bg-[#82D0F3] px-4 py-1 rounded-full text-sm text-white">
+                    <button
+                      onClick={() =>
+                        setAddedSubscribers((prev: any) => [
+                          participant?.subscriberId,
+                          ...prev,
+                        ])
+                      }
+                      className="bg-[#82D0F3] px-4 py-1 rounded-full text-sm text-white"
+                    >
                       Add
                     </button>
                   </div>
@@ -257,7 +318,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
             </ScrollArea>
             <div className="flex flex-col justify-between items-end mt-2">
               <button
-                onClick={() => handleAddSelectedSubscribers()}
+                onClick={() => handleAddselectedSubscribersToParticipants()}
                 className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-2/6"
               >
                 Add Selected
@@ -265,7 +326,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
             </div>
           </div>
           <button
-            onClick={() => router.push("/tours")}
+            onClick={() => handleSubmit()}
             className="mt-4 w-full sm:w-5/6 bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg"
           >
             Next

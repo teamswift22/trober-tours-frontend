@@ -47,11 +47,9 @@ const MapComponent = ({
       const waypointsStops = stops?.map((waypoint: any) => {
         return {
           location: { lat: waypoint.lat, lng: waypoint.lng },
-          stepover: true,
         };
       });
 
-      console.log(waypointsStops);
       directionsService.route(
         {
           origin,
@@ -95,8 +93,13 @@ const MapComponent = ({
     function callback(map: any) {
       if (window.google) {
         // This is just an example of getting and using the map instance
-        const bounds = new window.google.maps.LatLngBounds(center);
-        map.fitBounds(bounds);
+
+        if (locations?.startingPoint.lat && locations?.destination.lat) {
+          fitBounds();
+        } else {
+          const bounds = new window.google.maps.LatLngBounds(center);
+          map.fitBounds(bounds);
+        }
       }
 
       setMap(map);
@@ -115,7 +118,7 @@ const MapComponent = ({
     if (map && locations) {
       fitBounds();
     }
-  }, [locations]);
+  }, [locations, stops]);
 
   return isLoaded ? (
     <GoogleMap

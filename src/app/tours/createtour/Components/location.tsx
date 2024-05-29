@@ -37,8 +37,8 @@ const Location = ({
 
   const disableButton = useMemo(() => {
     if (
-      Object.keys(state?.destination).length > 0 &&
-      Object.keys(state?.startingPoint).length > 0
+      Object.keys(state?.destination)?.length > 0 &&
+      Object.keys(state?.startingPoint)?.length > 0
     ) {
       return false;
     }
