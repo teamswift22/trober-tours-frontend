@@ -26,18 +26,14 @@ const PlaceSearch = ({
       lng: place?.geometry?.location?.lng(),
       name: place?.name,
       formatted_address: place?.formatted_address,
-      icon: place?.icon,
-      photos: place?.photos,
+      id: place?.place_id,
     };
-
     onPlaceSelect(placeInfo);
     setSearchValue(place?.name);
   };
 
   useEffect(() => {
-    if (location) {
-      setSearchValue(location?.formatted_address);
-    }
+    setSearchValue(location?.name || "");
   }, [location]);
 
   useEffect(() => {

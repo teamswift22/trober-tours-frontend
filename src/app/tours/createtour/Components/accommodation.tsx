@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { TfiLocationPin } from "react-icons/tfi";
@@ -38,14 +38,13 @@ const Accommodation = ({
   handleSubmit: any;
   tourDetails: any;
 }) => {
-  const location = {
-    lat: tourDetails?.destination.lat,
-    lng: tourDetails?.destination.lng,
-  };
   const [activeTab, setActiveTab] = useState("Accommodation"); // State to manage which tab is active
   const [selectedAmenities, setSelectedAmenities] = useState<Amenity[]>([]);
+  const [location, setLocation] = useState<{ lat: number; lng: number }>({
+    lat: 5.614818,
+    lng: -0.205874,
+  });
 
-  console.log(tourDetails);
   const toggleAmenity = (amenity: Amenity) => {
     setSelectedAmenities((prev) => {
       if (prev.includes(amenity)) {
@@ -57,6 +56,15 @@ const Accommodation = ({
       }
     });
   };
+
+  useEffect(() => {
+    if (tourDetails?.destination?.lat && tourDetails?.destination?.lng) {
+      setLocation({
+        lat: tourDetails?.destination?.lat,
+        lng: tourDetails?.destination?.lng,
+      });
+    }
+  }, [tourDetails]);
   return (
     <div className="p-4">
       {/* Tab Navigation */}
@@ -264,25 +272,21 @@ const Accommodation = ({
 
       {activeTab === "Available Accommodation" && (
         <div className="bg-white p-4 sm:p-6 rounded-md shadow-sm">
-          {!Object.values(location).includes("undefined") ? (
-            <AccommodationFetch
-              apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
-              location={location}
-            >
-              {({ accommodations, isLoading, error }) => {
-                if (isLoading) return <p>Loading...</p>;
-                if (error) return <p>Error fetching data: {error.message}</p>;
-                return (
-                  <AccommodationList
-                    accommodations={accommodations}
-                    apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
-                  />
-                );
-              }}
-            </AccommodationFetch>
-          ) : (
-            <p>Select a destination</p>
-          )}
+          <AccommodationFetch
+            apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
+            location={location}
+          >
+            {({ accommodations, isLoading, error }) => {
+              if (isLoading) return <p>Loading...</p>;
+              if (error) return <p>Error fetching data: {error.message}</p>;
+              return (
+                <AccommodationList
+                  accommodations={accommodations}
+                  apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
+                />
+              );
+            }}
+          </AccommodationFetch>
         </div>
       )}
       <div className="flex flex-col sm:flex-row sm:justify-between mt-10">

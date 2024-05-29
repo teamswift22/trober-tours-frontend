@@ -38,10 +38,8 @@ const TourDetails = ({
         enableReinitialize
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            handleSubmit(values);
-            setSubmitting(false);
-          }, 400);
+          handleSubmit(values);
+          setSubmitting(false);
         }}
       >
         {({ isSubmitting, values }) => {

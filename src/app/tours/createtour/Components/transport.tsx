@@ -25,7 +25,7 @@ const Transport = ({
     //   /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] [AP]M$/,
     //   "Enter a valid time in HH:MM AM/PM format"
     // ),
-    meetingPoint: Yup.string().required("Meeting point is required"),
+    // meetingPoint: Yup.string().required("Meeting point is required"),
     activityDescription: Yup.string(),
     busType: Yup.string().required("Bus type is required"),
     returnTime: Yup.string()
@@ -66,7 +66,7 @@ const Transport = ({
         initialValues={{
           modeOfTransport: tourDetails?.transportation?.modeOfTransport || "",
           departureTime: tourDetails?.transportation?.departureTime || "",
-          meetingPoint: tourDetails?.transportation?.meetingPoint || "",
+          // meetingPoint: tourDetails?.transportation?.meetingPoint || "",
           activityDescription:
             tourDetails?.transportation?.activityDescription || "",
           busType: tourDetails?.transportation?.busType || "",
@@ -183,7 +183,7 @@ const Transport = ({
                 />
               </div>
 
-              <div className="w-full sm:w-5/6 ">
+              {/* <div className="w-full sm:w-5/6 ">
                 <label
                   htmlFor="meetingPoint"
                   className="block text-sm font-medium text-gray-700 mb-2"
@@ -204,7 +204,7 @@ const Transport = ({
                   component="div"
                   className="text-red-500 text-xs"
                 />
-              </div>
+              </div> */}
 
               <div className="w-full sm:w-5/6 ">
                 <label
@@ -229,27 +229,6 @@ const Transport = ({
                   className="text-red-500 text-xs"
                 />
               </div>
-
-              <div>
-                <label
-                  htmlFor="activityDescription"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Activity Description
-                </label>
-                <Field
-                  as="textarea"
-                  name="activityDescription"
-                  placeholder="Describe the activity"
-                  className="shadow appearance-none border rounded w-full sm:w-5/6 py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
-                />
-                <ErrorMessage
-                  name="activityDescription"
-                  component="div"
-                  className="text-red-500 text-xs"
-                />
-              </div>
-
               <div className="w-full sm:w-5/6">
                 <label
                   className="block text-gray-700 text-sm font-bold mb-2"
@@ -269,6 +248,25 @@ const Transport = ({
                     />
                   </div>
                 </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="activityDescription"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Activity Description
+                </label>
+                <Field
+                  as="textarea"
+                  name="activityDescription"
+                  placeholder="Describe the activity"
+                  className="shadow appearance-none border rounded w-full sm:w-5/6 py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                />
+                <ErrorMessage
+                  name="activityDescription"
+                  component="div"
+                  className="text-red-500 text-xs"
+                />
               </div>
             </Form>
           );

@@ -62,7 +62,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
             note: "",
           }}
           validationSchema={participantSchema}
-          onSubmit={async (values, { setSubmitting }) => {
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
               setSubmitting(true);
               await createSubscriber({ tourId: formId, body: values }).unwrap();
@@ -70,6 +70,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
               toast({
                 title: "Participant added successfully",
               });
+              resetForm();
             } catch (error) {
               toast({
                 title: "Error adding participant",
@@ -79,8 +80,6 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
           }}
         >
           {({ isSubmitting, setFieldValue, values, errors }) => {
-            console.log(errors);
-
             return (
               <Form id="participantForm" className="space-y-6 p-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
