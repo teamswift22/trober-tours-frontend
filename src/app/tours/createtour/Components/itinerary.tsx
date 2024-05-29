@@ -18,12 +18,12 @@ const validationSchema = Yup.object({
 
 const Itinerary = ({
   formId,
-  moveToNextPage,
   tourDetails,
+  getActiveTab,
 }: {
   formId: string | null;
-  moveToNextPage: () => void;
   tourDetails: any;
+  getActiveTab: (tab: any) => void;
 }) => {
   const [addActivity] = useAddActivityMutation();
   const [editActivity] = useEditActivityMutation();
@@ -197,7 +197,7 @@ const Itinerary = ({
           </div>
         </div>
         <button
-          onClick={() => moveToNextPage()}
+          onClick={() => getActiveTab("Transport")}
           className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6 mt-6 sm:mt-0"
         >
           Next

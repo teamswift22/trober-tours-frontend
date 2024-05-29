@@ -34,9 +34,11 @@ type Amenity = "Pool" | "WiFi" | "Breakfast";
 const Accommodation = ({
   handleSubmit,
   tourDetails,
+  getActiveTab,
 }: {
   handleSubmit: any;
   tourDetails: any;
+  getActiveTab: (tab: any) => void;
 }) => {
   const [activeTab, setActiveTab] = useState("Accommodation"); // State to manage which tab is active
   const [selectedAmenities, setSelectedAmenities] = useState<Amenity[]>([]);
@@ -63,6 +65,14 @@ const Accommodation = ({
         lat: tourDetails?.destination?.lat,
         lng: tourDetails?.destination?.lng,
       });
+    }
+    if (tourDetails?.accomodation?.amenities) {
+      const amenities = tourDetails?.accomodation?.amenities;
+      const selectedAmenities: Amenity[] = [];
+      if (amenities.pool) selectedAmenities.push("Pool");
+      if (amenities.wifi) selectedAmenities.push("WiFi");
+      if (amenities.breakfast) selectedAmenities.push("Breakfast");
+      setSelectedAmenities(selectedAmenities);
     }
   }, [tourDetails]);
   return (
@@ -111,9 +121,16 @@ const Accommodation = ({
           enableReinitialize
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
+            const amenities = {
+              breakfast: selectedAmenities.includes("Breakfast"),
+              pool: selectedAmenities.includes("Pool"),
+              wifi: selectedAmenities.includes("WiFi"),
+            };
+            values.amenities = amenities;
             try {
               handleSubmit({ accomodation: values });
               setSubmitting(false);
+              getActiveTab("Media");
             } catch (error) {
               console.log(error);
             }
@@ -253,6 +270,7 @@ const Accommodation = ({
               <div className="flex space-x-2">
                 {(["Pool", "WiFi", "Breakfast"] as Amenity[]).map((amenity) => (
                   <button
+                    type="button"
                     key={amenity}
                     onClick={() => toggleAmenity(amenity)}
                     className={`py-2 px-4 rounded-lg  text-sm font-light ${

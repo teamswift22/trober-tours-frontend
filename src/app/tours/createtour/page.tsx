@@ -55,30 +55,29 @@ const CreateTour = () => {
   const [createTour] = useCreateTourMutation();
   const [editTour] = useEditTourMutation();
 
-  console.log(pageStep);
-  console.log(step);
+  // console.log(pageStep);
+  // console.log(step);
 
-  const handleMoveToNextPage = async () => {
-    console.log(step);
-    const nextStep = navlinks.indexOf(step) + 1;
-    console.log(nextStep);
-    console.log("test");
-    console.log(`?step=${navlinks[nextStep]}&id=${id}`);
-    router.replace(`/tours/createtour?step=${navlinks[nextStep]}&id=${id}`);
-  };
+  // const handleMoveToNextPage = async () => {
+  //   const presentStep = query.get("step");
+  //   console.log(presentStep);
+  //   const nextStep = navlinks.indexOf(presentStep || "") + 1;
+  //   console.log(nextStep);
+  //   console.log("test");
+  //   console.log(`?step=${navlinks[nextStep]}&id=${id}`);
+  //   router.replace(`?step=${navlinks[nextStep]}&id=${id}`);
+  // };
 
   const handleTourSubmission: (
     data: any,
     next?: boolean
-  ) => Promise<void> = async (data, next = true) => {
+  ) => Promise<void> = async (data) => {
     try {
       if (!id) {
         const response = await createTour(data).unwrap();
         const formId: string = response.tourId;
         const nextStep = navlinks.indexOf(step) + 1;
-        router.replace(
-          `/tours/createtour?step=${navlinks[nextStep]}&id=${formId}`
-        );
+        router.replace(`?step=${navlinks[nextStep]}&id=${formId}`);
         toast({
           title: "Tour Created",
           description: "Tour created successfully",
@@ -89,7 +88,6 @@ const CreateTour = () => {
           title: "Tour Updated",
           description: "Tour updated successfully",
         });
-        next && handleMoveToNextPage();
       }
     } catch (error) {
       toast({
@@ -106,31 +104,35 @@ const CreateTour = () => {
         <TourDetails
           handleSubmit={handleTourSubmission}
           tourDetails={tourDetails}
+          getActiveTab={getActiveTab}
         />
       ),
       Location: (
         <Location
           handleSubmit={handleTourSubmission}
           tourDetails={tourDetails}
+          getActiveTab={getActiveTab}
         />
       ),
       Itinerary: (
         <Itinerary
-          moveToNextPage={handleMoveToNextPage}
           tourDetails={tourDetails}
           formId={id}
+          getActiveTab={getActiveTab}
         />
       ),
       Transport: (
         <Transport
           handleSubmit={handleTourSubmission}
           tourDetails={tourDetails}
+          getActiveTab={getActiveTab}
         />
       ),
       Accommodation: (
         <Accommodation
           handleSubmit={handleTourSubmission}
           tourDetails={tourDetails}
+          getActiveTab={getActiveTab}
         />
       ),
       Media: <Media />,

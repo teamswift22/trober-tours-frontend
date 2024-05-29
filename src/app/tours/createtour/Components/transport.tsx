@@ -14,9 +14,11 @@ import { useToast } from "@/components/ui/use-toast";
 const Transport = ({
   handleSubmit,
   tourDetails,
+  getActiveTab,
 }: {
   handleSubmit: any;
   tourDetails: any;
+  getActiveTab: (tab: any) => void;
 }) => {
   const validationSchema = Yup.object().shape({
     modeOfTransport: Yup.string().required("Mode of transport is required"),
@@ -53,6 +55,7 @@ const Transport = ({
           return returnDate > departureDate;
         }
       ),
+    contactPersonNumber: Yup.string(),
     numberOfParticipants: Yup.number()
       .required("Number of participants is required")
       .positive("Number of participants must be positive")
@@ -84,6 +87,7 @@ const Transport = ({
             handleSubmit({ transportation: values });
             toast({ title: "Transportation added" });
             setSubmitting(false);
+            getActiveTab("Accommodation");
           } catch (error) {
             toast({ title: "Failed to add transportation added" });
             setSubmitting(false);
@@ -243,7 +247,9 @@ const Transport = ({
                       international
                       defaultCountry="GH"
                       value={values.contactPersonNumber}
-                      onChange={(value) => setFieldValue("phoneNumber", value)}
+                      onChange={(value) =>
+                        setFieldValue("contactPersonNumber", value)
+                      }
                       className="transparent-phone-input appearance-none w-full py-1 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
                     />
                   </div>

@@ -19,9 +19,11 @@ const locationReducer = (state: any, action: any) => {
 const Location = ({
   handleSubmit,
   tourDetails,
+  getActiveTab,
 }: {
   handleSubmit: any;
   tourDetails: any;
+  getActiveTab: (tab: any) => void;
 }) => {
   const [eta, setEta] = useState({});
   const [stop, setStop] = useState<any>({});
@@ -83,6 +85,7 @@ const Location = ({
         destination: state.destination,
         stops: arrayOfStops,
       });
+      getActiveTab("Itinerary");
     } catch (error) {
       toast({ title: "Failed to set route", variant: "destructive" });
     }

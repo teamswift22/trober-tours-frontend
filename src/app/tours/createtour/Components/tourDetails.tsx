@@ -19,9 +19,11 @@ const validationSchema = Yup.object({
 const TourDetails = ({
   handleSubmit,
   tourDetails,
+  getActiveTab,
 }: {
   handleSubmit: (data: any) => void;
   tourDetails: any;
+  getActiveTab: (tab: any) => void;
 }) => {
   console.log(tourDetails);
   return (
@@ -39,11 +41,11 @@ const TourDetails = ({
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
           handleSubmit(values);
+          getActiveTab("Location");
           setSubmitting(false);
         }}
       >
         {({ isSubmitting, values }) => {
-          console.log(values);
           return (
             <Form
               id="tourDetails"
