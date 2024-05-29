@@ -135,7 +135,7 @@ const CreateTour = () => {
           getActiveTab={getActiveTab}
         />
       ),
-      Media: <Media />,
+      Media: <Media formId={id} tourDetails={tourDetails} />,
       Participants: <ParticipantForm formId={id} />,
     };
   }, [tourDetails, id]);

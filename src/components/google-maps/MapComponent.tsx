@@ -27,10 +27,9 @@ const MapComponent = ({
   const [directions, setDirections] = useState<any>(null);
   const { isLoaded } = useGoogleMaps();
 
-  const calculateDirections = () => {
+  const calculateDirections = useCallback(() => {
     if (
       isLoaded &&
-      map &&
       locations?.startingPoint.lat &&
       locations?.destination.lat
     ) {
@@ -67,7 +66,7 @@ const MapComponent = ({
         }
       );
     }
-  };
+  }, [isLoaded, locations, stops]);
 
   const fitBounds = useCallback(() => {
     if (map && locations?.startingPoint.lat && locations?.destination.lat) {
@@ -86,7 +85,6 @@ const MapComponent = ({
       );
       map.fitBounds(bounds);
     }
-    calculateDirections();
   }, [locations]);
 
   const onLoad = useCallback(
@@ -117,8 +115,9 @@ const MapComponent = ({
   useEffect(() => {
     if (map && locations) {
       fitBounds();
+      calculateDirections();
     }
-  }, [locations, stops]);
+  }, [map, locations, stops, fitBounds, calculateDirections]);
 
   return isLoaded ? (
     <GoogleMap

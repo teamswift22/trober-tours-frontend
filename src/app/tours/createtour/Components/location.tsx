@@ -16,6 +16,7 @@ const locationReducer = (state: any, action: any) => {
       return state;
   }
 };
+
 const Location = ({
   handleSubmit,
   tourDetails,
@@ -34,16 +35,6 @@ const Location = ({
   });
 
   const { toast } = useToast();
-
-  const disableButton = useMemo(() => {
-    if (
-      Object.keys(state?.destination)?.length > 0 &&
-      Object.keys(state?.startingPoint)?.length > 0
-    ) {
-      return false;
-    }
-    return true;
-  }, [state]);
 
   const handleStartDestinationChange = (place: any) => {
     dispatch({

@@ -1,5 +1,15 @@
 import { apiSlice } from "@/lib/api/apiSlice";
 
+interface UploadResponse {
+  urls: string[];
+}
+
+interface UploadRequest {
+  id: string | null;
+  files: File[];
+  folderName: string;
+}
+
 const tourApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getTours: builder.query({
@@ -71,6 +81,21 @@ const tourApiSlice = apiSlice.injectEndpoints({
       query: (id) => `/tour/activities/${id}`,
       providesTags: ["Activities"],
     }),
+    uploadImages: builder.mutation<UploadResponse, UploadRequest>({
+      query: ({ id, files, folderName }) => {
+        const formData = new FormData();
+        files.forEach((file) => {
+          formData.append("files", file);
+        });
+        formData.append("folder", folderName);
+
+        return {
+          url: `/tour/api/upload/${id}`,
+          method: "POST",
+          body: formData,
+        };
+      },
+    }),
     fetchAccommodation: builder.query({
       query: ({ location, radius, type }) => {
         const params = new URLSearchParams({
@@ -101,4 +126,5 @@ export const {
   useEditActivityMutation,
   useGetActivitiesQuery,
   useFetchAccommodationQuery,
+  useUploadImagesMutation,
 } = tourApiSlice;
