@@ -14,9 +14,11 @@ import { useToast } from "@/components/ui/use-toast";
 const Transport = ({
   handleSubmit,
   tourDetails,
+  getActiveTab,
 }: {
   handleSubmit: any;
   tourDetails: any;
+  getActiveTab: (tab: any) => void;
 }) => {
   const validationSchema = Yup.object().shape({
     modeOfTransport: Yup.string().required("Mode of transport is required"),
@@ -25,7 +27,7 @@ const Transport = ({
     //   /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] [AP]M$/,
     //   "Enter a valid time in HH:MM AM/PM format"
     // ),
-    meetingPoint: Yup.string().required("Meeting point is required"),
+    // meetingPoint: Yup.string().required("Meeting point is required"),
     activityDescription: Yup.string(),
     busType: Yup.string().required("Bus type is required"),
     returnTime: Yup.string()
@@ -53,6 +55,7 @@ const Transport = ({
           return returnDate > departureDate;
         }
       ),
+    contactPersonNumber: Yup.string(),
     numberOfParticipants: Yup.number()
       .required("Number of participants is required")
       .positive("Number of participants must be positive")
@@ -66,7 +69,7 @@ const Transport = ({
         initialValues={{
           modeOfTransport: tourDetails?.transportation?.modeOfTransport || "",
           departureTime: tourDetails?.transportation?.departureTime || "",
-          meetingPoint: tourDetails?.transportation?.meetingPoint || "",
+          // meetingPoint: tourDetails?.transportation?.meetingPoint || "",
           activityDescription:
             tourDetails?.transportation?.activityDescription || "",
           busType: tourDetails?.transportation?.busType || "",
@@ -84,6 +87,7 @@ const Transport = ({
             handleSubmit({ transportation: values });
             toast({ title: "Transportation added" });
             setSubmitting(false);
+            getActiveTab("Accommodation");
           } catch (error) {
             toast({ title: "Failed to add transportation added" });
             setSubmitting(false);
@@ -183,7 +187,7 @@ const Transport = ({
                 />
               </div>
 
-              <div className="w-full sm:w-5/6 ">
+              {/* <div className="w-full sm:w-5/6 ">
                 <label
                   htmlFor="meetingPoint"
                   className="block text-sm font-medium text-gray-700 mb-2"
@@ -204,7 +208,7 @@ const Transport = ({
                   component="div"
                   className="text-red-500 text-xs"
                 />
-              </div>
+              </div> */}
 
               <div className="w-full sm:w-5/6 ">
                 <label
@@ -229,7 +233,28 @@ const Transport = ({
                   className="text-red-500 text-xs"
                 />
               </div>
-
+              <div className="w-full sm:w-5/6">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="contactPersonNumber"
+                >
+                  Phone Number
+                </label>
+                <div className="mb-4">
+                  <div className="relative shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent">
+                    <FiPhone className="absolute right-3 top-3 text-gray-400" />
+                    <PhoneInput
+                      international
+                      defaultCountry="GH"
+                      value={values.contactPersonNumber}
+                      onChange={(value) =>
+                        setFieldValue("contactPersonNumber", value)
+                      }
+                      className="transparent-phone-input appearance-none w-full py-1 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
               <div>
                 <label
                   htmlFor="activityDescription"
@@ -248,27 +273,6 @@ const Transport = ({
                   component="div"
                   className="text-red-500 text-xs"
                 />
-              </div>
-
-              <div className="w-full sm:w-5/6">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="contactPersonNumber"
-                >
-                  Phone Number
-                </label>
-                <div className="mb-4">
-                  <div className="relative shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent">
-                    <FiPhone className="absolute right-3 top-3 text-gray-400" />
-                    <PhoneInput
-                      international
-                      defaultCountry="GH"
-                      value={values.contactPersonNumber}
-                      onChange={(value) => setFieldValue("phoneNumber", value)}
-                      className="transparent-phone-input appearance-none w-full py-1 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
-                    />
-                  </div>
-                </div>
               </div>
             </Form>
           );

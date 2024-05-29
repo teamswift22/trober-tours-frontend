@@ -12,6 +12,7 @@ import {
   useGetTourSubscribersQuery,
 } from "@/lib/features/subscriber/subscriberApiSlice";
 import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 // Validation schema using Yup
 const participantSchema = Yup.object().shape({
@@ -26,6 +27,7 @@ const participantSchema = Yup.object().shape({
 });
 
 const ParticipantForm = ({ formId }: { formId: string | null }) => {
+  const router = useRouter();
   const [createSubscriber] = useCreateSubscriberMutation();
   const [addSubscribers] = useAddSubscriberMutation();
   const { data: tourParticipants } = useGetTourSubscribersQuery(formId || "");
@@ -37,7 +39,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
     try {
       if (selectedSubscribers.length > 0) {
         await addSubscribers({
-          formId,
+          tourId: formId,
           body: { subscribers: selectedSubscribers },
         }).unwrap();
         toast({
@@ -62,7 +64,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
             note: "",
           }}
           validationSchema={participantSchema}
-          onSubmit={async (values, { setSubmitting }) => {
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
               setSubmitting(true);
               await createSubscriber({ tourId: formId, body: values }).unwrap();
@@ -70,6 +72,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
               toast({
                 title: "Participant added successfully",
               });
+              resetForm();
             } catch (error) {
               toast({
                 title: "Error adding participant",
@@ -79,8 +82,6 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
           }}
         >
           {({ isSubmitting, setFieldValue, values, errors }) => {
-            console.log(errors);
-
             return (
               <Form id="participantForm" className="space-y-6 p-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -263,7 +264,10 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
               </button>
             </div>
           </div>
-          <button className="mt-4 w-full sm:w-5/6 bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg">
+          <button
+            onClick={() => router.push("/tours")}
+            className="mt-4 w-full sm:w-5/6 bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg"
+          >
             Next
           </button>
         </div>

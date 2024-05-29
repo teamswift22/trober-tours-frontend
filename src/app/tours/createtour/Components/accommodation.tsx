@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { TfiLocationPin } from "react-icons/tfi";
@@ -34,18 +34,19 @@ type Amenity = "Pool" | "WiFi" | "Breakfast";
 const Accommodation = ({
   handleSubmit,
   tourDetails,
+  getActiveTab,
 }: {
   handleSubmit: any;
   tourDetails: any;
+  getActiveTab: (tab: any) => void;
 }) => {
-  const location = {
-    lat: tourDetails?.destination.lat,
-    lng: tourDetails?.destination.lng,
-  };
   const [activeTab, setActiveTab] = useState("Accommodation"); // State to manage which tab is active
   const [selectedAmenities, setSelectedAmenities] = useState<Amenity[]>([]);
+  const [location, setLocation] = useState<{ lat: number; lng: number }>({
+    lat: 5.614818,
+    lng: -0.205874,
+  });
 
-  console.log(tourDetails);
   const toggleAmenity = (amenity: Amenity) => {
     setSelectedAmenities((prev) => {
       if (prev.includes(amenity)) {
@@ -57,6 +58,23 @@ const Accommodation = ({
       }
     });
   };
+
+  useEffect(() => {
+    if (tourDetails?.destination?.lat && tourDetails?.destination?.lng) {
+      setLocation({
+        lat: tourDetails?.destination?.lat,
+        lng: tourDetails?.destination?.lng,
+      });
+    }
+    if (tourDetails?.accomodation?.amenities) {
+      const amenities = tourDetails?.accomodation?.amenities;
+      const selectedAmenities: Amenity[] = [];
+      if (amenities.pool) selectedAmenities.push("Pool");
+      if (amenities.wifi) selectedAmenities.push("WiFi");
+      if (amenities.breakfast) selectedAmenities.push("Breakfast");
+      setSelectedAmenities(selectedAmenities);
+    }
+  }, [tourDetails]);
   return (
     <div className="p-4">
       {/* Tab Navigation */}
@@ -103,9 +121,16 @@ const Accommodation = ({
           enableReinitialize
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
+            const amenities = {
+              breakfast: selectedAmenities.includes("Breakfast"),
+              pool: selectedAmenities.includes("Pool"),
+              wifi: selectedAmenities.includes("WiFi"),
+            };
+            values.amenities = amenities;
             try {
               handleSubmit({ accomodation: values });
               setSubmitting(false);
+              getActiveTab("Media");
             } catch (error) {
               console.log(error);
             }
@@ -245,6 +270,7 @@ const Accommodation = ({
               <div className="flex space-x-2">
                 {(["Pool", "WiFi", "Breakfast"] as Amenity[]).map((amenity) => (
                   <button
+                    type="button"
                     key={amenity}
                     onClick={() => toggleAmenity(amenity)}
                     className={`py-2 px-4 rounded-lg  text-sm font-light ${
@@ -264,25 +290,21 @@ const Accommodation = ({
 
       {activeTab === "Available Accommodation" && (
         <div className="bg-white p-4 sm:p-6 rounded-md shadow-sm">
-          {!Object.values(location).includes("undefined") ? (
-            <AccommodationFetch
-              apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
-              location={location}
-            >
-              {({ accommodations, isLoading, error }) => {
-                if (isLoading) return <p>Loading...</p>;
-                if (error) return <p>Error fetching data: {error.message}</p>;
-                return (
-                  <AccommodationList
-                    accommodations={accommodations}
-                    apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
-                  />
-                );
-              }}
-            </AccommodationFetch>
-          ) : (
-            <p>Select a destination</p>
-          )}
+          <AccommodationFetch
+            apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
+            location={location}
+          >
+            {({ accommodations, isLoading, error }) => {
+              if (isLoading) return <p>Loading...</p>;
+              if (error) return <p>Error fetching data: {error.message}</p>;
+              return (
+                <AccommodationList
+                  accommodations={accommodations}
+                  apiKey={process.env.NEXT_PUBLIC_PLACES_KEY}
+                />
+              );
+            }}
+          </AccommodationFetch>
         </div>
       )}
       <div className="flex flex-col sm:flex-row sm:justify-between mt-10">

@@ -55,42 +55,48 @@ const CreateTour = () => {
   const [createTour] = useCreateTourMutation();
   const [editTour] = useEditTourMutation();
 
-  const handleMoveToNextPage = useCallback(() => {
-    const nextStep = navlinks.indexOf(step) + 1;
-    router.push(`?step=${navlinks[nextStep]}&id=${id}`);
-  }, []);
+  // console.log(pageStep);
+  // console.log(step);
 
-  const handleTourSubmission = useCallback(
-    async (data: any, next: boolean = true) => {
-      try {
-        if (!id) {
-          const response = await createTour(data).unwrap();
-          const formId: string = response.tourId;
-          const nextStep = navlinks.indexOf(step) + 1;
-          router.push(`?step=${navlinks[nextStep]}&id=${formId}`);
-          toast({
-            title: "Tour Created",
-            description: "Tour created successfully",
-          });
-        } else {
-          console.log(data, "edit tour");
-          await editTour({ id, body: data }).unwrap();
-          toast({
-            title: "Tour Updated",
-            description: "Tour updated successfully",
-          });
-          next && handleMoveToNextPage();
-        }
-      } catch (error) {
+  // const handleMoveToNextPage = async () => {
+  //   const presentStep = query.get("step");
+  //   console.log(presentStep);
+  //   const nextStep = navlinks.indexOf(presentStep || "") + 1;
+  //   console.log(nextStep);
+  //   console.log("test");
+  //   console.log(`?step=${navlinks[nextStep]}&id=${id}`);
+  //   router.replace(`?step=${navlinks[nextStep]}&id=${id}`);
+  // };
+
+  const handleTourSubmission: (
+    data: any,
+    next?: boolean
+  ) => Promise<void> = async (data) => {
+    try {
+      if (!id) {
+        const response = await createTour(data).unwrap();
+        const formId: string = response.tourId;
+        const nextStep = navlinks.indexOf(step) + 1;
+        router.replace(`?step=${navlinks[nextStep]}&id=${formId}`);
         toast({
-          title: "Error",
-          description: "Something went wrong",
-          variant: "destructive",
+          title: "Tour Created",
+          description: "Tour created successfully",
+        });
+      } else {
+        await editTour({ id, body: data }).unwrap();
+        toast({
+          title: "Tour Updated",
+          description: "Tour updated successfully",
         });
       }
-    },
-    [createTour]
-  );
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        variant: "destructive",
+      });
+    }
+  };
 
   const list: IList = useMemo(() => {
     return {
@@ -98,35 +104,41 @@ const CreateTour = () => {
         <TourDetails
           handleSubmit={handleTourSubmission}
           tourDetails={tourDetails}
+          getActiveTab={getActiveTab}
         />
       ),
       Location: (
         <Location
           handleSubmit={handleTourSubmission}
           tourDetails={tourDetails}
-          moveToNextPage={handleMoveToNextPage}
-          formId={id}
+          getActiveTab={getActiveTab}
         />
       ),
       Itinerary: (
-        <Itinerary moveToNextPage={handleMoveToNextPage} formId={id} />
+        <Itinerary
+          tourDetails={tourDetails}
+          formId={id}
+          getActiveTab={getActiveTab}
+        />
       ),
       Transport: (
         <Transport
           handleSubmit={handleTourSubmission}
           tourDetails={tourDetails}
+          getActiveTab={getActiveTab}
         />
       ),
       Accommodation: (
         <Accommodation
           handleSubmit={handleTourSubmission}
           tourDetails={tourDetails}
+          getActiveTab={getActiveTab}
         />
       ),
       Media: <Media />,
       Participants: <ParticipantForm formId={id} />,
     };
-  }, [tourDetails]);
+  }, [tourDetails, id]);
 
   return (
     <div className="px-10">

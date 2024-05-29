@@ -44,9 +44,9 @@ const MapComponent = ({
         locations.destination.lng
       );
       const travelMode = window.google.maps.TravelMode.DRIVING; // Change travel mode if needed
-      const waypointsStops = stops.map((waypoint: any) => {
+      const waypointsStops = stops?.map((waypoint: any) => {
         return {
-          location: { lat: waypoint.stop.lat, lng: waypoint.stop.lng },
+          location: { lat: waypoint.lat, lng: waypoint.lng },
           stepover: true,
         };
       });
@@ -133,13 +133,6 @@ const MapComponent = ({
               lat: locations.startingPoint.lat,
               lng: locations.startingPoint.lng,
             }}
-            // draggable
-            // onDragEnd={(e) => {
-            //   const newLat = e.latLng.lat();
-            //   const newLng = e.latLng.lng();
-            //   reveseGeocoding(newLat, newLng).then((res) => console.log(res));
-            //   // console.log(e.latLng.lat(), e.latLng.lng());
-            // }}
           />
         )}
         {locations.destination.lat && (
@@ -148,13 +141,12 @@ const MapComponent = ({
               lat: locations.destination.lat,
               lng: locations.destination.lng,
             }}
-            // draggable
           />
         )}
         {stops?.map((stop: any) => (
           <Marker
-            key={stop._id}
-            position={{ lat: stop.stop.lat, lng: stop.stop.lng }}
+            key={stop?.name}
+            position={{ lat: stop?.lat, lng: stop?.lng }}
           />
         ))}
         {directions && (

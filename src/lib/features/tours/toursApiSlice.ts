@@ -7,6 +7,7 @@ const tourApiSlice = apiSlice.injectEndpoints({
     }),
     getTour: builder.query({
       query: (id) => `/tour/${id}`,
+      providesTags: ["Tours"],
     }),
     createTour: builder.mutation({
       query: (body) => ({
@@ -14,6 +15,7 @@ const tourApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["Tours"],
     }),
     editTour: builder.mutation({
       query: ({ id, body }) => ({
@@ -21,6 +23,7 @@ const tourApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Tours"],
     }),
     addStop: builder.mutation({
       query: ({ tourId, body }) => ({

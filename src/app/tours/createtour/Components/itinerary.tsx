@@ -1,12 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
   useAddActivityMutation,
   useEditActivityMutation,
   useGetActivitiesQuery,
-  useGetAllStopsQuery,
 } from "@/lib/features/tours/toursApiSlice";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -19,23 +18,24 @@ const validationSchema = Yup.object({
 
 const Itinerary = ({
   formId,
-  moveToNextPage,
+  tourDetails,
+  getActiveTab,
 }: {
   formId: string | null;
-  moveToNextPage: () => void;
+  tourDetails: any;
+  getActiveTab: (tab: any) => void;
 }) => {
   const [addActivity] = useAddActivityMutation();
   const [editActivity] = useEditActivityMutation();
   const { data: itineray } = useGetActivitiesQuery(formId);
-  const { data: stops } = useGetAllStopsQuery(formId);
   const [selectedItineray, setSelectedItineray] = useState<any>(null);
   const { toast } = useToast();
+
+  const stops = useMemo(() => tourDetails?.stops || [], [tourDetails]);
 
   const handleItinerayReset = (itinerayData: any) => {
     setSelectedItineray(itinerayData);
   };
-
-  console.log(selectedItineray);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -59,7 +59,7 @@ const Itinerary = ({
                 toast({ title: "Itinerary edited" });
               } else {
                 await addActivity({
-                  formId,
+                  tourId: formId,
                   body: values,
                 }).unwrap();
                 toast({ title: "Itinerary added" });
@@ -126,8 +126,8 @@ const Itinerary = ({
                 >
                   <option value="">Select a location</option>
                   {stops?.map((item: any) => (
-                    <option key={item._id} value={item._id}>
-                      {item.stop.name}
+                    <option key={item.id} value={item.id}>
+                      {item.name}
                     </option>
                   ))}
                 </Field>
@@ -197,7 +197,7 @@ const Itinerary = ({
           </div>
         </div>
         <button
-          onClick={() => moveToNextPage()}
+          onClick={() => getActiveTab("Transport")}
           className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6 mt-6 sm:mt-0"
         >
           Next
