@@ -117,7 +117,7 @@ const Dashboard: React.FC = () => {
                     <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
                       <TfiLocationPin color="FA7454" size={20} />
                       <p className="text-sm font-light">
-                        {upcomingTour?.destination}
+                        {upcomingTour?.destination?.formatted_address}
                       </p>
                     </div>
                   </div>
@@ -156,37 +156,36 @@ const Dashboard: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  // allTours?.tours?.map((tour: any) => {
-                  //   return (
-                  //     <div
-                  //       key={tour.id}
-                  //       className="grid grid-cols-4 items-center p-4 bg-white rounded-xl hover: cursor-pointer"
-                  //     >
-                  //       <div className="flex col-span-2 gap-2 md:gap-6">
-                  //         <div className="h-12 w-12 rounded-xl bg-orange-200" />
-                  //         <div className="flex flex-col">
-                  //           <p className="font-light">{tour?.name}</p>
-                  //           <p className="text-[#BDBDBD] font-light">
-                  //             Tour Name
-                  //           </p>
-                  //         </div>
-                  //       </div>
-                  //       <div className="flex flex-col">
-                  //         <p className="font-light">
-                  //           {tour?.price || "Price N/A"}
-                  //         </p>
-                  //         <p className="text-[#BDBDBD] font-light">Price</p>
-                  //       </div>
-                  //       <div className="flex flex-col">
-                  //         <p className="font-light">
-                  //           {formatDateToCustomFormat(tour?.startDate)}
-                  //         </p>
-                  //         <p className="text-[#BDBDBD] font-light">Date</p>
-                  //       </div>
-                  //     </div>
-                  //   );
-                  // })
-                  <div>test</div>
+                  allTours?.tours?.map((tour: any) => {
+                    return (
+                      <div
+                        key={tour.id}
+                        className="grid grid-cols-4 items-center p-4 bg-white rounded-xl hover: cursor-pointer"
+                      >
+                        <div className="flex col-span-2 gap-2 md:gap-6">
+                          <div className="h-12 w-12 rounded-xl bg-orange-200" />
+                          <div className="flex flex-col">
+                            <p className="font-light">{tour?.name}</p>
+                            <p className="text-[#BDBDBD] font-light">
+                              Tour Name
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="font-light">
+                            {tour?.price || "Price N/A"}
+                          </p>
+                          <p className="text-[#BDBDBD] font-light">Price</p>
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="font-light">
+                            {formatDateToCustomFormat(tour?.startDate)}
+                          </p>
+                          <p className="text-[#BDBDBD] font-light">Date</p>
+                        </div>
+                      </div>
+                    );
+                  })
                 )}
               </div>
             </div>
