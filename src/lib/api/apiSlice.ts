@@ -53,6 +53,11 @@ const baseQueryWithReath = async (args: any, api: any, extraOptions: any) => {
           result = await baseQuery(args, api, extraOptions);
         } else {
           // Refresh token failed, perform logout
+          await baseQuery(
+            "/agency-auth/logout-agency-member",
+            api,
+            extraOptions
+          );
           localStorage.removeItem("persistedData");
           dispatch(logout());
           window.location.replace("/login");
@@ -81,6 +86,11 @@ const baseQueryWithReath = async (args: any, api: any, extraOptions: any) => {
             result = await baseQuery(args, api, extraOptions);
           } else {
             // Refresh token failed, perform logout
+            await baseQuery(
+              "/agency-auth/logout-agency-member",
+              api,
+              extraOptions
+            );
             localStorage.removeItem("persistedData");
             dispatch(logout());
             window.location.replace("/login");

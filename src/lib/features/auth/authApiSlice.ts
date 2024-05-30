@@ -23,7 +23,7 @@ const authApiSlice = apiSlice.injectEndpoints({
         body: credentials,
       }),
     }),
-    logout: builder.query({
+    logout: builder.mutation({
       query: () => ({
         url: "/agency-auth/logout-agency-member",
         method: "GET",
@@ -52,5 +52,5 @@ export const {
   useLoginMutation,
   useSendOtpMutation,
   useVerifyOtpMutation,
-  useLogoutQuery,
+  useLogoutMutation,
 } = authApiSlice;

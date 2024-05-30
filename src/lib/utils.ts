@@ -28,7 +28,7 @@ export function formatDateToCustomFormat(date: string) {
 
   // Get the month name based on the month index
   const month = monthNames[dateClass.getMonth()];
-
+  if (!day || !month) return "Date N/A";
   // Function to get the suffix for the day (e.g., "st", "nd", "rd", "th")
   function getDaySuffix(day: number) {
     if (day >= 11 && day <= 13) {

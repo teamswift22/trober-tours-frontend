@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 const RequireAuth = ({
@@ -10,6 +10,7 @@ const RequireAuth = ({
 }>) => {
   const router = useRouter();
   const pathName = usePathname();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const persistedData = localStorage.getItem("persistedData");
@@ -24,11 +25,16 @@ const RequireAuth = ({
 
     if (!userSession && isProtectedRoute) {
       router.replace("/login");
-    }
-    if (userSession && !isProtectedRoute) {
+    } else if (userSession && !isProtectedRoute) {
       router.replace("/home");
+    } else {
+      setLoading(false);
     }
-  }, []);
+  }, [pathName, router]);
+
+  if (loading) {
+    return null;
+  }
 
   return <>{children}</>;
 };

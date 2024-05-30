@@ -13,7 +13,8 @@ import { IoClose } from "react-icons/io5";
 import { useGetAgencyMemberQuery } from "@/lib/features/agency-member/agencyMemeberSlice";
 import { logout } from "@/lib/features/auth/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { ScrollArea } from "./ui/scroll-area";
+import { useLogoutMutation } from "@/lib/features/auth/authApiSlice";
+import Link from "next/link";
 
 const Layout = ({
   title,
@@ -25,6 +26,7 @@ const Layout = ({
   const pathName = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { data: userData } = useGetAgencyMemberQuery("");
+  const [removeCookieSession] = useLogoutMutation();
   const dispatch = useAppDispatch();
 
   const navbarItems = [
@@ -54,9 +56,14 @@ const Layout = ({
   };
 
   const logoutuser = async () => {
-    localStorage.removeItem("persistedData");
-    dispatch(logout());
-    window.location.href = "/";
+    try {
+      await removeCookieSession({}).unwrap();
+      localStorage.removeItem("persistedData");
+      dispatch(logout());
+      window.location.href = "/";
+    } catch (error) {
+      alert("Something went wrong");
+    }
   };
 
   return (
@@ -83,7 +90,7 @@ const Layout = ({
               <p className="text-4xl text-white font-extrabold">Trober</p>
             </div>
             {navbarItems.map((item, index) => (
-              <a
+              <Link
                 key={index}
                 className={`${
                   isCurrentPath(item.path) ? "bg-[#FA7454]" : "transparent"
@@ -92,7 +99,7 @@ const Layout = ({
               >
                 {item.logo}
                 <p className="text-sm">{item.name}</p>
-              </a>
+              </Link>
             ))}
           </div>
           <div
