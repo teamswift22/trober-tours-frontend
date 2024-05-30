@@ -15,6 +15,7 @@ import { FiCheckSquare, FiSquare } from "react-icons/fi";
 import { useGetToursQuery } from "@/lib/features/tours/toursApiSlice";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDateToCustomFormat } from "@/lib/utils";
+import Link from "next/link";
 
 const todos = [
   {
@@ -66,7 +67,6 @@ const Dashboard: React.FC = () => {
   const { data: allTours } = useGetToursQuery("");
 
   const upcomingTour = useMemo(() => allTours?.tours[0], [allTours]);
-  console.log(upcomingTour);
 
   return (
     <>
@@ -133,7 +133,11 @@ const Dashboard: React.FC = () => {
             <div>
               <div className="flex flex-row justify-between mb-6">
                 <p className="text-xl font-medium">All tours</p>
-                <p className="text-[#828282] hover: cursor-pointer">See All</p>
+                <Link href="/tours">
+                  <p className="text-[#828282] hover: cursor-pointer">
+                    See All
+                  </p>
+                </Link>
               </div>
               <div className="flex flex-col gap-4 overflow-y-auto max-h-[300px]">
                 {allTours?.tours.length < 1 ? (
@@ -152,34 +156,37 @@ const Dashboard: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  allTours?.tours?.map((tour: any) => {
-                    return (
-                      <div
-                        key={tour.id}
-                        className="flex justify-between p-4 bg-white rounded-xl hover: cursor-pointer"
-                      >
-                        <div className="flex md:gap-10">
-                          <div className="h-12 w-12 rounded-xl bg-orange-200"></div>
-                          <div className="flex flex-col">
-                            <p className="font-light">{tour?.name}</p>
-                            <p className="text-[#BDBDBD] font-light">
-                              Tour Name
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex flex-col">
-                          <p className="font-light">${tour?.price}</p>
-                          <p className="text-[#BDBDBD] font-light">Price</p>
-                        </div>
-                        <div className="flex flex-col">
-                          <p className="font-light">
-                            {formatDateToCustomFormat(tour?.startDate)}
-                          </p>
-                          <p className="text-[#BDBDBD] font-light">Date</p>
-                        </div>
-                      </div>
-                    );
-                  })
+                  // allTours?.tours?.map((tour: any) => {
+                  //   return (
+                  //     <div
+                  //       key={tour.id}
+                  //       className="grid grid-cols-4 items-center p-4 bg-white rounded-xl hover: cursor-pointer"
+                  //     >
+                  //       <div className="flex col-span-2 gap-2 md:gap-6">
+                  //         <div className="h-12 w-12 rounded-xl bg-orange-200" />
+                  //         <div className="flex flex-col">
+                  //           <p className="font-light">{tour?.name}</p>
+                  //           <p className="text-[#BDBDBD] font-light">
+                  //             Tour Name
+                  //           </p>
+                  //         </div>
+                  //       </div>
+                  //       <div className="flex flex-col">
+                  //         <p className="font-light">
+                  //           {tour?.price || "Price N/A"}
+                  //         </p>
+                  //         <p className="text-[#BDBDBD] font-light">Price</p>
+                  //       </div>
+                  //       <div className="flex flex-col">
+                  //         <p className="font-light">
+                  //           {formatDateToCustomFormat(tour?.startDate)}
+                  //         </p>
+                  //         <p className="text-[#BDBDBD] font-light">Date</p>
+                  //       </div>
+                  //     </div>
+                  //   );
+                  // })
+                  <div>test</div>
                 )}
               </div>
             </div>
