@@ -50,3 +50,18 @@ export function formatDateToCustomFormat(date: string) {
   const formattedDate = `${day}${getDaySuffix(day)} ${month}`;
   return formattedDate;
 }
+
+export const checkObjectEquality = (
+  obj1: { [x: string]: any; hasOwnProperty: (arg0: string) => any },
+  obj2: { [x: string]: any }
+) => {
+  for (let key in obj1) {
+    if (obj1.hasOwnProperty(key)) {
+      if (obj1[key] !== obj2[key]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};

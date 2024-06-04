@@ -1,16 +1,20 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { FiMail, FiPhone } from "react-icons/fi";
-import PlaceSearch from "@/components/google-maps/PlaceSearch";
-import { useGetAgencyMemberQuery } from "@/lib/features/agency-member/agencyMemeberSlice";
+import {
+  useEditAgencyMemberMutation,
+  useGetAgencyMemberQuery,
+} from "@/lib/features/agency-member/agencyMemeberSlice";
+import { useToast } from "@/components/ui/use-toast";
+import { checkObjectEquality } from "@/lib/utils";
 
 const validationSchema = Yup.object({
-  name: Yup.string().required("Name is required"),
+  fullName: Yup.string().required("Name is required"),
   phoneNumber: Yup.string()
     .matches(/^\+?\d+$/, "Phone number is not valid")
     .required("Phone number is required"),
@@ -23,24 +27,37 @@ const validationSchema = Yup.object({
 
 const PersonalForm = () => {
   const { data: userData } = useGetAgencyMemberQuery("");
+  const [editAgencyMember] = useEditAgencyMemberMutation();
+  const { toast } = useToast();
 
   return (
     <div className="p-4">
       <Formik
         enableReinitialize
         initialValues={{
-          name: userData?.fullName || "",
+          fullName: userData?.fullName || "",
           phoneNumber: userData?.phoneNumber || "",
           email: userData?.email || "",
-          address: "",
           role: userData?.role || "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
+        onSubmit={async (values, { setSubmitting }) => {
+          const equalityResult = checkObjectEquality(values, userData);
+          if (equalityResult == true) {
+            toast({ title: "Nothing to update" });
+            return;
+          }
+          try {
+            await editAgencyMember({
+              id: userData?._id,
+              body: values,
+            }).unwrap();
+            toast({ title: "Agency member updated successfully" });
             setSubmitting(false);
-          }, 400);
+          } catch (error) {
+            toast({ title: "Failed to update agency member" });
+            setSubmitting(false);
+          }
         }}
       >
         {({ isSubmitting, setFieldValue, values, errors }) => (
@@ -68,19 +85,19 @@ const PersonalForm = () => {
             <div className="space-y-4 w-full">
               <div className="w-full">
                 <label
-                  htmlFor="name"
+                  htmlFor="fullName"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
                   Name
                 </label>
                 <Field
-                  name="name"
+                  name="fullName"
                   type="text"
                   placeholder="Akosombo Invasion"
                   className="shadow appearance-none border rounded w-full md:w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />
                 <ErrorMessage
-                  name="name"
+                  name="fullName"
                   component="div"
                   className="text-red-500 text-xs pl-2 pt-2"
                 />
@@ -97,6 +114,7 @@ const PersonalForm = () => {
                     <FiPhone className="absolute right-3 top-3 text-gray-400" />
                     <PhoneInput
                       international
+                      disabled
                       defaultCountry="GH"
                       value={values.phoneNumber}
                       onChange={(value) => setFieldValue("phoneNumber", value)}
@@ -118,28 +136,9 @@ const PersonalForm = () => {
                     name="email"
                     type="email"
                     placeholder="kwame@gmail.com"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent pl-10"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
                   />
                 </div>
-              </div>
-              <div className="w-full md:w-4/6">
-                <label
-                  htmlFor="address"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Address
-                </label>
-                <PlaceSearch
-                  onPlaceSelect={(value: string) => {
-                    setFieldValue("address", value);
-                  }}
-                  location={values.address}
-                />
-                <ErrorMessage
-                  name="address"
-                  component="div"
-                  className="text-red-500 text-xs mt-1"
-                />
               </div>
               <div className="w-full md:w-4/6">
                 <label
@@ -151,6 +150,7 @@ const PersonalForm = () => {
                 <Field
                   name="role"
                   as="select"
+                  disabled
                   className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
                 >
                   <option value="">Select your role</option>
@@ -169,7 +169,7 @@ const PersonalForm = () => {
               <div className="flex justify-end w-full md:w-4/6 pt-4">
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  // disabled={isSubmitting}
                   className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
                 >
                   Save
