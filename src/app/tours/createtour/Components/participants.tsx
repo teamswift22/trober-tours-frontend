@@ -31,7 +31,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
   const [createSubscriber] = useCreateSubscriberMutation();
   const [addSubscribers] = useAddSubscriberMutation();
   const { data: tourParticipants } = useGetTourSubscribersQuery(formId || "");
-  const { data } = useGetAgencySubscribersQuery("");
+  const { data } = useGetAgencySubscribersQuery({});
   const [addedSubscribers, setAddedSubscribers] = useState<any>([]);
   const [selectedSubscribers, setSelectedSubscribers] = useState<any>([]);
   const [subscribersToAdd, setSubscribersToAdd] = useState<any>([]);
