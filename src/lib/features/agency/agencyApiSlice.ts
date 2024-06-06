@@ -19,6 +19,13 @@ const agencyApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    editAgency: builder.mutation({
+      query: ({ body, agencyId }) => ({
+        url: `/agency/edit?agencyId=${agencyId}`,
+        method: "PATCH",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -26,4 +33,5 @@ export const {
   useGetAgenciesQuery,
   useGetAgencyQuery,
   useRegisterAgencyMutation,
+  useEditAgencyMutation,
 } = agencyApiSlice;
