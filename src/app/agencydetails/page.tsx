@@ -11,6 +11,7 @@ import "./page.css";
 import SuccessModal from "@/components/ui/SuccessModal";
 import { useRegisterAgencyMutation } from "@/lib/features/agency/agencyApiSlice";
 import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object().shape({
@@ -29,6 +30,7 @@ const AgencyDetailForm = ({
 }: {
   setModalIsOpen: (value: boolean) => void;
 }) => {
+  const router = useRouter();
   const [registerAgency] = useRegisterAgencyMutation();
   const { toast } = useToast();
   return (
@@ -53,9 +55,11 @@ const AgencyDetailForm = ({
           setSubmitting(true);
           await registerAgency(values)
             .unwrap()
-            .then(() => {
+            .then((res) => {
+              console.log(res);
               setSubmitting(false);
               setModalIsOpen(true);
+              router.push(`/agencydetails/socials?id=${res.id}`);
             })
             .catch(() =>
               toast({

@@ -7,6 +7,8 @@ import SuccessModal from "@/components/ui/SuccessModal";
 import { useToast } from "@/components/ui/use-toast";
 import { FaFacebook, FaGlobe, FaInstagram } from "react-icons/fa";
 import { FaXTwitter, FaYoutube } from "react-icons/fa6";
+import { useEditAgencyMutation } from "@/lib/features/agency/agencyApiSlice";
+import { useRouter } from "next/navigation";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object().shape({
@@ -19,11 +21,16 @@ const validationSchema = Yup.object().shape({
 
 const SocialForm = ({
   setModalIsOpen,
+  id,
 }: {
   setModalIsOpen: (value: boolean) => void;
+  id: string;
 }) => {
+  const router = useRouter();
   const { toast } = useToast();
   const [tourFrequency, setTourFrequency] = useState("");
+  const [editAgency] = useEditAgencyMutation();
+
   return (
     <div className="w-full max-w-lg flex flex-col items-center justify-center h-full  px-4">
       <div>
@@ -42,9 +49,25 @@ const SocialForm = ({
         }}
         validationSchema={validationSchema}
         onSubmit={async (values, { setSubmitting, setErrors }) => {
-          setSubmitting(true);
-          console.log(values);
-          console.log(tourFrequency);
+          try {
+            setSubmitting(true);
+            await editAgency({
+              body: { ...values, tourFrequency },
+              agencyId: id,
+            }).unwrap();
+            toast({
+              title: "Socials updated",
+              variant: "default",
+              description: "Socials updated successfully",
+            });
+            router.push("/home");
+          } catch (error) {
+            toast({
+              title: "Socials not updated",
+              variant: "destructive",
+              description: "Socials not updated successfully",
+            });
+          }
 
           // Handle form submission, e.g., send data to an API or server
         }}
@@ -162,8 +185,8 @@ const SocialForm = ({
               <div className="grid grid-cols-3 gap-3">
                 <button
                   type="button"
-                  className={`bg-[#FA7454] text-center py-2 text-white rounded-[4.87px] opacity-70 hover:scale-105 ${
-                    tourFrequency == "Once a Month" && "opacity-100"
+                  className={`bg-[#FA7454] text-center py-2 text-white rounded-[4.87px]  hover:scale-105 ${
+                    tourFrequency !== "Once a Month" && "opacity-70"
                   }`}
                   onClick={() => setTourFrequency("Once a Month")}
                 >
@@ -171,8 +194,8 @@ const SocialForm = ({
                 </button>
                 <button
                   type="button"
-                  className={`bg-[#FA7454] text-center py-2 text-white rounded-[4.87px] opacity-70 hover:scale-105 ${
-                    tourFrequency == "Twice a Month" && "opacity-100"
+                  className={`bg-[#FA7454] text-center py-2 text-white rounded-[4.87px]  hover:scale-105 ${
+                    tourFrequency !== "Twice a Month" && "opacity-70"
                   }`}
                   onClick={() => setTourFrequency("Twice a Month")}
                 >
@@ -180,8 +203,8 @@ const SocialForm = ({
                 </button>
                 <button
                   type="button"
-                  className={`bg-[#FA7454] text-center py-2 text-white rounded-[4.87px] opacity-70 hover:scale-105 ${
-                    tourFrequency == "Once a Quater" && "opacity-100"
+                  className={`bg-[#FA7454] text-center py-2 text-white rounded-[4.87px]  hover:scale-105 ${
+                    tourFrequency !== "Once a Quater" && "opacity-70"
                   }`}
                   onClick={() => setTourFrequency("Once a Quater")}
                 >
@@ -214,13 +237,15 @@ const SocialForm = ({
   );
 };
 
-const Page = () => {
+const Page = ({ searchParams }: any) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   return (
     <div>
       <LeftRightLayout
         leftImage={"/agencyDetail.png"}
-        rightContent={<SocialForm setModalIsOpen={setModalIsOpen} />}
+        rightContent={
+          <SocialForm setModalIsOpen={setModalIsOpen} id={searchParams.id} />
+        }
       />
       <SuccessModal
         modalIsOpen={modalIsOpen}
