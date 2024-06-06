@@ -9,74 +9,63 @@ import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import NotificationModal from "@/components/ui/notificationModal";
-
-const previousParticipantsArray = [
-  {
-    id: 1,
-    text: "Previous Participant 1",
-    email: "participant1@gmail.com",
-    number: "+233 245 678 9019",
-    selected: true,
-  },
-  {
-    id: 2,
-    text: "Previous Participant 2",
-    email: "participant2@gmail.com",
-    number: "+233 245 678 9019",
-    selected: false,
-  },
-  {
-    id: 3,
-    text: "Previous Participant 3",
-    email: "participant3@gmail.com",
-    number: "+233 245 678 9019",
-    selected: false,
-  },
-  {
-    id: 4,
-    text: "Previous Participant 4",
-    email: "participant4@gmail.com",
-    number: "+233 245 678 9019",
-    selected: false,
-  },
-  {
-    id: 5,
-    text: "Previous Participant 5",
-    email: "participant5@gmail.com",
-    number: "+233 245 678 9019",
-    selected: false,
-  },
-  {
-    id: 6,
-    text: "Previous Participant 6",
-    email: "participant6@gmail.com",
-    number: "+233 245 678 9019",
-    selected: false,
-  },
-  {
-    id: 7,
-    text: "Previous Participant 7",
-    email: "participant7@gmail.com",
-    number: "+233 245 678 9019",
-    selected: false,
-  },
-];
+import {
+  useGetAgencySubscribersQuery,
+  useGetSubscribersTourSubscriptionsQuery,
+  useSendNotificationToSubscribersMutation,
+} from "@/lib/features/subscriber/subscriberApiSlice";
+import { useToast } from "@/components/ui/use-toast";
 
 const Participants: React.FC = () => {
-  const [previousParticipants, setPreviousParticipants] = useState(
-    previousParticipantsArray
-  );
+  const { data: subscribers } = useGetAgencySubscribersQuery({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedParticipant, setSelectedParticipant] = useState(
-    previousParticipants[0]
+  const [selectedParticipant, setSelectedParticipant] = useState<any>(null);
+  const [participantsSelected, setParticipantsSelected] = useState<any>([]);
+  const { data } = useGetSubscribersTourSubscriptionsQuery(
+    selectedParticipant?.subscriberId
   );
+  const [sendNotifications] = useSendNotificationToSubscribersMutation();
+  const { toast } = useToast();
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
     notes: Yup.string(),
   });
+  const handleSelectParticipant = (subscriberId: string) => {
+    setParticipantsSelected((prev: any[]) => {
+      if (prev.includes(subscriberId)) {
+        return prev.filter((id) => id !== subscriberId);
+      } else {
+        return [...prev, subscriberId];
+      }
+    });
+  };
 
+  const sendNotification = () => {
+    if (participantsSelected.length > 0) {
+      sendNotifications({
+        body: {
+          subscribers: participantsSelected,
+        },
+      })
+        .unwrap()
+        .then(() =>
+          toast({
+            title: "Notification sent",
+            description: "Notification sent successfully",
+            variant: "default",
+          })
+        )
+        .catch((error) => {
+          toast({
+            title: "Error sending notification",
+            description: error.message,
+            variant: "destructive",
+          });
+        });
+    }
+  };
   return (
     <>
       <Head>
@@ -89,38 +78,50 @@ const Participants: React.FC = () => {
               Previous Participants
             </h3>
             <ScrollArea className="max-h-[500px] overflow-auto px-4">
-              {previousParticipants.map((participant) => (
+              {subscribers?.agencySubscriptions?.map((participant: any) => (
                 <div
-                  key={participant.id}
-                  className={`flex items-center justify-between mb-6 rounded-md p-2 ${
-                    participant.id === selectedParticipant?.id
+                  key={participant.subscriberId}
+                  className={`flex items-center justify-between mb-6 cursor-pointer rounded-md p-2 ${
+                    participant.subscriberId ===
+                    selectedParticipant?.subscriberId
                       ? "bg-[#25ADE9]"
                       : ""
                   }`}
                 >
                   <div className="flex items-center justify-between w-full">
                     <div className="flex">
-                      {participant.selected ? (
+                      {participantsSelected.includes(
+                        participant.subscriberId
+                      ) ? (
                         <FiCheckSquare
                           size={20}
                           className="text-green-500 mr-4 cursor-pointer"
+                          onClick={() =>
+                            handleSelectParticipant(participant.subscriberId)
+                          }
                         />
                       ) : (
-                        <FiSquare size={20} className="mr-4 cursor-pointer" />
+                        <FiSquare
+                          size={20}
+                          className="mr-4 cursor-pointer"
+                          onClick={() =>
+                            handleSelectParticipant(participant.subscriberId)
+                          }
+                        />
                       )}
                       <div
                         onClick={() => {
                           setSelectedParticipant(participant);
                         }}
                       >
-                        <p>{participant.text}</p>
+                        <p>{participant.subscriber.name}</p>
                         <p className="text-gray-500 text-sm font-light">
-                          {participant.email}
+                          {participant.subscriber.email}
                         </p>
                       </div>
                     </div>
                     <p className="text-gray-500 text-sm font-light">
-                      {participant.number}
+                      {participant.subscriber.phoneNumber}
                     </p>
                   </div>
                 </div>
@@ -128,7 +129,7 @@ const Participants: React.FC = () => {
             </ScrollArea>
             <div className="flex flex-col justify-between items-start px-6 mt-2">
               <button
-                onClick={() => setModalIsOpen(true)}
+                onClick={() => sendNotification()}
                 className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-1 text-sm rounded-lg w-full sm:w-3/6"
               >
                 Send Notification
@@ -140,9 +141,9 @@ const Participants: React.FC = () => {
             <div className="bg-white p-4 sm:p-10 rounded-md w-full">
               <Formik
                 initialValues={{
-                  name: selectedParticipant?.text || "",
-                  email: selectedParticipant?.email || "",
-                  notes: selectedParticipant?.number || "",
+                  name: selectedParticipant?.subscriber?.name || "",
+                  email: selectedParticipant?.subscriber?.email || "",
+                  notes: selectedParticipant?.subscriber?.phoneNumber || "",
                 }}
                 enableReinitialize
                 validationSchema={validationSchema}
@@ -221,15 +222,14 @@ const Participants: React.FC = () => {
               <div className="mt-6">
                 <p className="mb-2">Participated Tours</p>
                 <div className="flex flex-row gap-5 flex-wrap">
-                  <div className="px-4 py-2 bg-[#82D0F3] rounded-sm text-sm text-white">
-                    Akosombo Invasion
-                  </div>
-                  <div className="px-4 py-2 bg-[#82D0F3] rounded-sm text-sm text-white">
-                    Akosombo Invasion
-                  </div>
-                  <div className="px-4 py-2 bg-[#82D0F3] rounded-sm text-sm text-white">
-                    Akosombo Invasion
-                  </div>
+                  {data?.tourSubscriptions?.map((tour: any) => (
+                    <div
+                      className="px-4 py-2 bg-[#82D0F3] rounded-sm text-sm text-white"
+                      key={tour._id}
+                    >
+                      {tour?.tour?.name}
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="flex justify-end">

@@ -15,6 +15,17 @@ import {
 } from "@/lib/features/agency-member/agencyMemeberSlice";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Team: React.FC = () => {
   const participantSchema = Yup.object().shape({
@@ -72,7 +83,7 @@ const Team: React.FC = () => {
           >
             {({ isSubmitting, setFieldValue, values }) => {
               return (
-                <Form className="space-y-6 p-4">
+                <Form className="space-y-6 p-4" id="teamMemberForm">
                   <p className="font-bold">Add Team Members</p>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
@@ -155,15 +166,33 @@ const Team: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex flex-col justify-between items-end">
-                    <div className="bg-black h-5/6 w-5/6 rounded-lg"></div>
-                    <button
-                      type="submit"
-                      className="w-full md:w-auto bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-4 rounded-lg"
-                    >
-                      {memberToUpdate?._id
-                        ? "Edit Team Member"
-                        : "Add Team Member"}
-                    </button>
+                    <AlertDialog>
+                      <AlertDialogTrigger className="w-full md:w-auto bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 px-4 rounded-lg">
+                        {memberToUpdate?._id
+                          ? "Edit Team Member"
+                          : "Add Team Member"}
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            {!memberToUpdate?._id
+                              ? "You are adding the following individual to your agency."
+                              : "You are editing the information of the selected team member"}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            type="submit"
+                            form="teamMemberForm"
+                            className="bg-[#FA7454] hover:bg-orange-600"
+                          >
+                            {memberToUpdate?._id ? "Edit Member" : "Add Member"}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </Form>
               );

@@ -49,3 +49,11 @@ export function formatDateToCustomFormat(date: string) {
   const formattedDate = `${day}${getDaySuffix(day)} ${month}`;
   return formattedDate;
 }
+
+export function formatDate(date: string): string {
+  const dateToFormat = new Date(date);
+  return dateToFormat.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
