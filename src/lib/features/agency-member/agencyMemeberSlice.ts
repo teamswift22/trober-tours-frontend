@@ -23,7 +23,7 @@ const agencyMemberApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Agency-Member"],
     }),
     getAgencyMembers: builder.query({
-      query: () => `/agency-member/`,
+      query: () => `/agency-member`,
       providesTags: ["Agency-Member"],
     }),
   }),
