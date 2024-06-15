@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import Head from "next/head";
 import Image from "next/image";
@@ -15,6 +15,7 @@ import { logout } from "@/lib/features/auth/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { useLogoutMutation } from "@/lib/features/auth/authApiSlice";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Layout = ({
   title,
@@ -66,6 +67,15 @@ const Layout = ({
     }
   };
 
+  const intials = useMemo(() => {
+    if (userData?.fullName) {
+      const splitName = userData?.fullName?.split(" ");
+      const firstInitial = splitName[0]?.split("")[0];
+      const secondInitial = splitName[splitName.length - 1]?.split("")[0];
+      return firstInitial + secondInitial;
+    }
+  }, [userData]);
+
   return (
     <>
       <Head>
@@ -114,7 +124,7 @@ const Layout = ({
 
         {/* Main Content */}
         <main className="flex-1 bg-[#E8F6FD] md:pl-64">
-          <div className="p-6 md:px-10 bg-white fixed w-full z-10">
+          <div className=" px-4 pt-3 md:p-6 md:px-10 bg-white fixed w-full md:w-[calc(100vw-256px)] z-10">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center">
               <div className="mb-6 md:mb-0">
                 <h1 className="text-2xl font-semibold text-gray-900">
@@ -125,16 +135,10 @@ const Layout = ({
                 </p>
               </div>
               {/* Profile image */}
-              <div>
-                <Image
-                  src="/logo.png"
-                  alt="Profile"
-                  width={40}
-                  height={40}
-                  objectFit="cover"
-                  className="rounded-full hidden md:block"
-                />
-              </div>
+              <Avatar className="hidden md:block">
+                <AvatarImage src={""} />
+                <AvatarFallback>{intials}</AvatarFallback>
+              </Avatar>
             </div>
           </div>
           <div className="mt-32 md:mt-16 md:pt-20 h-[calc(100vh-128px)] md:h-[calc(100vh-104px)] overflow-auto">

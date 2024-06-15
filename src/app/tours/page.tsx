@@ -41,7 +41,9 @@ const ManageTours = () => {
             />
             <div className="flex flex-col">
               <h3 className="text-lg font-semibold">{tour.name}</h3>
-              <p className="text-xs font-light h-5">{tour.description}</p>
+              <p className="text-xs font-light min-h-5 line-clamp-2">
+                {tour.description}
+              </p>
               <div className="flex justify-between items-center mt-4">
                 <div className="space-y-1">
                   <p className="text-xs">
