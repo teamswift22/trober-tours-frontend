@@ -18,6 +18,7 @@ const RequireAuth = ({
 
     const isProtectedRoute = !(
       pathName.includes("login") ||
+      pathName.includes("public") ||
       pathName.includes("signup") ||
       pathName.includes("waitlist") ||
       pathName === "/"

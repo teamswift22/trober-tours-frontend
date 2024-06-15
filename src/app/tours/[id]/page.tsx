@@ -82,7 +82,7 @@ const TourDetailsCard = ({ id }: { id: string }) => {
             }
           />
           <div className="pt-12 w-full ">
-            <p className="mb-6 text-[#5D5D5B] font-light text-sm md:w-5/6">
+            <p className="mb-6 text-[#5D5D5B] font-light text-sm md:w-5/6 line-clamp-4">
               {data?.description}
             </p>
             <div className="flex flex-wrap gap-4">

@@ -94,7 +94,7 @@ const Dashboard: React.FC = () => {
                   <p className="text-3xl mb-2 text-white">
                     {upcomingTour?.name}
                   </p>
-                  <p className="text-xs mb-4 font-thin text-white md:w-4/6">
+                  <p className="text-xs mb-4 font-thin text-white md:w-4/6 max-w-[436px] line-clamp-2">
                     {upcomingTour?.description}...
                   </p>
                   <div className="flex flex-col items-center md:flex-row gap-4">
