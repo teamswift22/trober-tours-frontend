@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 
 const Navbar = () => {
   return (
-    <div className="w-full px-5 lg:px-0 py-5 font-sora ">
+    <div className="w-full px-5  py-5 font-sora ">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-x-3">
           <Image src="/logo.png" width={50} height={50} alt="Logo" />

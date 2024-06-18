@@ -28,6 +28,7 @@ const Location = ({
 }) => {
   const [eta, setEta] = useState({});
   const [stop, setStop] = useState<any>({});
+  const [stopToEdit, setStopToEdit] = useState<any>({});
   const [arrayOfStops, setArrayOfStops] = useState<any>([]);
   const [state, dispatch] = useReducer(locationReducer, {
     destination: {},
@@ -58,15 +59,19 @@ const Location = ({
     setEta({ distance: data.distance });
   };
 
-  const handleSetStop = async (data: any) => {
-    setArrayOfStops((prev: any) => [data, ...prev]);
-    setStop({});
-  };
-
   const handleRemoveStop = (stopId: string) => {
     setArrayOfStops((prev: any) => {
       return prev?.filter((stop: any) => stop.id !== stopId);
     });
+  };
+
+  const handleSetStop = async (data: any) => {
+    if (stopToEdit?.id) {
+      handleRemoveStop(stopToEdit.id);
+    }
+    setArrayOfStops((prev: any) => [data, ...prev]);
+    setStop({});
+    setStopToEdit({});
   };
 
   const handleAddRoute = async () => {
@@ -84,6 +89,7 @@ const Location = ({
 
   const handleSetEdit = (stop: any) => {
     setStop(stop);
+    setStopToEdit(stop);
   };
 
   useEffect(() => {
@@ -103,6 +109,8 @@ const Location = ({
     }
   }, [tourDetails]);
 
+  console.log(stop);
+  console.log(arrayOfStops);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
       <div>
@@ -147,7 +155,7 @@ const Location = ({
               onClick={() => handleSetStop(stop)}
               className="bg-[#FA7454] min-w-28 hover:bg-orange-600 text-white font-normal py-2 px-3 rounded-lg"
             >
-              Add Stop
+              {stopToEdit.id ? "Update" : "Add Stop"}
             </button>
           </div>
         </div>

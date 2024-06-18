@@ -31,7 +31,12 @@ const Itinerary = ({
   const [selectedItineray, setSelectedItineray] = useState<any>(null);
   const { toast } = useToast();
 
-  const stops = useMemo(() => tourDetails?.stops || [], [tourDetails]);
+  const stops = useMemo(() => {
+    const stops = tourDetails?.stops || [];
+    const start = tourDetails?.startingPoint;
+    const end = tourDetails?.destination || [];
+    return [start, ...stops, end];
+  }, [tourDetails]);
 
   const handleItinerayReset = (itinerayData: any) => {
     setSelectedItineray(itinerayData);
