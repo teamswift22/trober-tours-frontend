@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
@@ -8,6 +8,7 @@ import {
   useGetActivitiesQuery,
 } from "@/lib/features/tours/toursApiSlice";
 import { useToast } from "@/components/ui/use-toast";
+import { v4 as uuidv4 } from "uuid";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Itinerary name is required"),
@@ -29,6 +30,8 @@ const Itinerary = ({
   const [editActivity] = useEditActivityMutation();
   const { data: itineray } = useGetActivitiesQuery(formId);
   const [selectedItineray, setSelectedItineray] = useState<any>(null);
+  const [addedItineray, setAddedItineray] = useState<any>([]);
+  const [existingItinearyIds, setExistingItinearyIds] = useState<string[]>([]);
   const { toast } = useToast();
 
   const stops = useMemo(() => {
@@ -38,8 +41,40 @@ const Itinerary = ({
     return [start, ...stops, end];
   }, [tourDetails]);
 
+  const allItineray = useMemo(() => {
+    if (itineray) {
+      return [...addedItineray, ...itineray];
+    } else {
+      return addedItineray;
+    }
+  }, [addedItineray, itineray]);
+
   const handleItinerayReset = (itinerayData: any) => {
     setSelectedItineray(itinerayData);
+  };
+
+  useEffect(() => {
+    if (itineray) {
+      setExistingItinearyIds(itineray.map((item: any) => item._id));
+    }
+  }, [itineray]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      if (existingItinearyIds.includes(id)) {
+        await editActivity({
+          activityId: id,
+          body: { deleted: true },
+        }).unwrap();
+      } else {
+        setAddedItineray((prev: any) =>
+          prev.filter((item: any) => item._id !== id)
+        );
+      }
+      toast({ title: "Itinerary Deleted" });
+    } catch (error) {
+      toast({ title: "Failed to delete itinerary" });
+    }
   };
 
   return (
@@ -54,19 +89,36 @@ const Itinerary = ({
           }}
           enableReinitialize
           validationSchema={validationSchema}
-          onSubmit={async (values, { setSubmitting }) => {
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
               if (selectedItineray) {
-                await editActivity({
-                  activityId: selectedItineray?._id,
-                  body: values,
-                }).unwrap();
+                if (existingItinearyIds?.includes(selectedItineray?._id)) {
+                  await editActivity({
+                    activityId: selectedItineray?._id,
+                    body: values,
+                  }).unwrap();
+                } else {
+                  console.log("running now");
+                  setAddedItineray((prev: any) => {
+                    return prev.map((item: any) => {
+                      if (item._id === selectedItineray?._id) {
+                        return { ...item, ...values };
+                      } else {
+                        return item;
+                      }
+                    });
+                  });
+                }
+                setSelectedItineray(null);
                 toast({ title: "Itinerary edited" });
               } else {
-                await addActivity({
-                  tourId: formId,
-                  body: values,
-                }).unwrap();
+                const newId = uuidv4();
+                setAddedItineray((prev: any) => [
+                  ...prev,
+                  { tourId: formId, ...values, _id: newId },
+                ]);
+                setSelectedItineray(null);
+                resetForm();
                 toast({ title: "Itinerary added" });
               }
               setSubmitting(false);
@@ -131,8 +183,8 @@ const Itinerary = ({
                 >
                   <option value="">Select a location</option>
                   {stops?.map((item: any) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
+                    <option key={item?.id} value={item?.id}>
+                      {item?.name}
                     </option>
                   ))}
                 </Field>
@@ -161,12 +213,21 @@ const Itinerary = ({
                   className="text-red-500 text-xs"
                 />
               </div>
-              <div className="flex justify-end mt-10">
+              <div className="flex justify-end gap-2 mt-10">
+                {selectedItineray && (
+                  <button
+                    type="button"
+                    className="text-destructive font-medium"
+                    onClick={() => setSelectedItineray(null)}
+                  >
+                    Cancel
+                  </button>
+                )}
                 <button
                   type="submit"
                   className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full sm:w-1/3"
                 >
-                  Add Activity
+                  {selectedItineray ? "Edit Activity" : "Add Activity"}
                 </button>
               </div>
             </Form>
@@ -177,13 +238,13 @@ const Itinerary = ({
         <div className="mt-10 bg-white rounded-lg p-4 h-fit max-h-[350px] overflow-auto w-full sm:w-5/6 sm:mb-14">
           <h1 className="font-semibold">Added Itinerary</h1>
           <div className="mt-6 px-4">
-            {itineray?.map((item: any) => (
+            {allItineray?.map((item: any) => (
               <div
-                key={item._id}
+                key={item?._id}
                 className="flex flex-row justify-between items-center mb-4"
               >
                 <div>
-                  <p>{item.name}</p>
+                  <p>{item?.name}</p>
                   <p className="text-[#BDBDBD] text-sm">{item?.distance}</p>
                 </div>
                 <div className="flex gap-2">
@@ -193,7 +254,10 @@ const Itinerary = ({
                   >
                     Edit
                   </button>
-                  <button className="bg-[#FDC3B5] px-4 py-1 rounded-full text-sm text-white">
+                  <button
+                    className="bg-[#FDC3B5] px-4 py-1 rounded-full text-sm text-white"
+                    onClick={() => handleDelete(item?._id)}
+                  >
                     Delete
                   </button>
                 </div>
@@ -202,7 +266,20 @@ const Itinerary = ({
           </div>
         </div>
         <button
-          onClick={() => getActiveTab("Transport")}
+          onClick={async () => {
+            try {
+              if (addedItineray?.length) {
+                await addActivity({
+                  tourId: formId,
+                  body: addedItineray,
+                }).unwrap();
+              }
+              toast({ title: "Itinerary saved" });
+              getActiveTab("Transport");
+            } catch (error) {
+              toast({ title: "Failed to save itinerary" });
+            }
+          }}
           className="bg-[#FA7454] hover:bg-orange-600 text-white font-normal py-3 rounded-lg w-full sm:w-5/6 mt-6 sm:mt-0"
         >
           Next
