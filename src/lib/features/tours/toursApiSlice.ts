@@ -76,6 +76,7 @@ const tourApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Activities"],
     }),
     getActivities: builder.query({
       query: (id) => `/tour/activities/${id}`,
