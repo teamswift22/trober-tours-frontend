@@ -13,7 +13,13 @@ interface UploadRequest {
 const tourApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getTours: builder.query({
-      query: (params?: string) => `/tour?search=${params}`,
+      query: ({
+        params,
+        filterQuery,
+      }: {
+        params: string;
+        filterQuery: string;
+      }) => `/tour?search=${params}&filterQuery=${filterQuery.toLowerCase()}`,
     }),
     getTour: builder.query({
       query: (id) => `/tour/${id}`,

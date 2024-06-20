@@ -12,7 +12,12 @@ const ManageTours = () => {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "All Tours";
 
-  const { data: allTours, isLoading, isError, error } = useGetToursQuery("");
+  const {
+    data: allTours,
+    isLoading,
+    isError,
+    error,
+  } = useGetToursQuery({ params: "", filterQuery: activeTab });
 
   const handleTourClick = (tourName: string) => {
     router.push(`?tab=${tourName}`);
