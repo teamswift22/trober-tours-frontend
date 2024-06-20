@@ -84,7 +84,9 @@ const Itinerary = ({
           initialValues={{
             name: selectedItineray?.name || "",
             notes: selectedItineray?.notes || "",
-            date: selectedItineray?.date?.split("T")[0] || "",
+            date:
+              selectedItineray?.date?.split("T")[0] ||
+              tourDetails?.startDate.split("T")[0],
             location: selectedItineray?.location || "",
           }}
           enableReinitialize
@@ -205,6 +207,8 @@ const Itinerary = ({
                 <Field
                   type="date"
                   name="date"
+                  min={tourDetails?.startDate.split("T")[0]}
+                  max={tourDetails?.endDate.split("T")[0]}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />
                 <ErrorMessage

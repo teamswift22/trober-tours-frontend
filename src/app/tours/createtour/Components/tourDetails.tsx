@@ -119,6 +119,7 @@ const TourDetails = ({
                 <Field
                   type="date"
                   name="endDate"
+                  min={values?.startDate}
                   className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />
                 <ErrorMessage
