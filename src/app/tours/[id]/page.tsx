@@ -43,9 +43,7 @@ const TourDetailsCard = ({ id }: { id: string }) => {
   useEffect(() => {
     setActiveImage(data?.media[0]);
   }, [data]);
-  const setActiveImageFxn = (
-    tour: SetStateAction<{ alt: string; index: number; src: string }>
-  ) => {
+  const setActiveImageFxn = (tour: SetStateAction<string>) => {
     setActiveImage(tour);
   };
   return (
