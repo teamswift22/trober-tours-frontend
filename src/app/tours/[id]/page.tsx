@@ -1,6 +1,6 @@
 "use client";
 import Layout from "@/components/layout";
-import React, { SetStateAction, useState, useRef } from "react";
+import React, { SetStateAction, useState, useRef, useEffect } from "react";
 import { HiOutlineUser } from "react-icons/hi2";
 import { PiCalendarCheck } from "react-icons/pi";
 import { TfiLocationPin } from "react-icons/tfi";
@@ -25,8 +25,8 @@ const tourImages = [
 ];
 
 const TourDetailsCard = ({ id }: { id: string }) => {
-  const [activeImage, setActiveImage] = useState(tourImages[0]);
-  const { data, isLoading, isError } = useGetTourQuery(id);
+  const [activeImage, setActiveImage] = useState<any>(null);
+  const { data } = useGetTourQuery(id);
   const { data: tourParticipants } = useGetTourSubscribersQuery(id || "");
 
   const scrollContainerRef = useRef(null);
@@ -40,9 +40,10 @@ const TourDetailsCard = ({ id }: { id: string }) => {
     }
   };
 
-  const setActiveImageFxn = (
-    tour: SetStateAction<{ alt: string; index: number; src: string }>
-  ) => {
+  useEffect(() => {
+    setActiveImage(data?.media[0]);
+  }, [data]);
+  const setActiveImageFxn = (tour: SetStateAction<string>) => {
     setActiveImage(tour);
   };
   return (
@@ -64,17 +65,17 @@ const TourDetailsCard = ({ id }: { id: string }) => {
         {/* Left - Image Gallery */}
         <div className="flex flex-col gap-4 md:w-6/12">
           <img
-            src={activeImage.src}
-            alt={activeImage.alt}
+            src={activeImage}
+            alt={activeImage}
             className="w-full h-80 md:h-96 object-cover rounded-lg"
           />
           <ImageScrollContainer
             ImageMap={() =>
-              tourImages.map((tour, index) => (
+              data?.media.map((tour: string) => (
                 <img
-                  key={index}
-                  src={tour.src}
-                  alt={tour.alt}
+                  key={tour}
+                  src={tour}
+                  alt={tour}
                   onClick={() => setActiveImageFxn(tour)}
                   className="object-cover rounded-lg h-20 w-20 md:h-24 md:min-w-24 hover:cursor-pointer"
                 />

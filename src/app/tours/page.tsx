@@ -40,7 +40,7 @@ const ManageTours = () => {
             className="p-4 w-66  rounded-2xl overflow-hidden cursor-pointer hover:shadow-2xl transition-shadow duration-300 "
           >
             <img
-              src={tour?.image || "/no-img.jpg"}
+              src={tour?.media[0] || "/no-img.jpg"}
               alt={tour.name}
               className="w-full h-48 object-cover rounded-2xl mb-2"
             />
