@@ -64,7 +64,7 @@ const todos = [
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
-  const { data: allTours } = useGetToursQuery("");
+  const { data: allTours } = useGetToursQuery({ params: "", filterQuery: "" });
 
   const upcomingTour = useMemo(() => allTours?.tours[0], [allTours]);
 
