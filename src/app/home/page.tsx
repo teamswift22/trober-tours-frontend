@@ -16,6 +16,7 @@ import { useGetToursQuery } from "@/lib/features/tours/toursApiSlice";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDateToCustomFormat } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 
 const todos = [
   {
@@ -67,6 +68,19 @@ const Dashboard: React.FC = () => {
   const { data: allTours } = useGetToursQuery({ params: "", filterQuery: "" });
 
   const upcomingTour = useMemo(() => allTours?.tours[0], [allTours]);
+
+  const selectCategoryIcon = (category: string) => {
+    switch (category) {
+      case "adventure":
+        return "/adventure.png";
+      case "leisure":
+        return "/leisure.png";
+      case "games":
+        return "/games.png";
+      default:
+        return "/games.png";
+    }
+  };
 
   return (
     <>
@@ -163,7 +177,14 @@ const Dashboard: React.FC = () => {
                         className="grid grid-cols-4 items-center p-4 bg-white rounded-xl hover: cursor-pointer"
                       >
                         <div className="flex col-span-2 gap-2 md:gap-6">
-                          <div className="h-12 w-12 rounded-xl bg-orange-200" />
+                          <div className="h-12 w-12 rounded-xl flex items-center justify-center bg-orange-200">
+                            <Image
+                              src={selectCategoryIcon(tour?.category)}
+                              alt=""
+                              width={20}
+                              height={20}
+                            />
+                          </div>
                           <div className="flex flex-col">
                             <p className="font-light">{tour?.name}</p>
                             <p className="text-[#BDBDBD] font-light">
