@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useGoogleMaps } from "@/lib/google-maps/script";
+import { useField, useFormikContext } from "formik";
 
 const options = {
   componentRestrictions: { country: "gh" },
@@ -10,13 +11,15 @@ const options = {
 const PlaceSearch = ({
   onPlaceSelect,
   location,
+  field,
 }: {
   onPlaceSelect?: any;
   location?: any;
+  field?: any;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-  const [searchValue, setSearchValue] = useState<string | undefined>("");
+  const [searchValue, setSearchValue] = useState<string>("");
 
   const { isLoaded } = useGoogleMaps();
 
@@ -29,15 +32,17 @@ const PlaceSearch = ({
       id: place?.place_id,
     };
     onPlaceSelect(placeInfo);
-    setSearchValue(place?.name);
+    setSearchValue(place?.name || "");
   };
 
   useEffect(() => {
-    setSearchValue(location?.name || "");
-  }, [location]);
+    location?.name
+      ? setSearchValue(location?.name || "")
+      : setSearchValue(field?.value.name || "");
+  }, [field?.value, location]);
 
   useEffect(() => {
-    if (window.google) {
+    if (isLoaded && window.google) {
       autocompleteRef.current = new window.google.maps.places.Autocomplete(
         inputRef.current as HTMLInputElement,
         options
@@ -54,7 +59,9 @@ const PlaceSearch = ({
     <input
       ref={inputRef}
       value={searchValue}
-      onChange={(e) => setSearchValue(e.target.value)}
+      onChange={(e) => {
+        setSearchValue(e.target.value);
+      }}
       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
     />
   );

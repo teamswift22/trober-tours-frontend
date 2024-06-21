@@ -5,40 +5,67 @@ import * as Yup from "yup";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { FiMail, FiPhone } from "react-icons/fi";
+import { useGetAgencyMemberQuery } from "@/lib/features/agency-member/agencyMemeberSlice";
+import {
+  useEditAgencyMutation,
+  useGetAgencyQuery,
+} from "@/lib/features/agency/agencyApiSlice";
+import { checkObjectEquality } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
+import PlaceSearch from "@/components/google-maps/PlaceSearch";
 
 const validationSchema = Yup.object({
-  agencyName: Yup.string().required("Agency Name is required"),
+  name: Yup.string().required("Agency Name is required"),
   phoneNumber: Yup.string()
     .matches(/^\+?\d+$/, "Phone number is not valid")
     .required("Phone number is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  address: Yup.string(),
+  address: Yup.object(),
   about: Yup.string().required("About is required"),
   toursCreated: Yup.number().required("Tours Created is required"),
   totalParticipants: Yup.number().required("Total Participants is required"),
 });
 
 const CompanyForm = () => {
+  const { data: userData } = useGetAgencyMemberQuery("");
+  const { data: agency } = useGetAgencyQuery(userData?.agencyId);
+  const [editAgency] = useEditAgencyMutation();
+  const { toast } = useToast();
   return (
     <div className="p-4">
       <Formik
+        enableReinitialize
         initialValues={{
-          agencyName: "",
-          phoneNumber: "",
-          email: "",
-          address: "",
-          about: "",
-          toursCreated: "",
-          totalParticipants: "",
+          name: agency?.name || "",
+          phoneNumber: agency?.phoneNumber || "",
+          email: agency?.email || "",
+          address: agency?.address || "",
+          about: agency?.about || "",
+          //TODO: Update the calculations for the tourscreated and participants from the backend
+          toursCreated: agency?.toursCreated || 0,
+          totalParticipants: agency?.totalParticipants || 0,
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
+        onSubmit={async (values, { setSubmitting }) => {
+          console.log({ values, agency });
+          const equalityResult = checkObjectEquality(values, agency);
+          if (equalityResult == true) {
+            toast({ title: "Nothing to update" });
+            return;
+          }
+          try {
+            await editAgency({
+              agencyId: agency?._id,
+              body: values,
+            }).unwrap();
+            toast({ title: "Agency details updated successfully" });
             setSubmitting(false);
-          }, 400);
+          } catch (error) {
+            toast({ title: "Failed to update agency details" });
+            setSubmitting(false);
+          }
         }}
       >
         {({ isSubmitting, setFieldValue, values }) => (
@@ -67,19 +94,19 @@ const CompanyForm = () => {
               <div className="space-y-4">
                 <div>
                   <label
-                    htmlFor="agencyName"
+                    htmlFor="name"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
                     Agency Name
                   </label>
                   <Field
-                    name="agencyName"
+                    name="name"
                     type="text"
-                    placeholder="Kwame Fuso"
+                    placeholder="Safari Resorts"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   />
                   <ErrorMessage
-                    name="agencyName"
+                    name="name"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -92,12 +119,12 @@ const CompanyForm = () => {
                     Agency Email
                   </label>
                   <div className="relative">
-                    <FiMail className="absolute left-3 top-3 text-gray-400" />
+                    <FiMail className="absolute right-3 top-3 text-gray-400" />
                     <Field
                       name="email"
                       type="email"
-                      placeholder="kwame@gmail.com"
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pl-10"
+                      placeholder="safari@gmail.com"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
                   </div>
                   <ErrorMessage
@@ -114,13 +141,13 @@ const CompanyForm = () => {
                     Agency Phone Number
                   </label>
                   <div className="relative">
-                    <FiPhone className="absolute left-3 top-3 text-gray-400" />
+                    <FiPhone className="absolute right-3 top-3 text-gray-400" />
                     <PhoneInput
                       international
                       defaultCountry="GH"
                       value={values.phoneNumber}
                       onChange={(value) => setFieldValue("phoneNumber", value)}
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pl-10"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
                   </div>
                   <ErrorMessage
@@ -136,12 +163,16 @@ const CompanyForm = () => {
                   >
                     Agency Address
                   </label>
-                  <Field
-                    name="address"
-                    type="text"
-                    placeholder="Address"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
+                  <Field name="address">
+                    {({ field }: { field: any }) => (
+                      <PlaceSearch
+                        onPlaceSelect={(place: any) => {
+                          setFieldValue("address", place);
+                        }}
+                        field={field}
+                      />
+                    )}
+                  </Field>
                   <ErrorMessage
                     name="address"
                     component="div"
@@ -158,7 +189,7 @@ const CompanyForm = () => {
                   <Field
                     name="about"
                     as="textarea"
-                    placeholder="Owner"
+                    placeholder="About Safari Resorts"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   />
                   <ErrorMessage
@@ -170,7 +201,7 @@ const CompanyForm = () => {
                 <div className="md:col-span-2 flex justify-end mt-6">
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    // disabled={isSubmitting}
                     className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
                   >
                     Save

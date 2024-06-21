@@ -3,6 +3,8 @@ import React, { useEffect, useMemo, useReducer, useState } from "react";
 import PlaceSearch from "@/components/google-maps/PlaceSearch";
 import MapComponent from "@/components/google-maps/MapComponent";
 import { useToast } from "@/components/ui/use-toast";
+import { useGetAgencyQuery } from "@/lib/features/agency/agencyApiSlice";
+import { useGetAgencyMemberQuery } from "@/lib/features/agency-member/agencyMemeberSlice";
 
 const locationReducer = (state: any, action: any) => {
   switch (action.type) {
@@ -26,6 +28,9 @@ const Location = ({
   tourDetails: any;
   getActiveTab: (tab: any) => void;
 }) => {
+  const { data: userData } = useGetAgencyMemberQuery("");
+  const { data: agency } = useGetAgencyQuery(userData?.agencyId);
+  console.log(agency);
   const [eta, setEta] = useState({});
   const [stop, setStop] = useState<any>({});
   const [stopToEdit, setStopToEdit] = useState<any>({});
@@ -109,8 +114,6 @@ const Location = ({
     }
   }, [tourDetails]);
 
-  console.log(stop);
-  console.log(arrayOfStops);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
       <div>
@@ -198,6 +201,7 @@ const Location = ({
             locations={state}
             handleEtaChange={handleEtaChange}
             stops={arrayOfStops}
+            agency={agency}
           />
         </div>
         <button

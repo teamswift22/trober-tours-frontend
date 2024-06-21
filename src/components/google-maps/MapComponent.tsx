@@ -9,23 +9,25 @@ const containerStyle = {
   height: "100%",
 };
 
-const center = {
-  lat: 5.614818,
-  lng: -0.205874,
-};
-
 const MapComponent = ({
   locations,
   handleEtaChange,
   stops,
+  agency,
 }: {
   locations?: any;
   handleEtaChange: (place: any) => void;
   stops?: any;
+  agency?: any;
 }) => {
   const [map, setMap] = useState<any>(null);
   const [directions, setDirections] = useState<any>(null);
   const { isLoaded } = useGoogleMaps();
+
+  const center = {
+    lat: agency?.address?.lat || 5.614818,
+    lng: agency?.address?.lng || -0.205874,
+  };
 
   const calculateDirections = useCallback(() => {
     if (
@@ -123,7 +125,7 @@ const MapComponent = ({
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={10}
+      zoom={15}
       onLoad={onLoad}
       onUnmount={onUnmount}
     >

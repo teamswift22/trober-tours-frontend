@@ -12,6 +12,7 @@ import SuccessModal from "@/components/ui/SuccessModal";
 import { useRegisterAgencyMutation } from "@/lib/features/agency/agencyApiSlice";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import PlaceSearch from "@/components/google-maps/PlaceSearch";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object().shape({
@@ -21,7 +22,7 @@ const validationSchema = Yup.object().shape({
     .matches(/^\+?\d+$/, "Phone number is not valid")
     .required("Phone number is required"),
   about: Yup.string().required("Agency Details is required"),
-  address: Yup.string().required("Address is required"),
+  address: Yup.object().required("Address is required"),
   role: Yup.string().required("Selecting your role is required."),
 });
 
@@ -50,6 +51,7 @@ const AgencyDetailForm = ({
           address: "",
           role: "",
         }}
+        enableReinitialize
         validationSchema={validationSchema}
         onSubmit={async (values, { setSubmitting, setErrors }) => {
           setSubmitting(true);
@@ -161,14 +163,16 @@ const AgencyDetailForm = ({
             </label>
             <div className="mb-4 relative">
               <TfiLocationPin className="absolute right-3 top-3 text-gray-400" />
-              <Field
-                name="address"
-                type="text"
-                placeholder="No. 20 Banana Street"
-                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent ${
-                  errors.address ? "border-red-500" : ""
-                }`}
-              />
+              <Field name="address">
+                {({ field }: { field: any }) => (
+                  <PlaceSearch
+                    onPlaceSelect={(place: any) => {
+                      setFieldValue("address", place);
+                    }}
+                    field={field}
+                  />
+                )}
+              </Field>
             </div>
             <div>
               <label
