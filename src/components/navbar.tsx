@@ -5,12 +5,16 @@ const NavBar = ({
   navArray,
   getActiveTab,
   activeTab,
+  progessIndicator = false,
 }: {
   navArray: Array<string>;
   getActiveTab: (tab: any) => void;
   activeTab: string;
+  progessIndicator?: boolean;
 }) => {
   const [showMenu, setShowMenu] = useState(false);
+
+  console.log(navArray.indexOf(activeTab));
 
   return (
     <div className="bg-white mb-4 px-2">
@@ -36,12 +40,16 @@ const NavBar = ({
           </button>
           <span className="text-lg font-bold md:hidden">{activeTab}</span>
         </div>
-        <div className="hidden md:flex md:flex-start w-full">
+        <div className="hidden md:flex md:flex-start bg-white gap-x-2 w-full">
           {navArray.map((navItem, index) => {
             return (
               <button
                 key={index}
                 className={`px-4 py-4 hover:cursor-pointer ${
+                  navArray.indexOf(activeTab) > navArray.indexOf(navItem) &&
+                  progessIndicator &&
+                  "bg-[#82D0F3] text-white"
+                } ${
                   activeTab === navItem
                     ? "bg-button-blue-bg text-white"
                     : "text-[#BDBDBD]"
