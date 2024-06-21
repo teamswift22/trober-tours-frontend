@@ -173,8 +173,10 @@ const Dashboard: React.FC = () => {
                   allTours?.tours?.map((tour: any) => {
                     return (
                       <div
-                        key={tour.id}
+                        key={tour._id}
                         className="grid grid-cols-4 items-center p-4 bg-white rounded-xl hover: cursor-pointer"
+                        role="button"
+                        onClick={() => router.push(`/tours/${tour._id}`)}
                       >
                         <div className="flex col-span-2 gap-2 md:gap-6">
                           <div className="h-12 w-12 rounded-xl flex items-center justify-center bg-orange-200">
