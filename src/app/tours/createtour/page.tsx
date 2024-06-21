@@ -147,6 +147,7 @@ const CreateTour = () => {
         navArray={navlinks}
         getActiveTab={getActiveTab}
         activeTab={pageStep}
+        progessIndicator
       />
 
       {list[pageStep as keyof IList]}
