@@ -161,9 +161,9 @@ const TourDetails = ({
                   className="shadow border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
                   <option value="">Select a category</option>
-                  <option value="manager">Adventure</option>
-                  <option value="tour_guide">Leisure</option>
-                  <option value="marketing">Games</option>
+                  <option value="adventure">Adventure</option>
+                  <option value="leisure">Leisure</option>
+                  <option value="games">Games</option>
                 </Field>
                 <ErrorMessage
                   name="category"
