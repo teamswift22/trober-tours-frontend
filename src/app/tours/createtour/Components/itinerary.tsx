@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Itinerary name is required"),
-  notes: Yup.string().required("Activity description is required"),
+  // notes: Yup.string().required("Activity description is required"),
   date: Yup.date().required("Start date is required"),
   location: Yup.string().required("Location is required"),
 });
@@ -83,7 +83,7 @@ const Itinerary = ({
         <Formik
           initialValues={{
             name: selectedItineray?.name || "",
-            notes: selectedItineray?.notes || "",
+            // notes: selectedItineray?.notes || "",
             date:
               selectedItineray?.date?.split("T")[0] ||
               tourDetails?.startDate.split("T")[0],
@@ -152,7 +152,7 @@ const Itinerary = ({
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <label
                   htmlFor="notes"
                   className="block text-sm font-medium text-gray-700 mb-2"
@@ -169,7 +169,7 @@ const Itinerary = ({
                   component="div"
                   className="text-red-500 text-xs"
                 />
-              </div>
+              </div> */}
 
               <div>
                 <label
