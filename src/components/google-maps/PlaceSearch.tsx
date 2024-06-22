@@ -12,10 +12,12 @@ const PlaceSearch = ({
   onPlaceSelect,
   location,
   field,
+  disabled = false,
 }: {
   onPlaceSelect?: any;
   location?: any;
   field?: any;
+  disabled?: boolean | undefined;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -59,6 +61,7 @@ const PlaceSearch = ({
     <input
       ref={inputRef}
       value={searchValue}
+      disabled={disabled}
       onChange={(e) => {
         setSearchValue(e.target.value);
       }}

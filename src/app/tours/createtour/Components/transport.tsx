@@ -28,7 +28,6 @@ const Transport = ({
     //   "Enter a valid time in HH:MM AM/PM format"
     // ),
     // meetingPoint: Yup.string().required("Meeting point is required"),
-    activityDescription: Yup.string(),
     busType: Yup.string().required("Bus type is required"),
     returnTime: Yup.string()
       .required("Return time is required")
@@ -70,8 +69,6 @@ const Transport = ({
           modeOfTransport: tourDetails?.transportation?.modeOfTransport || "",
           departureTime: tourDetails?.transportation?.departureTime || "",
           // meetingPoint: tourDetails?.transportation?.meetingPoint || "",
-          activityDescription:
-            tourDetails?.transportation?.activityDescription || "",
           busType: tourDetails?.transportation?.busType || "",
           returnTime: tourDetails?.transportation?.returnTime || "",
           numberOfParticipants:
@@ -115,9 +112,9 @@ const Transport = ({
                   className="shadow border rounded w-full sm:w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
                 >
                   <option value="">Select a mode of transport</option>
-                  <option value="manager">Self Drive Bus</option>
-                  <option value="tour_guide">Rental Bus</option>
-                  <option value="marketing">Private Car</option>
+                  <option value="self_drive_bus">Self Drive Bus</option>
+                  <option value="rental_bus">Rental Bus</option>
+                  <option value="private_car">Private Car</option>
                 </Field>
                 <ErrorMessage
                   name="modeOfTransport"
@@ -135,6 +132,7 @@ const Transport = ({
                 </label>
                 <Field
                   name="busType"
+                  disabled={values.modeOfTransport == "private_car"}
                   as="select"
                   className="shadow border rounded w-full sm:w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
                 >
@@ -238,7 +236,7 @@ const Transport = ({
                   className="block text-gray-700 text-sm font-bold mb-2"
                   htmlFor="contactPersonNumber"
                 >
-                  Phone Number
+                  Contact Person
                 </label>
                 <div className="mb-4">
                   <div className="relative shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent">
@@ -254,25 +252,6 @@ const Transport = ({
                     />
                   </div>
                 </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="activityDescription"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Activity Description
-                </label>
-                <Field
-                  as="textarea"
-                  name="activityDescription"
-                  placeholder="Describe the activity"
-                  className="shadow appearance-none border rounded w-full sm:w-5/6 py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
-                />
-                <ErrorMessage
-                  name="activityDescription"
-                  component="div"
-                  className="text-red-500 text-xs"
-                />
               </div>
             </Form>
           );

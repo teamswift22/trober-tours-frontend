@@ -52,7 +52,7 @@ const CompanyForm = () => {
           console.log({ values, agency });
           const equalityResult = checkObjectEquality(values, agency);
           if (equalityResult == true) {
-            toast({ title: "Nothing to update" });
+            toast({ title: "Nothing Updates Done" });
             return;
           }
           try {
@@ -102,6 +102,7 @@ const CompanyForm = () => {
                   <Field
                     name="name"
                     type="text"
+                    disabled
                     placeholder="Safari Resorts"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   />
@@ -122,6 +123,7 @@ const CompanyForm = () => {
                     <FiMail className="absolute right-3 top-3 text-gray-400" />
                     <Field
                       name="email"
+                      disabled
                       type="email"
                       placeholder="safari@gmail.com"
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -144,6 +146,7 @@ const CompanyForm = () => {
                     <FiPhone className="absolute right-3 top-3 text-gray-400" />
                     <PhoneInput
                       international
+                      disabled
                       defaultCountry="GH"
                       value={values.phoneNumber}
                       onChange={(value) => setFieldValue("phoneNumber", value)}
@@ -166,6 +169,7 @@ const CompanyForm = () => {
                   <Field name="address">
                     {({ field }: { field: any }) => (
                       <PlaceSearch
+                        disabled
                         onPlaceSelect={(place: any) => {
                           setFieldValue("address", place);
                         }}
@@ -189,6 +193,7 @@ const CompanyForm = () => {
                   <Field
                     name="about"
                     as="textarea"
+                    disabled
                     placeholder="About Safari Resorts"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   />
@@ -219,6 +224,7 @@ const CompanyForm = () => {
                   <Field
                     name="toursCreated"
                     type="number"
+                    disabled
                     placeholder="6"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   />
@@ -238,6 +244,7 @@ const CompanyForm = () => {
                   <Field
                     name="totalParticipants"
                     type="number"
+                    disabled
                     placeholder="78"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   />

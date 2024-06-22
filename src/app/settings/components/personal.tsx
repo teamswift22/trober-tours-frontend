@@ -44,7 +44,7 @@ const PersonalForm = () => {
         onSubmit={async (values, { setSubmitting }) => {
           const equalityResult = checkObjectEquality(values, userData);
           if (equalityResult == true) {
-            toast({ title: "Nothing to update" });
+            toast({ title: "No Updates Done" });
             return;
           }
           try {
@@ -93,6 +93,7 @@ const PersonalForm = () => {
                 <Field
                   name="fullName"
                   type="text"
+                  disabled
                   placeholder="Akosombo Invasion"
                   className="shadow appearance-none border rounded w-full md:w-4/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />
@@ -133,6 +134,7 @@ const PersonalForm = () => {
                 <div className="mb-8 relative w-full md:w-4/6">
                   <FiMail className="absolute right-3 top-3 text-gray-400" />
                   <Field
+                    disabled
                     name="email"
                     type="email"
                     placeholder="kwame@gmail.com"
