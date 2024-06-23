@@ -21,7 +21,7 @@ const Transport = ({
   getActiveTab: (tab: any) => void;
 }) => {
   const validationSchema = Yup.object().shape({
-    modeOfTransport: Yup.string().required("Mode of transport is required"),
+    modeOfTransport: Yup.string(),
     departureTime: Yup.string().required("Departure time is required"),
     // .matches(
     //   /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] [AP]M$/,
