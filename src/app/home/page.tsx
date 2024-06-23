@@ -224,16 +224,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         <div className="w-full md:w-5/12 flex flex-col gap-20">
-          <div className="flex justify-end">
-            {/* New Tour button */}
-            <button
-              className="flex text-sm text-white bg-[#FA7454] px-14 py-4 rounded-md items-center gap-5"
-              onClick={() => router.push("/tours/createtour?step=Tour Details")}
-            >
-              <IoAdd size={24} />
-              <p>New Tour</p>
-            </button>
-          </div>
           <div className="bg-white rounded-lg shadow-lg p-6 w-full">
             <h3 className="text-xl font-semibold mb-10">Todo list</h3>
             <ScrollArea className="h-[500px] overflow-auto">

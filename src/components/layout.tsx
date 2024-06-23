@@ -6,7 +6,7 @@ import Image from "next/image";
 import { GoHome } from "react-icons/go";
 import { BsGlobe } from "react-icons/bs";
 import { HiOutlineUser, HiOutlineUserCircle } from "react-icons/hi";
-import { IoSettingsOutline } from "react-icons/io5";
+import { IoAdd, IoSettingsOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 import { IoMdMenu } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
@@ -135,10 +135,22 @@ const Layout = ({
                 </p>
               </div>
               {/* Profile image */}
-              <Avatar className="hidden md:block">
-                <AvatarImage src={""} />
-                <AvatarFallback>{intials}</AvatarFallback>
-              </Avatar>
+              <div className="flex items-center gap-x-2">
+                <div className="flex justify-end">
+                  {/* New Tour button */}
+                  <Link
+                    href="/tours/createtour?step=Tour Details"
+                    className="flex text-sm text-white bg-[#FA7454] px-6 py-2 rounded-md items-center gap-2"
+                  >
+                    <IoAdd size={24} />
+                    <p>New Tour</p>
+                  </Link>
+                </div>
+                <Avatar className="hidden md:block">
+                  <AvatarImage src={""} />
+                  <AvatarFallback>{intials}</AvatarFallback>
+                </Avatar>
+              </div>
             </div>
           </div>
           <div className="mt-32 md:mt-16 md:pt-20 h-[calc(100vh-128px)] md:h-[calc(100vh-104px)] overflow-auto">
