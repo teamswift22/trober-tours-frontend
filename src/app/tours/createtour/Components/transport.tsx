@@ -21,14 +21,14 @@ const Transport = ({
   getActiveTab: (tab: any) => void;
 }) => {
   const validationSchema = Yup.object().shape({
-    modeOfTransport: Yup.string(),
+    modeOfTransport: Yup.string().required("Mode of transport is required"),
     departureTime: Yup.string().required("Departure time is required"),
     // .matches(
     //   /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] [AP]M$/,
     //   "Enter a valid time in HH:MM AM/PM format"
     // ),
     // meetingPoint: Yup.string().required("Meeting point is required"),
-    busType: Yup.string().required("Bus type is required"),
+    busType: Yup.string(),
     returnTime: Yup.string()
       .required("Return time is required")
       // .matches(
