@@ -119,10 +119,17 @@ const Dashboard: React.FC = () => {
                       </p>
                     </div>
                     <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
-                      <MdOutlineAttachMoney color="FA7454" size={20} />
-                      <p className="text-sm font-light">
-                        Ghc. {upcomingTour?.price}
-                      </p>
+                      {upcomingTour?.price == 0 ? (
+                        <p className="font-extralight">Free Event</p>
+                      ) : (
+                        <>
+                          <p className=" text-[#FA7454] font-light">₵</p>
+                          {/* <MdOutlineAttachMoney color="FA7454" size={20} /> */}
+                          <p className="text-sm font-light">
+                            {upcomingTour?.price}
+                          </p>
+                        </>
+                      )}
                     </div>
                     <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
                       <HiOutlineUser color="FA7454" size={20} />
@@ -196,7 +203,9 @@ const Dashboard: React.FC = () => {
                         </div>
                         <div className="flex flex-col">
                           <p className="font-light">
-                            {tour?.price || "Price N/A"}
+                            {tour?.price == 0
+                              ? "Free Event"
+                              : tour?.price || "Price N/A"}
                           </p>
                           <p className="text-[#BDBDBD] font-light">Price</p>
                         </div>

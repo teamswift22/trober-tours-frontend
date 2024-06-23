@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
@@ -10,9 +10,7 @@ const validationSchema = Yup.object({
   endDate: Yup.date()
     .min(Yup.ref("startDate"), "End date can't be before start date")
     .required("End date is required"),
-  price: Yup.number()
-    .min(1, "Price must be at least $1")
-    .required("Price is required"),
+  price: Yup.number().required("Price is required"),
   category: Yup.string().required("Category is required"),
 });
 
@@ -26,6 +24,23 @@ const TourDetails = ({
   getActiveTab: (tab: any) => void;
 }) => {
   console.log(tourDetails);
+
+  const [includes, setIncludes] = useState<string[]>(
+    tourDetails?.priceIncludes || []
+  );
+
+  const [newInclude, setNewInclude] = useState<string>("");
+
+  const addInclude = () => {
+    if (newInclude.trim() && !includes.includes(newInclude)) {
+      setIncludes([...includes, newInclude]);
+      setNewInclude("");
+    }
+  };
+
+  const removeInclude = (include: string) => {
+    setIncludes(includes.filter((item) => item !== include));
+  };
   return (
     <div>
       <Formik
@@ -40,7 +55,7 @@ const TourDetails = ({
         enableReinitialize
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
-          handleSubmit(values);
+          handleSubmit({ ...values, priceIncludes: includes });
           getActiveTab("Location");
           setSubmitting(false);
         }}
@@ -170,6 +185,46 @@ const TourDetails = ({
                   component="div"
                   className="text-red-500 text-xs"
                 />
+              </div>
+              <div>
+                <div className="flex items-center gap-4 w-full">
+                  <label className="text-sm font-medium text-gray-700">
+                    Price Includes:
+                  </label>
+                  <div className="flex w-8/12">
+                    <input
+                      type="text"
+                      value={newInclude}
+                      onChange={(e) => setNewInclude(e.target.value)}
+                      className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      placeholder="Accommodation"
+                    />
+                    <button
+                      type="button"
+                      onClick={addInclude}
+                      className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded ml-2"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {includes.map((include) => (
+                    <div
+                      key={include}
+                      className="flex items-center bg-white p-2 rounded-lg m-1 border-[#FA7454] border-2"
+                    >
+                      <span className="mr-2">{include}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeInclude(include)}
+                        className="font-bold"
+                      >
+                        x
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </Form>
           );

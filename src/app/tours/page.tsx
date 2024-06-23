@@ -19,8 +19,8 @@ const ManageTours = () => {
     error,
   } = useGetToursQuery({ params: "", filterQuery: activeTab });
 
-  const handleTourClick = (tourName: string) => {
-    router.push(`?tab=${tourName}`);
+  const handleTabClick = (tabName: string) => {
+    router.push(`?tab=${tabName}`);
     // Implement further logic on click
   };
 
@@ -29,7 +29,7 @@ const ManageTours = () => {
       <h2 className="text-2xl font-medium mb-4">Manage Tours</h2>
       <NavBar
         navArray={["All Tours", "Upcoming", "Completed", "Cancelled"]}
-        getActiveTab={handleTourClick}
+        getActiveTab={handleTabClick}
         activeTab={activeTab}
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -54,7 +54,11 @@ const ManageTours = () => {
                   <p className="text-xs">
                     {formatDate(tour?.startDate)} - {formatDate(tour?.endDate)}
                   </p>
-                  <p>{`₵ ${tour.price}`}</p>
+                  {tour.price == 0 ? (
+                    <p>Free Event</p>
+                  ) : (
+                    <p>{`₵ ${tour.price}`}</p>
+                  )}
                 </div>
                 <button
                   // onClick={() => handleTourClick(tour.name)}

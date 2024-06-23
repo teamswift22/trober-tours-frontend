@@ -95,7 +95,7 @@ const TourDetailsCard = ({ id }: { id: string }) => {
               </div>
               <div className="flex flex-col md:flex-row items-center gap-2 text-white py-2 px-4 rounded-md bg-[#0F6E98]">
                 <MdOutlineAttachMoney color="FA7454" size={18} />
-                <p className="text-sm font-thin">Ghc. {data?.price}</p>
+                <p className="text-sm font-thin">₵{data?.price}</p>
               </div>
               <div className="flex flex-col md:flex-row items-center gap-2 text-white py-2 px-4 rounded-md bg-[#0F6E98]">
                 <HiOutlineUser color="FA7454" size={18} />

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { TfiLocationPin } from "react-icons/tfi";
@@ -22,38 +22,37 @@ const Transport = ({
 }) => {
   const validationSchema = Yup.object().shape({
     modeOfTransport: Yup.string().required("Mode of transport is required"),
-    departureTime: Yup.string().required("Departure time is required"),
+    departureDate: Yup.string().required("Departure date is required"),
     // .matches(
     //   /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] [AP]M$/,
     //   "Enter a valid time in HH:MM AM/PM format"
     // ),
     // meetingPoint: Yup.string().required("Meeting point is required"),
     busType: Yup.string(),
-    returnTime: Yup.string()
-      .required("Return time is required")
-      // .matches(
-      //   /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] [AP]M$/,
-      //   "Enter a valid time in HH:MM AM/PM format"
-      // )
-      .test(
-        "is-greater",
-        "Return time must be after departure time",
-        function (value) {
-          const { departureTime } = this.parent;
-          const [departureHours, departureMinutes] =
-            departureTime.split(/:|\s/);
-          const [returnHours, returnMinutes] = value.split(/:|\s/);
-          const departureDate = new Date(
-            0,
-            0,
-            0,
-            departureHours,
-            departureMinutes
-          );
-          const returnDate = new Date(0, 0, 0, +returnHours, +returnMinutes);
-          return returnDate > departureDate;
-        }
-      ),
+    returnDate: Yup.string().required("Return date is required"),
+    // .matches(
+    //   /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] [AP]M$/,
+    //   "Enter a valid time in HH:MM AM/PM format"
+    // )
+    // .test(
+    //   "is-greater",
+    //   "Return time must be after departure time",
+    //   function (value) {
+    //     const { departureTime } = this.parent;
+    //     const [departureHours, departureMinutes] =
+    //       departureTime.split(/:|\s/);
+    //     const [returnHours, returnMinutes] = value.split(/:|\s/);
+    //     const departureDate = new Date(
+    //       0,
+    //       0,
+    //       0,
+    //       departureHours,
+    //       departureMinutes
+    //     );
+    //     const returnDate = new Date(0, 0, 0, +returnHours, +returnMinutes);
+    //     return returnDate > departureDate;
+    //   }
+    // )
     contactPersonNumber: Yup.string(),
     numberOfParticipants: Yup.number()
       .required("Number of participants is required")
@@ -62,15 +61,21 @@ const Transport = ({
   });
 
   const { toast } = useToast();
+
+  console.log(tourDetails);
   return (
     <div>
       <Formik
         initialValues={{
           modeOfTransport: tourDetails?.transportation?.modeOfTransport || "",
-          departureTime: tourDetails?.transportation?.departureTime || "",
+          departureDate:
+            tourDetails?.transportation?.departureDate ||
+            tourDetails?.startDate?.split("T")[0],
           // meetingPoint: tourDetails?.transportation?.meetingPoint || "",
           busType: tourDetails?.transportation?.busType || "",
-          returnTime: tourDetails?.transportation?.returnTime || "",
+          returnDate:
+            tourDetails?.transportation?.returnDate ||
+            tourDetails?.endDate?.split("T")[0],
           numberOfParticipants:
             tourDetails?.transportation?.numberOfParticipants || "",
           contactPersonNumber:
@@ -79,7 +84,6 @@ const Transport = ({
         enableReinitialize
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting }) => {
-          console.log(values);
           try {
             handleSubmit({ transportation: values });
             toast({ title: "Transportation added" });
@@ -92,8 +96,12 @@ const Transport = ({
         }}
       >
         {({ setFieldValue, values, errors }) => {
-          console.log(errors, "form errors");
-          console.log(values, "form values");
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          useEffect(() => {
+            if (values.modeOfTransport === "private_car") {
+              setFieldValue("busType", "");
+            }
+          }, [values.modeOfTransport, setFieldValue]);
           return (
             <Form
               id="transportForm"
@@ -149,18 +157,20 @@ const Transport = ({
 
               <div>
                 <label
-                  htmlFor="departureTime"
+                  htmlFor="departureDate"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Departure Time
+                  Departure Date
                 </label>
                 <Field
-                  type="time"
-                  name="departureTime"
+                  type="date"
+                  min={tourDetails?.startDate?.split("T")[0]}
+                  max={tourDetails?.endDate?.split("T")[0]}
+                  name="departureDate"
                   className="shadow appearance-none border rounded w-full sm:w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
                 />
                 <ErrorMessage
-                  name="departureTime"
+                  name="departureDate"
                   component="div"
                   className="text-red-500 text-xs"
                 />
@@ -168,18 +178,20 @@ const Transport = ({
 
               <div>
                 <label
-                  htmlFor="returnTime"
+                  htmlFor="returnDate"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Return Time
+                  Return Date
                 </label>
                 <Field
-                  type="time"
-                  name="returnTime"
+                  type="date"
+                  name="returnDate"
+                  min={tourDetails?.startDate?.split("T")[0]}
+                  max={tourDetails?.endDate?.split("T")[0]}
                   className="shadow appearance-none border rounded w-full sm:w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-transparent"
                 />
                 <ErrorMessage
-                  name="returnTime"
+                  name="returnDate"
                   component="div"
                   className="text-red-500 text-xs"
                 />
