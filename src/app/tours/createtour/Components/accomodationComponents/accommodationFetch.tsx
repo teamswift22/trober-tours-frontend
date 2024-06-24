@@ -27,7 +27,7 @@ type AccommodationFetchProps = {
 const AccommodationFetch: React.FC<AccommodationFetchProps> = ({
   apiKey,
   location,
-  radius = 500,
+  radius = 5000,
   children,
 }) => {
   const { data, error, isLoading } = useFetchAccommodationQuery({
