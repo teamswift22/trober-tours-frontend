@@ -88,8 +88,8 @@ const Dashboard: React.FC = () => {
         <title>Dashboard</title>
       </Head>
 
-      <div className=" p-4 md:px-10 flex flex-col md:flex-row gap-10">
-        <div className="w-full md:w-7/12 flex flex-col gap-12">
+      <div className=" p-4 md:px-10 flex flex-col justify-center md:flex-row gap-10">
+        <div className="w-full md:w-9/12 flex flex-col gap-12">
           <div className="p-10 rounded-xl custom-background min-h-[300px]">
             <div>
               <div className="flex justify-between items-center mb-6">
@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
                     <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
                       <TfiLocationPin color="FA7454" size={20} />
                       <p className="text-sm font-light">
-                        {upcomingTour?.destination?.formatted_address}
+                        {upcomingTour?.destination?.name}
                       </p>
                     </div>
                   </div>
@@ -223,11 +223,10 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="w-full md:w-5/12 flex flex-col gap-20">
+        {/* <div className="w-full md:w-5/12 flex flex-col gap-20">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full">
             <h3 className="text-xl font-semibold mb-10">Todo list</h3>
             <ScrollArea className="h-[500px] overflow-auto">
-              {/* Todo items */}
               {todos.map((todo) => (
                 <div
                   key={todo.id}
@@ -258,7 +257,7 @@ const Dashboard: React.FC = () => {
               ))}
             </ScrollArea>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
