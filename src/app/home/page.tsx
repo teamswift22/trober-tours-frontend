@@ -186,7 +186,7 @@ const Dashboard: React.FC = () => {
                         onClick={() => router.push(`/tours/${tour._id}`)}
                       >
                         <div className="flex col-span-2 gap-2 md:gap-6">
-                          <div className="h-12 w-12 rounded-xl flex items-center justify-center bg-orange-200">
+                          <div className="h-12 w-12 rounded-xl flex items-center justify-center bg-[#FEEBE6]">
                             <Image
                               src={selectCategoryIcon(tour?.category)}
                               alt=""
@@ -263,34 +263,34 @@ const Dashboard: React.FC = () => {
   );
 };
 
-function renderPrioritySpan(priority: String) {
-  switch (priority) {
-    case "High":
-      return (
-        <span className="bg-[#E73856] px-2 py-1 rounded-full text-sm text-white">
-          {priority}
-        </span>
-      );
-    case "Medium":
-      return (
-        <span className="bg-[#FDC3B5] px-2 py-1 rounded-full text-sm text-white">
-          {priority}
-        </span>
-      );
-    case "Low":
-      return (
-        <span className="bg-[#828282] px-2 py-1 rounded-full text-sm text-white">
-          {priority}
-        </span>
-      );
-    default:
-      return (
-        <span className="bg-gray-500 px-2 py-1 rounded-full text-sm text-white">
-          {priority}
-        </span>
-      );
-  }
-}
+// function renderPrioritySpan(priority: String) {
+//   switch (priority) {
+//     case "High":
+//       return (
+//         <span className="bg-[#E73856] px-2 py-1 rounded-full text-sm text-white">
+//           {priority}
+//         </span>
+//       );
+//     case "Medium":
+//       return (
+//         <span className="bg-[#FDC3B5] px-2 py-1 rounded-full text-sm text-white">
+//           {priority}
+//         </span>
+//       );
+//     case "Low":
+//       return (
+//         <span className="bg-[#828282] px-2 py-1 rounded-full text-sm text-white">
+//           {priority}
+//         </span>
+//       );
+//     default:
+//       return (
+//         <span className="bg-gray-500 px-2 py-1 rounded-full text-sm text-white">
+//           {priority}
+//         </span>
+//       );
+//   }
+// }
 
 const DashboardPage = () => {
   return <Layout title="Dashboard" rightContent={<Dashboard />} />;
