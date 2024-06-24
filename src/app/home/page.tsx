@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  allTours?.tours?.map((tour: any) => {
+                  allTours?.tours.slice(2)?.map((tour: any) => {
                     return (
                       <div
                         key={tour._id}
@@ -194,26 +194,21 @@ const Dashboard: React.FC = () => {
                               height={20}
                             />
                           </div>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col justify-center">
                             <p className="font-light">{tour?.name}</p>
-                            <p className="text-[#BDBDBD] font-light">
-                              Tour Name
-                            </p>
                           </div>
                         </div>
                         <div className="flex flex-col">
                           <p className="font-light">
                             {tour?.price == 0
                               ? "Free Event"
-                              : tour?.price || "Price N/A"}
+                              : `₵ ${tour?.price}` || "Price N/A"}
                           </p>
-                          <p className="text-[#BDBDBD] font-light">Price</p>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-end">
                           <p className="font-light">
                             {formatDateToCustomFormat(tour?.startDate)}
                           </p>
-                          <p className="text-[#BDBDBD] font-light">Date</p>
                         </div>
                       </div>
                     );
