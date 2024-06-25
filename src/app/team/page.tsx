@@ -61,7 +61,7 @@ const Team: React.FC = () => {
             }}
             enableReinitialize
             validationSchema={participantSchema}
-            onSubmit={async (values, { setSubmitting }) => {
+            onSubmit={async (values, { setSubmitting, resetForm }) => {
               try {
                 if (memberToUpdate?._id) {
                   await editMember({
@@ -76,6 +76,7 @@ const Team: React.FC = () => {
                   toast({ title: "Member added" });
                 }
                 setSubmitting(false);
+                resetForm();
               } catch (error) {
                 toast({ title: "Failed", variant: "destructive" });
               }
