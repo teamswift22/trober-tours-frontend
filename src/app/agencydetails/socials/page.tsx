@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { FaFacebook, FaGlobe, FaInstagram } from "react-icons/fa";
 import { FaXTwitter, FaYoutube } from "react-icons/fa6";
 import { useEditAgencyMutation } from "@/lib/features/agency/agencyApiSlice";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object().shape({
@@ -27,9 +27,13 @@ const SocialForm = ({
   id: string;
 }) => {
   const router = useRouter();
+  const params = useSearchParams();
   const { toast } = useToast();
   const [tourFrequency, setTourFrequency] = useState("");
   const [editAgency] = useEditAgencyMutation();
+
+  console.log(params.get("id"));
+  const agencyId = params.get("id") || id;
 
   return (
     <div className="w-full max-w-lg flex flex-col items-center justify-center h-full  px-4">
@@ -53,7 +57,7 @@ const SocialForm = ({
             setSubmitting(true);
             await editAgency({
               body: { ...values, tourFrequency },
-              agencyId: id,
+              agencyId: agencyId,
             }).unwrap();
             toast({
               title: "Socials updated",
