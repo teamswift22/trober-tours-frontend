@@ -25,7 +25,7 @@ const ManageTours = () => {
   };
 
   return (
-    <div className="px-10">
+    <div>
       <h2 className="text-2xl font-medium mb-4">Manage Tours</h2>
       <NavBar
         navArray={["All Tours", "Upcoming", "Completed", "Cancelled"]}
@@ -36,7 +36,7 @@ const ManageTours = () => {
         {allTours?.tours?.map((tour: any) => (
           <div
             key={tour.id}
-            onClick={() => router.push(`/tours/${tour._id}`)}
+            onClick={() => router.push(`/app/tours/${tour._id}`)}
             className="p-4 w-66  rounded-2xl overflow-hidden cursor-pointer hover:shadow-2xl transition-shadow duration-300 "
           >
             <img
@@ -78,7 +78,7 @@ const ManageTours = () => {
 const ManageToursPage = () => {
   return (
     <Suspense>
-      <Layout title="Manage Tours" rightContent={<ManageTours />} />
+      <ManageTours />
     </Suspense>
   );
 };

@@ -64,7 +64,7 @@ const SocialForm = ({
               variant: "default",
               description: "Socials updated successfully",
             });
-            router.push("/home");
+            router.push("/app/home");
           } catch (error) {
             toast({
               title: "Socials not updated",

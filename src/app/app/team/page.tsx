@@ -50,7 +50,7 @@ const Team: React.FC = () => {
         <title>Team</title>
       </Head>
 
-      <div className="p-10">
+      <div>
         <div className="bg-white rounded-md">
           <Formik
             initialValues={{
@@ -305,7 +305,7 @@ const Team: React.FC = () => {
 };
 
 const TeamPage = () => {
-  return <Layout title="Team" rightContent={<Team />} />;
+  return <Team />;
 };
 
 export default TeamPage;

@@ -27,7 +27,7 @@ const RequireAuth = ({
     if (!userSession && isProtectedRoute) {
       router.replace("/login");
     } else if (userSession && !isProtectedRoute) {
-      router.replace("/home");
+      router.replace("/app/home");
     } else {
       setLoading(false);
     }

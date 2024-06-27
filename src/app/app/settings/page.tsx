@@ -75,7 +75,7 @@ const ProfileForm = () => {
 };
 
 const ProfilePage = () => {
-  return <Layout title="Profile" rightContent={<ProfileForm />} />;
+  return <ProfileForm />;
 };
 
 export default ProfilePage;

@@ -2,7 +2,7 @@
 
 // pages/dashboard.tsx
 import "./page.css";
-import { useMemo } from "react";
+import { ReactElement, useMemo } from "react";
 import Head from "next/head";
 import Layout from "@/components/layout";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDateToCustomFormat } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
+import ClientLayout from "@/components/ClientLayout";
 
 const todos = [
   {
@@ -63,6 +64,21 @@ const todos = [
   },
 ];
 
+const CardComponent = ({
+  icon,
+  value,
+}: {
+  icon: ReactElement;
+  value: string | number;
+}) => {
+  return (
+    <div className="flex  items-center gap-2 bg-white h-9 px-2 2xl:px-6 rounded-md min-w-16 md:w-auto">
+      <div className="text-[#FA7454] text-xl">{icon}</div>
+      <p className="text-sm font-light">{value}</p>
+    </div>
+  );
+};
+
 const Dashboard: React.FC = () => {
   const router = useRouter();
   const { data: allTours } = useGetToursQuery({ params: "", filterQuery: "" });
@@ -88,16 +104,18 @@ const Dashboard: React.FC = () => {
         <title>Dashboard</title>
       </Head>
 
-      <div className=" p-4 md:px-10 flex flex-col justify-center md:flex-row gap-10">
-        <div className="w-full md:w-9/12 flex flex-col gap-12">
-          <div className="p-10 rounded-xl custom-background min-h-[300px]">
-            <div>
+      <div className="flex flex-col justify-center md:flex-row gap-10">
+        <div className="w-full xl:w-9/12 flex flex-col gap-12">
+          <div className="p-5 flex items-center xl:p-10 rounded-xl custom-background min-h-[300px]">
+            <div className="w-full">
               <div className="flex justify-between items-center mb-6">
                 <p className="text-sm text-[#FB9A83]">Upcoming Tour</p>
                 {upcomingTour && (
                   <button
-                    className="text-sm text-white bg-[#FB9A83] px-8 py-4 rounded-md"
-                    onClick={() => router.push(`/tours/${upcomingTour._id}`)}
+                    className="text-sm text-white bg-[#FB9A83] px-3 py-3 md:px-8 md:py-4 rounded-md"
+                    onClick={() =>
+                      router.push(`/app/tours/${upcomingTour._id}`)
+                    }
                   >
                     View Details
                   </button>
@@ -111,36 +129,20 @@ const Dashboard: React.FC = () => {
                   <p className="text-xs mb-4 font-thin text-white md:w-4/6 max-w-[436px] line-clamp-2">
                     {upcomingTour?.description}...
                   </p>
-                  <div className="flex flex-col items-center md:flex-row gap-4">
-                    <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
-                      <PiCalendarCheck color="FA7454" size={20} />
-                      <p className="text-sm font-light">
-                        {formatDateToCustomFormat(upcomingTour?.startDate)}
-                      </p>
-                    </div>
-                    <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
-                      {upcomingTour?.price == 0 ? (
-                        <p className="font-extralight">Free Event</p>
-                      ) : (
-                        <>
-                          <p className=" text-[#FA7454] font-light">₵</p>
-                          {/* <MdOutlineAttachMoney color="FA7454" size={20} /> */}
-                          <p className="text-sm font-light">
-                            {upcomingTour?.price}
-                          </p>
-                        </>
-                      )}
-                    </div>
-                    <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
-                      <HiOutlineUser color="FA7454" size={20} />
-                      <p className="text-sm font-light">10/20</p>
-                    </div>
-                    <div className="flex flex-col md:flex-row items-center gap-2 bg-white py-2 px-2 2xl:px-6 rounded-md min-w-1/2 w-1/2 md:w-auto">
-                      <TfiLocationPin color="FA7454" size={20} />
-                      <p className="text-sm font-light">
-                        {upcomingTour?.destination?.name}
-                      </p>
-                    </div>
+                  <div className="flex items-center flex-wrap gap-2 xl:gap-4">
+                    <CardComponent
+                      icon={<PiCalendarCheck />}
+                      value={formatDateToCustomFormat(upcomingTour?.startDate)}
+                    />
+                    <CardComponent
+                      value={upcomingTour?.price}
+                      icon={<p className=" text-[#FA7454] font-light">₵</p>}
+                    />
+                    <CardComponent icon={<HiOutlineUser />} value={"10 / 20"} />
+                    <CardComponent
+                      icon={<TfiLocationPin />}
+                      value={upcomingTour?.destination?.name}
+                    />
                   </div>
                 </div>
               ) : (
@@ -154,7 +156,7 @@ const Dashboard: React.FC = () => {
             <div>
               <div className="flex flex-row justify-between mb-6">
                 <p className="text-xl font-medium">All tours</p>
-                <Link href="/tours">
+                <Link href="/app/tours">
                   <p className="text-[#828282] hover: cursor-pointer">
                     See All
                   </p>
@@ -169,7 +171,7 @@ const Dashboard: React.FC = () => {
                     <button
                       className="flex text-sm text-white bg-[#FA7454] px-14 py-4 rounded-md items-center gap-5"
                       onClick={() =>
-                        router.push("/tours/createtour?step=Tour Details")
+                        router.push("/app/tours/createtour?step=Tour Details")
                       }
                     >
                       <IoAdd size={24} />
@@ -177,13 +179,13 @@ const Dashboard: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  allTours?.tours.slice(2)?.map((tour: any) => {
+                  allTours?.tours?.map((tour: any) => {
                     return (
                       <div
                         key={tour._id}
                         className="grid grid-cols-4 items-center p-4 bg-white rounded-xl hover: cursor-pointer"
                         role="button"
-                        onClick={() => router.push(`/tours/${tour._id}`)}
+                        onClick={() => router.push(`/app/tours/${tour._id}`)}
                       >
                         <div className="flex col-span-2 gap-2 md:gap-6">
                           <div className="h-12 w-12 rounded-xl flex items-center justify-center bg-[#FEEBE6]">
@@ -288,7 +290,8 @@ const Dashboard: React.FC = () => {
 // }
 
 const DashboardPage = () => {
-  return <Layout title="Dashboard" rightContent={<Dashboard />} />;
+  // return <Layout title="Dashboard" rightContent={<Dashboard />} />;
+  return <Dashboard />;
 };
 
 export default DashboardPage;

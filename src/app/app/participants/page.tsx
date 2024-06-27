@@ -250,7 +250,7 @@ const Participants: React.FC = () => {
 };
 
 const ParticipantsPage = () => {
-  return <Layout title="Participants" rightContent={<Participants />} />;
+  return <Participants />;
 };
 
 export default ParticipantsPage;
