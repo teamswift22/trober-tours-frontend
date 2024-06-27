@@ -141,7 +141,7 @@ const CreateTour = () => {
   }, [tourDetails, id]);
 
   return (
-    <div className="px-10">
+    <div>
       <h2 className="text-2xl font-medium mb-4">Create Tour</h2>
       <NavBar
         navArray={navlinks}
@@ -158,7 +158,7 @@ const CreateTour = () => {
 const CreateTourPage = () => {
   return (
     <Suspense>
-      <Layout title="Manage Tours" rightContent={<CreateTour />} />
+      <CreateTour />
     </Suspense>
   );
 };

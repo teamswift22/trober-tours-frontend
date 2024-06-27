@@ -68,7 +68,7 @@ const LoginForm = ({
                 description: "Login successful",
                 variant: "default",
               });
-              router.replace("/home");
+              router.replace("/app/home");
             })
             .catch(() =>
               toast({

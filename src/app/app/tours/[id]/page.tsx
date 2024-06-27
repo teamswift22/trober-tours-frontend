@@ -47,11 +47,11 @@ const TourDetailsCard = ({ id }: { id: string }) => {
     setActiveImage(tour);
   };
   return (
-    <div className="px-4 md:px-10 overflow-y-auto flex flex-col flex-wrap">
+    <div className="overflow-y-auto flex flex-col flex-wrap">
       <div className="w-full justify-between flex  mb-10">
         <h2 className="text-2xl font-medium mb-4">{data?.name}</h2>
         <div className="flex items-center justify-end gap-x-2">
-          <Link href={`/tours/createtour?id=${id}`}>
+          <Link href={`/app/tours/createtour?id=${id}`}>
             <button className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin p-3 rounded-md w-full">
               Edit Tour
             </button>
@@ -144,7 +144,7 @@ const TourDetailsCard = ({ id }: { id: string }) => {
                   </div>
                 ))}
               </div>
-              <Link href={`/tours/createtour?step=Participants&id=${id}`}>
+              <Link href={`/app/tours/createtour?step=Participants&id=${id}`}>
                 <button className="bg-[#FA7454] hover:bg-orange-600 text-white  py-3 text-xs  rounded-md max-w-[210px] w-full">
                   Add new participant
                 </button>
@@ -158,12 +158,7 @@ const TourDetailsCard = ({ id }: { id: string }) => {
 };
 
 const TourDetailsPage = ({ params }: { params: { id: string } }) => {
-  return (
-    <Layout
-      title="Manage Tours"
-      rightContent={<TourDetailsCard id={params.id} />}
-    />
-  );
+  return <TourDetailsCard id={params.id} />;
 };
 
 export default TourDetailsPage;

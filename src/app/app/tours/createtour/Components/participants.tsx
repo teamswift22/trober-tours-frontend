@@ -49,7 +49,7 @@ const ParticipantForm = ({ formId }: { formId: string | null }) => {
           title: "Subscribers added successfully",
         });
       }
-      router.push("/tours");
+      router.push("/app/tours");
     } catch (error) {
       toast({
         title: "Error adding subscribers",
