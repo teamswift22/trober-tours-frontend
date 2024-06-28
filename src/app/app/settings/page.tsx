@@ -31,7 +31,7 @@ const ProfileForm = () => {
         <title>Team</title>
       </Head>
       <div className="flex flex-col items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-[80%]">
+        <div className="bg-white p-8 rounded-lg shadow-lg w-full md:max-w-[80%]">
           <ul className="flex mb-4 border-b">
             <li className="mr-6">
               <a

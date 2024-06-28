@@ -226,16 +226,16 @@ const Team: React.FC = () => {
               <tbody className="bg-white">
                 {agencyMembers?.results.map((member: any) => (
                   <tr key={member._id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 text-sm md:text-base whitespace-nowrap">
                       {member?.fullName}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm md:text-base">
                       {member?.phoneNumber}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm md:text-base">
                       {member?.email}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm md:text-base">
                       {member?.role}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
