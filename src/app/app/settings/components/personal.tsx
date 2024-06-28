@@ -31,7 +31,7 @@ const PersonalForm = () => {
   const { toast } = useToast();
 
   return (
-    <div className="p-4">
+    <div className="md:p-4">
       <Formik
         enableReinitialize
         initialValues={{

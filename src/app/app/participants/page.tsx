@@ -71,13 +71,13 @@ const Participants: React.FC = () => {
       <Head>
         <title>Subscribers</title>
       </Head>
-      <div className="p-4 space-y-10">
+      <div className=" space-y-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="bg-white rounded-lg p-4 h-fit w-full">
             <h3 className="text-xl font-semibold mb-6">
               Previous Participants
             </h3>
-            <ScrollArea className="max-h-[500px] overflow-auto px-4">
+            <ScrollArea className="max-h-[500px] overflow-auto">
               {subscribers?.agencySubscriptions?.map((participant: any) => (
                 <div
                   key={participant.subscriberId}
@@ -116,11 +116,14 @@ const Participants: React.FC = () => {
                       >
                         <p>{participant.subscriber.name}</p>
                         <p className="text-gray-500 text-sm font-light">
+                          {participant.subscriber.phoneNumber}
+                        </p>
+                        <p className="text-gray-500 text-xs md:text-sm font-light">
                           {participant.subscriber.email}
                         </p>
                       </div>
                     </div>
-                    <p className="text-gray-500 text-sm font-light">
+                    <p className="text-gray-500 text-xs md:text-sm font-light hidden md:block">
                       {participant.subscriber.phoneNumber}
                     </p>
                   </div>

@@ -183,7 +183,7 @@ const Dashboard: React.FC = () => {
                     return (
                       <div
                         key={tour._id}
-                        className="grid grid-cols-4 items-center p-4 bg-white rounded-xl hover: cursor-pointer"
+                        className="grid grid-cols-4 items-center p-3 md:p-4 bg-white rounded-xl hover: cursor-pointer"
                         role="button"
                         onClick={() => router.push(`/app/tours/${tour._id}`)}
                       >
@@ -197,18 +197,20 @@ const Dashboard: React.FC = () => {
                             />
                           </div>
                           <div className="flex flex-col justify-center">
-                            <p className="font-light">{tour?.name}</p>
+                            <p className="font-light md:text-base text-sm truncate">
+                              {tour?.name}
+                            </p>
                           </div>
                         </div>
                         <div className="flex flex-col">
-                          <p className="font-light">
+                          <p className="font-light md:text-base text-sm">
                             {tour?.price == 0
                               ? "Free Event"
                               : `₵ ${tour?.price}` || "Price N/A"}
                           </p>
                         </div>
                         <div className="flex flex-col items-end">
-                          <p className="font-light">
+                          <p className="font-light md:text-base text-sm">
                             {formatDateToCustomFormat(tour?.startDate)}
                           </p>
                         </div>
