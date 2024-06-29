@@ -7,8 +7,10 @@ import SuccessModal from "@/components/ui/SuccessModal";
 import { useToast } from "@/components/ui/use-toast";
 import { FaFacebook, FaGlobe, FaInstagram } from "react-icons/fa";
 import { FaXTwitter, FaYoutube } from "react-icons/fa6";
-import { useEditAgencyMutation } from "@/lib/features/agency/agencyApiSlice";
+import { useEditAgencySocialsMutation } from "@/lib/features/agency/agencyApiSlice";
 import { useRouter, useSearchParams } from "next/navigation";
+import { login } from "@/lib/features/auth/authSlice";
+import { useAppDispatch } from "@/lib/hooks";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object().shape({
@@ -30,9 +32,9 @@ const SocialForm = ({
   const params = useSearchParams();
   const { toast } = useToast();
   const [tourFrequency, setTourFrequency] = useState("");
-  const [editAgency] = useEditAgencyMutation();
+  const [editAgencySocials] = useEditAgencySocialsMutation();
+  const dispatch = useAppDispatch();
 
-  console.log(params.get("id"));
   const agencyId = params.get("id") || id;
 
   return (
@@ -53,27 +55,36 @@ const SocialForm = ({
         }}
         validationSchema={validationSchema}
         onSubmit={async (values, { setSubmitting, setErrors }) => {
-          try {
-            setSubmitting(true);
-            await editAgency({
-              body: { ...values, tourFrequency },
-              agencyId: agencyId,
-            }).unwrap();
-            toast({
-              title: "Socials updated",
-              variant: "default",
-              description: "Socials updated successfully",
+          setSubmitting(true);
+          await editAgencySocials({
+            body: { ...values, tourFrequency },
+            agencyId: agencyId,
+          })
+            .unwrap()
+            .then((res) => {
+              const userDataToSet = {
+                token: res.accessToken,
+                user: res.user,
+              };
+              dispatch(login(userDataToSet));
+              localStorage.setItem(
+                "persistedData",
+                JSON.stringify(userDataToSet)
+              );
+              toast({
+                title: "Socials updated",
+                variant: "default",
+                description: "Socials updated successfully",
+              });
+              router.push("/app/home");
+            })
+            .catch((e) => {
+              toast({
+                title: "Socials not updated",
+                variant: "destructive",
+                description: "Socials not updated successfully",
+              });
             });
-            router.push("/app/home");
-          } catch (error) {
-            toast({
-              title: "Socials not updated",
-              variant: "destructive",
-              description: "Socials not updated successfully",
-            });
-          }
-
-          // Handle form submission, e.g., send data to an API or server
         }}
       >
         {({ setFieldValue, values, errors }) => (
