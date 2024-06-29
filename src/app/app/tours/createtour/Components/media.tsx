@@ -10,13 +10,14 @@ import ImageScrollContainer from "@/components/ImageScrollComponent";
 import { useDropzone, Accept } from "react-dropzone";
 import { useUploadImagesMutation } from "@/lib/features/tours/toursApiSlice";
 
-
 const Media = ({
   formId,
   tourDetails,
+  getActiveTab,
 }: {
   formId: string | null;
   tourDetails: any;
+  getActiveTab: (tab: any) => void;
 }) => {
   const [activeImage, setActiveImage] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
@@ -163,6 +164,16 @@ const Media = ({
           />
         </div>
       )}
+      <button
+        form="accomodationForm"
+        type="submit"
+        onClick={() => {
+          getActiveTab("Participants");
+        }}
+        className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full sm:w-1/3"
+      >
+        Next
+      </button>
     </div>
   );
 };
