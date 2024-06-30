@@ -9,7 +9,6 @@ import React, {
 import ImageScrollContainer from "@/components/ImageScrollComponent";
 import { useDropzone, Accept } from "react-dropzone";
 import { useUploadImagesMutation } from "@/lib/features/tours/toursApiSlice";
-import { Button } from "@/components/ui/button";
 
 const Media = ({
   formId,
@@ -165,13 +164,17 @@ const Media = ({
           />
         </div>
       )}
-      <Button
-        className="bg-secondary self-end lg:w-96"
-        onClick={() => getActiveTab("Participants")}
-        type="button"
+
+      <button
+        form="accomodationForm"
+        type="submit"
+        onClick={() => {
+          getActiveTab("Participants");
+        }}
+        className="bg-[#FA7454] hover:bg-orange-600 text-white font-thin py-3 rounded-lg w-full sm:w-1/3"
       >
         Next
-      </Button>
+      </button>
     </div>
   );
 };
