@@ -18,7 +18,6 @@ const RequireAuth = ({
 
     const isProtectedRoute = !(
       pathName.includes("login") ||
-      pathName.includes("public") ||
       pathName.includes("signup") ||
       pathName.includes("waitlist") ||
       pathName === "/"
@@ -27,7 +26,7 @@ const RequireAuth = ({
     if (!userSession && isProtectedRoute) {
       router.replace("/login");
     } else if (userSession && !isProtectedRoute) {
-      router.replace("/app/home");
+      router.replace("/app");
     } else {
       setLoading(false);
     }

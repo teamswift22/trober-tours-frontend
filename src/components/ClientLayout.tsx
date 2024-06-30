@@ -15,7 +15,7 @@ import { useLogoutMutation } from "@/lib/features/auth/authApiSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const navbarItems = [
-  { logo: <GoHome />, name: "Home", path: "home" },
+  { logo: <GoHome />, name: "Home", path: "/" },
   { logo: <BsGlobe />, name: "All Tours", path: "tours" },
   {
     logo: <HiOutlineUser />,
@@ -40,8 +40,8 @@ function MobileLinkComponent({ icon, link }: LinkComponentsProps) {
 
   const isCurrentPath = (path: string) => {
     const pathSegments = pathName.split("/");
-    const routeName = pathSegments[2];
-    return routeName === path;
+    const routeName = pathSegments[2] || "/";
+    return routeName == path;
   };
 
   return (
@@ -70,8 +70,10 @@ const ClientLayout = ({
 
   const isCurrentPath = (path: string) => {
     const pathSegments = pathName.split("/");
-    const routeName = pathSegments[2];
-    return routeName === path;
+    const routeName = pathSegments[2] || "/";
+    console.log(routeName);
+    console.log(path);
+    return routeName == path;
   };
 
   const logoutuser = async () => {

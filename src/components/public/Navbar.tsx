@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 
 const Navbar = () => {
   return (
-    <div className="w-full px-5  py-5 font-sora ">
+    <div className="w-full px-5 bg-white shadow-md py-5 font-sora ">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-x-3">
           <Image src="/logo.png" width={50} height={50} alt="Logo" />
@@ -18,11 +18,11 @@ const Navbar = () => {
             <Search />
             <input
               type="search"
-              className="bg-transparent placeholder:text-[#4A789C] pl-2"
-              placeholder="Search"
+              className="bg-transparent placeholder:text-[#4A789C] placeholder:text-sm pl-2"
+              placeholder="Search all tours"
             />
           </div>
-          <Button className="bg-[#FA7454] text-white hover:bg-[#FA7454] hover:opacity-70">
+          <Button className="bg-[#FA7454] rounded-[12px]  text-white hover:bg-[#FA7454] hover:opacity-70">
             Create a tour
           </Button>
         </div>

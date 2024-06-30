@@ -76,7 +76,7 @@ const SocialForm = ({
                 variant: "default",
                 description: "Socials updated successfully",
               });
-              router.push("/app/home");
+              router.push("/app");
             })
             .catch((e) => {
               toast({

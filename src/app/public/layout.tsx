@@ -10,7 +10,7 @@ const layout = ({
   return (
     <div>
       <Navbar />
-      {children}
+      <div className="pt-10">{children}</div>
       <Footer />
     </div>
   );
