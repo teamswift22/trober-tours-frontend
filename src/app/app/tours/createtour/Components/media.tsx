@@ -9,14 +9,16 @@ import React, {
 import ImageScrollContainer from "@/components/ImageScrollComponent";
 import { useDropzone, Accept } from "react-dropzone";
 import { useUploadImagesMutation } from "@/lib/features/tours/toursApiSlice";
-
+import { Button } from "@/components/ui/button";
 
 const Media = ({
   formId,
   tourDetails,
+  getActiveTab,
 }: {
   formId: string | null;
   tourDetails: any;
+  getActiveTab: (tab: any) => void;
 }) => {
   const [activeImage, setActiveImage] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
@@ -163,6 +165,13 @@ const Media = ({
           />
         </div>
       )}
+      <Button
+        className="bg-secondary self-end lg:w-96"
+        onClick={() => getActiveTab("Participants")}
+        type="button"
+      >
+        Next
+      </Button>
     </div>
   );
 };
