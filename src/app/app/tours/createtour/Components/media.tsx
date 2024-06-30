@@ -164,7 +164,6 @@ const Media = ({
           />
         </div>
       )}
-
       <button
         form="accomodationForm"
         type="submit"

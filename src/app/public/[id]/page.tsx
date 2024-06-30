@@ -112,7 +112,7 @@ const Page = ({ params }: { params: { id: string } }) => {
           Price Includes:
         </h4>
         <div className="flex items-center flex-wrap gap-2">
-          {data?.priceIncludes?.map((item) => (
+          {data?.priceIncludes?.map((item: any) => (
             <p
               key={item}
               className="font-sora text-sm border-secondary border-[1px] w-fit px-3 py-1 rounded text-[#4F4F4F]"
