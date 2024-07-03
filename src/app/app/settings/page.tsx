@@ -82,7 +82,11 @@ const ProfileForm = () => {
           {activeTab == "Personal" ? <PersonalForm /> : <CompanyForm />}
         </div>
         <div className="flex justify-end gap-x-3 w-[80%] mt-4">
-          <Button className="xl:hidden" type="button" onClick={() => logout()}>
+          <Button
+            className="xl:hidden"
+            type="button"
+            onClick={() => logoutuser()}
+          >
             Logout
           </Button>
           <Button className="bg-red-500 hover:bg-red-600 text-white font-medium ">
